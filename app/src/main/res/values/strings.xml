@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">vips_artikli</string>
+
+    <string name="navigation_drawer_open">Otvori izbornik</string>
+    <string name="navigation_drawer_close">Zatvori izbornik</string>
+
+    <string name="action_settings">Postavke</string>
+    <string name="Poruka_app_molimPricekajte">Molim pričekajte</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="pretraga">Pretraga</string>
+    <string name="PosaljiPodatke_title">Pošalji podatke</string>
+    <string name="PrimiPodatke_title">Učitaj podatke</string>
+    <string name="Log_title">Log</string>
+    <string name="Komitenti_title">Komitenti</string>
+    <string name="Artikli_title">Artikli</string>
+</resources>

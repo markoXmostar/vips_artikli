@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_camera"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Import" />
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Gallery" />
+        <item
+            android:id="@+id/nav_slideshow"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Slideshow" />
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Tools" />
+    </group>
+
+    <item android:title="Podaci">
+        <menu>
+            <item
+                android:id="@+id/nav_artikli"
+                android:icon="@android:drawable/ic_menu_info_details"
+                android:title="@string/Artikli_title" />
+            <item
+                android:id="@+id/nav_komitenti"
+                android:icon="@android:drawable/ic_menu_my_calendar"
+                android:title="@string/Komitenti_title" />
+        </menu>
+    </item>
+    <item android:title="Komunikacija">
+        <menu>
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_share"
+                android:title="@string/PosaljiPodatke_title" />
+            <item
+                android:id="@+id/nav_recive"
+                android:title="@string/PrimiPodatke_title" />
+            <item
+                android:id="@+id/nav_log"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/Log_title" />
+        </menu>
+    </item>
+
+</menu>
