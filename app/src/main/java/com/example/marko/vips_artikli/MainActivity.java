@@ -1,9 +1,13 @@
 package com.example.marko.vips_artikli;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabaseLockedException;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,13 +21,14 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
-    public  static String myDATABASE="VIPS.db";
-
+    public static final String TAG="Glavni MainActivity";
+    public static final String myDATABASE="VIPS.db";
+    public static MainActivity ma;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MainActivity ma=this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -110,5 +115,20 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public static boolean isTableExists(SQLiteDatabase mDatabase, String tableName) {
+        Cursor c = null;
+        boolean tableExists = false;
+        try
+        {
+            c = mDatabase.query(tableName, null,null, null, null, null, null);
+            tableExists = true;
+        }
+        catch (Exception e) {
+            tableExists = false;
+            Log.d(TAG, "Tabela Artikli ne postoji! :(((");
+        }
+        return tableExists;
     }
 }

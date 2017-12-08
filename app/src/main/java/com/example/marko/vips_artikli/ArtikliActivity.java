@@ -73,8 +73,13 @@ public class ArtikliActivity extends AppCompatActivity {
         UcitajListuIzBaze("");
     }
 
+
     private void UcitajListuIzBaze(String filter){
 
+        SQLiteDatabase mDatabase = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE,null);
+        if (!MainActivity.isTableExists(mDatabase,"artikli")){
+            return;
+        }
         ListaArtiklaAdapter listArtikalaAdapter=new ListaArtiklaAdapter(this,R.layout.row_artikl);
         artiklListView.setAdapter(listArtikalaAdapter);
         Log.d(TAG," ucitavam bazu!");
