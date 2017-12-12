@@ -117,13 +117,26 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_send) {
 
         } else if (id== R.id.nav_recive){
+            /*
+            url=http://vanima.net:8099/api/
+
+            api/artikli?d=2
+            api/idnaziv?d=2&t=jmj
+            api/idnaziv?d=2&t=tipdokumenta
+            api/idnaziv?d=2&t=nacinplacanja
+            api/idnaziv?d=2&t=grupaartikala
+            api/idnazivrid?d=2&t=podgrupaartikala
+            api/idnazivrid?d=2&t=komitentpj
+            api/idnazivrid?d=2&t=podtipdokumenta
+
+             */
             String akcija = "artikli";
 
             String urlString = url + akcija + "?d=" + DJELATNIK;
             new JSON_task(this).execute(urlString, akcija);
 
-            akcija = "naziv";
-            urlString = url + akcija + "?d=" + DJELATNIK;
+            akcija = "jmj";
+            urlString = url + "idnaziv" + "?d=" + DJELATNIK +"&t=" + akcija;
             new JSON_task(this).execute(urlString, akcija);
 
 

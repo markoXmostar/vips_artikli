@@ -141,8 +141,9 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                case "naziv":
+                case "jmj":
                     result = "{\"Jmj\":" + result + ",\"ResponseStatus\":{}}";
+
                     Log.d(TAG, "onPostExecute: " + result);
                     jObject = null;
                     try {
@@ -242,9 +243,9 @@ public class JSON_task  extends AsyncTask<String, String, String>{
         myDB.execSQL("DELETE FROM jmj");
         for (int i = 0; i < Lista.size(); i++) {
             jmj myJMJ = Lista.get(i);
-            myDB.execSQL("INSERT INTO jmj (_id, sifra ) VALUES (" +
+            myDB.execSQL("INSERT INTO jmj (_id, naziv ) VALUES (" +
                     myJMJ.getId() + ",'" +
-                    myJMJ.getNaziv().replaceAll("'", "_") + ");");
+                    myJMJ.getNaziv()+ "');");
 
             }
             Log.d(TAG, "Gotovo");

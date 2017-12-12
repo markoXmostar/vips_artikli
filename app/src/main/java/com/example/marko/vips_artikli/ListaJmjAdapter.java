@@ -59,9 +59,11 @@ public class ListaJmjAdapter extends ArrayAdapter {
         } else {
             layoutHandler = (ListaJmjAdapter.LayoutHandler) row.getTag();
         }
-        Artikl artikl = (Artikl) this.getItem(position);
-        layoutHandler.ID.setText(artikl.getSifra());
-        layoutHandler.NAZIV.setText(artikl.getNaziv());
+        jmj myJMJ = (jmj) this.getItem(position);
+        layoutHandler.ID.setText(Long.toString(myJMJ.getId()));
+        layoutHandler.NAZIV.setText(myJMJ.getNaziv());
+
+
         return row;
     }
 }
