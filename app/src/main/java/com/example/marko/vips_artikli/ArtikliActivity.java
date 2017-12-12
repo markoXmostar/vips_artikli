@@ -8,18 +8,23 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.support.v7.widget.SearchView;
+import android.widget.TextView;
 
 public class ArtikliActivity extends AppCompatActivity {
 
     public static final String TAG="ARTIKLI";
 
     ListView artiklListView;
+    TextView NoDataText;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_artikli_menu, menu);
+
 
         MenuItem searchItem=menu.findItem(R.id.artikli_pretraga);
         SearchView searchView= (SearchView) MenuItemCompat.getActionView(searchItem);
@@ -66,6 +71,8 @@ public class ArtikliActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artikli);
 
+        NoDataText = (TextView) findViewById(R.id.noDataText);
+        NoDataText.setVisibility(View.INVISIBLE);
 
         artiklListView = (ListView) findViewById(R.id.artikliListView);
         artiklListView.setItemsCanFocus(false);
@@ -78,8 +85,11 @@ public class ArtikliActivity extends AppCompatActivity {
 
         SQLiteDatabase mDatabase = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE,null);
         if (!MainActivity.isTableExists(mDatabase,"artikli")){
+            NoDataText.setVisibility(View.VISIBLE);
+            NoDataText.setEnabled(false);
             return;
         }
+        NoDataText.setVisibility(View.INVISIBLE);
         ListaArtiklaAdapter listArtikalaAdapter=new ListaArtiklaAdapter(this,R.layout.row_artikl);
         artiklListView.setAdapter(listArtikalaAdapter);
         Log.d(TAG," ucitavam bazu!");
@@ -91,9 +101,6 @@ public class ArtikliActivity extends AppCompatActivity {
         }else{
             c=myDB.rawQuery("SELECT * FROM artikli where sifra like '%" + filter + "%' or naziv like '%" + filter + "%' or kataloskiBroj like '%" + filter + "%'" ,null);
         }
-
-
-
 
         int IdIndex=c.getColumnIndex("_id");
         int SifraIndex=c.getColumnIndex("sifra");

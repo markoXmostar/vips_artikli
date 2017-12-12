@@ -18,12 +18,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String TAG="Glavni MainActivity";
     public static final String myDATABASE="VIPS.db";
     public static MainActivity ma;
+
+    public static int DJELATNIK = 2;
+    public static String url = "http://vanima.net:8099/api/";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,11 +109,23 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_artikli) {
             Intent intent = new Intent(this, ArtikliActivity.class);
             startActivity(intent);
-        }else if (id==R.id.nav_komitenti){
+        } else if (id == R.id.nav_komitenti) {
 
+        } else if (id == R.id.nav_jmj) {
+            Intent intent = new Intent(this, JmjActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_send) {
 
         } else if (id== R.id.nav_recive){
+            String akcija = "artikli";
+
+            String urlString = url + akcija + "?d=" + DJELATNIK;
+            new JSON_task(this).execute(urlString, akcija);
+
+            akcija = "naziv";
+            urlString = url + akcija + "?d=" + DJELATNIK;
+            new JSON_task(this).execute(urlString, akcija);
+
 
         } else if (id==R.id.nav_log){
 

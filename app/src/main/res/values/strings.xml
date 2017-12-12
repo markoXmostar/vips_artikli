@@ -15,4 +15,6 @@
     <string name="Log_title">Log</string>
     <string name="Komitenti_title">Komitenti</string>
     <string name="Artikli_title">Artikli</string>
+    <string name="JMJ_title">JMJ</string>
+    <string name="NemaPodatakaText">NEMA PODATAKA!</string>
 </resources>

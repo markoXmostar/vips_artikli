@@ -30,6 +30,10 @@
                 android:id="@+id/nav_komitenti"
                 android:icon="@android:drawable/ic_menu_my_calendar"
                 android:title="@string/Komitenti_title" />
+            <item
+                android:id="@+id/nav_jmj"
+                android:icon="@android:drawable/ic_menu_my_calendar"
+                android:title="@string/JMJ_title" />
         </menu>
     </item>
     <item android:title="Komunikacija">
