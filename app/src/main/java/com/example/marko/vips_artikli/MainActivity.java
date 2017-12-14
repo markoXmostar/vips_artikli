@@ -131,15 +131,39 @@ public class MainActivity extends AppCompatActivity
             api/idnazivrid?d=2&t=podtipdokumenta
 
              */
-            String akcija = "artikli";
-
-            String urlString = url + akcija + "?d=" + DJELATNIK;
-            new JSON_task(this).execute(urlString, akcija);
+            String akcija = "";
+            String urlString="";
 
             akcija = "jmj";
             urlString = url + "idnaziv" + "?d=" + DJELATNIK +"&t=" + akcija;
             new JSON_task(this).execute(urlString, akcija);
 
+            akcija="tipdokumenta";
+            urlString = url + "idnaziv" + "?d=" + DJELATNIK +"&t=" + akcija;
+            new JSON_task(this).execute(urlString, akcija);
+
+            akcija="podtipdokumenta";
+            urlString = url + "idnazivrid" + "?d=" + DJELATNIK +"&t=" + akcija;
+            Log.d(TAG, "onNavigationItemSelected: " + urlString);
+            new JSON_task(this).execute(urlString, akcija);
+
+            akcija="nacinplacanja";
+            urlString = url + "idnaziv" + "?d=" + DJELATNIK +"&t=" + akcija;
+            new JSON_task(this).execute(urlString, akcija);
+
+            akcija="grupaartikala";
+            urlString = url + "idnazivrid" + "?d=" + DJELATNIK +"&t=" + akcija;
+            Log.d(TAG, "onNavigationItemSelected: " + urlString);
+            new JSON_task(this).execute(urlString, akcija);
+
+            akcija="podgrupaartikala";
+            urlString = url + "idnazivrid" + "?d=" + DJELATNIK +"&t=" + akcija;
+            Log.d(TAG, "onNavigationItemSelected: " + urlString);
+            new JSON_task(this).execute(urlString, akcija);
+
+            akcija = "artikli";
+            urlString = url + akcija + "?d=" + DJELATNIK;
+            new JSON_task(this).execute(urlString, akcija);
 
         } else if (id==R.id.nav_log){
 
@@ -160,7 +184,8 @@ public class MainActivity extends AppCompatActivity
         }
         catch (Exception e) {
             tableExists = false;
-            Log.d(TAG, "Tabela Artikli ne postoji! :(((");
+            Log.d(TAG, "isTableExists: Tabela " + tableName + " ne postoji! :(((");
+
         }
         return tableExists;
     }

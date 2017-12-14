@@ -51,11 +51,10 @@ public class ListaNacinplacanjaAdapter extends ArrayAdapter {
         ListaNacinplacanjaAdapter.LayoutHandler layoutHandler;
         if (row == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            row = layoutInflater.inflate(R.layout.row_grupa, parent, false);
+            row = layoutInflater.inflate(R.layout.row_jmj, parent, false);
             layoutHandler = new ListaNacinplacanjaAdapter.LayoutHandler();
-            layoutHandler.ID = (TextView) row.findViewById(R.id.grupaID);
-            layoutHandler.NAZIV = (TextView) row.findViewById(R.id.grupaNaziv);
-            layoutHandler.RID = (TextView) row.findViewById(R.id.grupaRid);
+            layoutHandler.ID = (TextView) row.findViewById(R.id.jmjID);
+            layoutHandler.NAZIV = (TextView) row.findViewById(R.id.jmjNaziv);
             row.setTag(layoutHandler);
         } else {
             layoutHandler = (ListaNacinplacanjaAdapter.LayoutHandler) row.getTag();
@@ -63,7 +62,7 @@ public class ListaNacinplacanjaAdapter extends ArrayAdapter {
         NacinPlacanja myNacinPlacanja = (NacinPlacanja) this.getItem(position);
         layoutHandler.ID.setText(Long.toString(myNacinPlacanja.getId()));
         layoutHandler.NAZIV.setText(myNacinPlacanja.getNaziv());
-        layoutHandler.RID.setText(Long.toString(myNacinPlacanja.getRid()));
+
 
         return row;
     }

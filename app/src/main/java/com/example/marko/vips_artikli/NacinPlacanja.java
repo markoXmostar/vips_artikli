@@ -7,12 +7,12 @@ package com.example.marko.vips_artikli;
 public class NacinPlacanja {
     private long id;
     private String naziv;
-    private long rid;
 
-    public NacinPlacanja(long id, String naziv, long rid) {
+
+    public NacinPlacanja(long id, String naziv) {
         this.id = id;
         this.naziv = naziv;
-        this.rid = rid;
+
     }
 
     public long getId() {
@@ -31,11 +31,4 @@ public class NacinPlacanja {
         this.naziv = naziv;
     }
 
-    public long getRid() {
-        return rid;
-    }
-
-    public void setRid(long rid) {
-        this.rid = rid;
-    }
 }

@@ -50,8 +50,22 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
         switch (izabran) {
             case "JMJ":
                 UcitajListuJMJIzBaze("");
-            case "":
-
+                break;
+            case "Tip dokumenta":
+                UcitajListuTipovaDokumenataIzBaze("");
+                break;
+            case "Podtip dokumenta":
+                UcitajListuPodtipovaDokumenataIzBaze("");
+                break;
+            case "Način plaćanja":
+                UcitajNacinPlacanjaIzBaze("");
+                break;
+            case "Grupa artikala":
+                UcitajGrupeIzBaze("");
+                break;
+            case "Podgrupa artikala":
+                UcitajPodgrupeIzBaze("");
+                break;
             default:
 
         }
@@ -62,26 +76,204 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
         // TODO Auto-generated method stub
 
     }
-
-    private void UcitajListuJMJIzBaze(String filter) {
-
+    private boolean PostaviVidljivostElemenata(String myTabela){
         SQLiteDatabase mDatabase = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
-        if (!MainActivity.isTableExists(mDatabase, "jmj")) {
+        if (!MainActivity.isTableExists(mDatabase, myTabela)) {
             NoDataText.setVisibility(View.VISIBLE);
+            mojListView.setVisibility(View.INVISIBLE);
             NoDataText.setEnabled(false);
+            return false;
+        }
+        else {
+            mojListView.setVisibility(View.VISIBLE);
+            NoDataText.setVisibility(View.INVISIBLE);
+            return true;
+        }
+    }
+
+    private void UcitajPodgrupeIzBaze(String filter) {
+        String myTabela="podgrupa_artikala";
+        if (!PostaviVidljivostElemenata(myTabela)){
             return;
         }
-        NoDataText.setVisibility(View.INVISIBLE);
-        ListaJmjAdapter listaJmjAdapter = new ListaJmjAdapter(this, R.layout.row_jmj);
-        mojListView.setAdapter(listaJmjAdapter);
-        Log.d(TAG, " ucitavam bazu!");
+        ListaPodgrupaAdapter listaPodgrupaAdapter = new ListaPodgrupaAdapter(this, R.layout.row_podgrupa);
+        mojListView.setAdapter(listaPodgrupaAdapter);
+        Log.d(TAG, " ucitavam tabelu " + myTabela + " dokumenata!");
 
         SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
         Cursor c;
         if (filter.equals("")) {
-            c = myDB.rawQuery("SELECT * FROM jmj", null);
+            c = myDB.rawQuery("SELECT * FROM " +myTabela, null);
         } else {
-            c = myDB.rawQuery("SELECT * FROM jmj where naziv like '%" + filter + "%'", null);
+            c = myDB.rawQuery("SELECT * FROM " + myTabela +" where naziv like '%" + filter + "%'", null);
+        }
+
+        int IdIndex = c.getColumnIndex("_id");
+        int NazivIndex = c.getColumnIndex("naziv");
+        int RidIndex=c.getColumnIndex("rid");
+
+        c.moveToFirst();
+        int brojac = 0;
+        for (int j = 0; j < c.getCount(); j++) {
+            long id;
+            String naziv;
+            long rid;
+
+            id = c.getLong(IdIndex);
+            naziv = c.getString(NazivIndex);
+            rid=c.getLong(RidIndex);
+
+            PodgrupaArtikala PodgrupaArtikalaProvider = new PodgrupaArtikala(id, naziv,rid);
+            listaPodgrupaAdapter.add(PodgrupaArtikalaProvider);
+            brojac++;
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        Log.d(TAG, " Tabela "+ myTabela +" učitana!");
+    }
+    private void UcitajGrupeIzBaze(String filter) {
+        String myTabela="grupa_artikala";
+        if (!PostaviVidljivostElemenata(myTabela)){
+            return;
+        }
+        ListaGrupaAdapter listaGrupaAdapter = new ListaGrupaAdapter(this, R.layout.row_grupa);
+        mojListView.setAdapter(listaGrupaAdapter);
+        Log.d(TAG, " ucitavam tabelu " + myTabela + " dokumenata!");
+
+        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
+        Cursor c;
+        if (filter.equals("")) {
+            c = myDB.rawQuery("SELECT * FROM " +myTabela, null);
+        } else {
+            c = myDB.rawQuery("SELECT * FROM " + myTabela +" where naziv like '%" + filter + "%'", null);
+        }
+
+        int IdIndex = c.getColumnIndex("_id");
+        int NazivIndex = c.getColumnIndex("naziv");
+        int RidIndex=c.getColumnIndex("rid");
+
+        c.moveToFirst();
+        int brojac = 0;
+        for (int j = 0; j < c.getCount(); j++) {
+            long id;
+            String naziv;
+            long rid;
+
+            id = c.getLong(IdIndex);
+            naziv = c.getString(NazivIndex);
+            rid=c.getLong(RidIndex);
+
+            GrupaArtikala GrupaArtikalaProvider = new GrupaArtikala(id, naziv,rid);
+            listaGrupaAdapter.add(GrupaArtikalaProvider);
+            brojac++;
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        Log.d(TAG, " Tabela "+ myTabela +" učitana!");
+    }
+    private void UcitajNacinPlacanjaIzBaze(String filter) {
+        String myTabela="nacin_placanja";
+        if (!PostaviVidljivostElemenata(myTabela)){
+            return;
+        }
+        ListaNacinplacanjaAdapter listaNacinaPlacanjaAdapter = new ListaNacinplacanjaAdapter(this, R.layout.row_jmj);
+        mojListView.setAdapter(listaNacinaPlacanjaAdapter);
+        Log.d(TAG, " ucitavam tabelu " + myTabela + " dokumenata!");
+
+        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
+        Cursor c;
+        if (filter.equals("")) {
+            c = myDB.rawQuery("SELECT * FROM " +myTabela, null);
+        } else {
+            c = myDB.rawQuery("SELECT * FROM " + myTabela +" where naziv like '%" + filter + "%'", null);
+        }
+
+        int IdIndex = c.getColumnIndex("_id");
+        int NazivIndex = c.getColumnIndex("naziv");
+
+
+        c.moveToFirst();
+        int brojac = 0;
+        for (int j = 0; j < c.getCount(); j++) {
+            long id;
+            String naziv;
+
+
+            id = c.getLong(IdIndex);
+            naziv = c.getString(NazivIndex);
+
+
+            NacinPlacanja nacinPlacanjaProvider = new NacinPlacanja(id, naziv);
+            listaNacinaPlacanjaAdapter.add(nacinPlacanjaProvider);
+            brojac++;
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        Log.d(TAG, " Tabela "+ myTabela +" učitana!");
+    }
+    private void UcitajListuPodtipovaDokumenataIzBaze(String filter) {
+        String myTabela="podtip_dokumenta";
+        if (!PostaviVidljivostElemenata(myTabela)){
+            return;
+        }
+        ListaPodtipDokumentaAdapter listaPodtipDokumentaAdapter = new ListaPodtipDokumentaAdapter(this, R.layout.row_grupa);
+        mojListView.setAdapter(listaPodtipDokumentaAdapter);
+        Log.d(TAG, " ucitavam tabelu " + myTabela + " dokumenata!");
+
+        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
+        Cursor c;
+        if (filter.equals("")) {
+            c = myDB.rawQuery("SELECT * FROM " +myTabela, null);
+        } else {
+            c = myDB.rawQuery("SELECT * FROM " + myTabela +" where naziv like '%" + filter + "%'", null);
+        }
+
+        int IdIndex = c.getColumnIndex("_id");
+        int NazivIndex = c.getColumnIndex("naziv");
+        int RidIndex=c.getColumnIndex("rid");
+
+        c.moveToFirst();
+        int brojac = 0;
+        for (int j = 0; j < c.getCount(); j++) {
+            long id;
+            String naziv;
+            long rid;
+
+            id = c.getLong(IdIndex);
+            naziv = c.getString(NazivIndex);
+            rid=c.getLong(RidIndex);
+
+            PodtipDokumenta podtipProvider = new PodtipDokumenta(id, naziv,rid);
+            listaPodtipDokumentaAdapter.add(podtipProvider);
+            brojac++;
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        Log.d(TAG, " Tabela "+ myTabela +" učitana!");
+    }
+    private void UcitajListuTipovaDokumenataIzBaze(String filter) {
+        String myTabela="tip_dokumenta";
+        if (!PostaviVidljivostElemenata(myTabela)){
+            return;
+        }
+        ListaTipDokumentaAdapter listaTipAdapter = new ListaTipDokumentaAdapter(this, R.layout.row_grupa);
+        mojListView.setAdapter(listaTipAdapter);
+        Log.d(TAG, " ucitavam tabelu tipova dokumenata!");
+
+        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
+        Cursor c;
+        if (filter.equals("")) {
+            c = myDB.rawQuery("SELECT * FROM " + myTabela, null);
+        } else {
+            c = myDB.rawQuery("SELECT * FROM " + myTabela + " where naziv like '%" + filter + "%'", null);
         }
 
         int IdIndex = c.getColumnIndex("_id");
@@ -89,6 +281,50 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
 
         c.moveToFirst();
         int brojac = 0;
+        for (int j = 0; j < c.getCount(); j++) {
+            long id;
+            String naziv;
+
+            id = c.getLong(IdIndex);
+            naziv = c.getString(NazivIndex);
+
+
+            TipDokumenta tipProvider = new TipDokumenta(id, naziv);
+            listaTipAdapter.add(tipProvider);
+            brojac++;
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        Log.d(TAG, " Tabela tip_dokumenta učitana!");
+    }
+    private void UcitajListuJMJIzBaze(String filter) {
+        Log.d(TAG, "UcitajListuJMJIzBaze: Start");
+        String myTabela="jmj";
+        if (!PostaviVidljivostElemenata(myTabela)){
+            return;
+        }
+        Log.d(TAG, "UcitajListuJMJIzBaze: Postoji tabela. Počni učitavanje");
+
+        ListaJmjAdapter listaJmjAdapter = new ListaJmjAdapter(this, R.layout.row_jmj);
+        mojListView.setAdapter(listaJmjAdapter);
+        Log.d(TAG, " ucitavam bazu!");
+
+        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
+        Cursor c;
+        if (filter.equals("")) {
+            c = myDB.rawQuery("SELECT * FROM "+ myTabela, null);
+        } else {
+            c = myDB.rawQuery("SELECT * FROM " + myTabela + " where naziv like '%" + filter + "%'", null);
+        }
+
+        int IdIndex = c.getColumnIndex("_id");
+        int NazivIndex = c.getColumnIndex("naziv");
+
+        c.moveToFirst();
+        int brojac = 0;
+        Log.d(TAG, "UcitajListuJMJIzBaze: Broj podataka u bazi je:" + Integer.toString( c.getCount()+1));
         for (int j = 0; j < c.getCount(); j++) {
             long id;
             String naziv;
@@ -103,6 +339,6 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
             }
         }
         c.close();
-        Log.d(TAG, " Baza učitana!");
+        Log.d(TAG, " Tabela jmj učitana!");
     }
 }
