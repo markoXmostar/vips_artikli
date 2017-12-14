@@ -112,7 +112,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_komitenti) {
 
         } else if (id == R.id.nav_jmj) {
-            Intent intent = new Intent(this, JmjActivity.class);
+            //Intent intent = new Intent(this, JmjActivity.class);
+            Intent intent = new Intent(this, RegistriActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_send) {
 

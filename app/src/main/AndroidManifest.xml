@@ -21,7 +21,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ArtikliActivity" />
-        <activity android:name=".JmjActivity"></activity>
+        <activity android:name=".JmjActivity" />
+        <activity android:name=".RegistriActivity"></activity>
     </application>
 
 </manifest>
