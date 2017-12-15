@@ -17,6 +17,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,10 @@ public class MainActivity extends AppCompatActivity
     public static int DJELATNIK = 2;
     public static String url = "http://vanima.net:8099/api/";
 
+    TextView txtLastSyncTime;
+    TextView txtLastSyncID;
+    ListView listSyncLog;
+    Integer lastSyncID=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +44,12 @@ public class MainActivity extends AppCompatActivity
         MainActivity ma=this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        txtLastSyncID=(TextView)findViewById(R.id.txtSyncID_main);
+        txtLastSyncTime=(TextView) findViewById(R.id.txtSyncTime_main);
+        listSyncLog=(ListView)findViewById(R.id.listSyncLog_main);
+        getLOG();
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -60,6 +72,66 @@ public class MainActivity extends AppCompatActivity
         //new JSON_task(this).execute("http://vanima.net:8099/api/artikli?d=2");
     }
 
+    private void getLOG(){
+        String myTabela="log";
+        Integer rbr=0;
+        ListaDbLogAdapter listaLog = new ListaDbLogAdapter(this, R.layout.row_log);
+        listSyncLog.setAdapter(listaLog);
+        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
+        if (isTableExists(myDB, myTabela)){
+            Cursor c;
+            c = myDB.rawQuery("SELECT MAX(redniBroj) AS rbr FROM " + myTabela, null);
+            int IdMax = c.getColumnIndex("rbr");
+            c.moveToFirst();
+            int brojac = 0;
+            for (int j = 0; j < c.getCount(); j++) {
+
+                rbr = c.getInt(IdMax);
+                brojac++;
+                if (j != c.getCount()) {
+                    c.moveToNext();
+                }
+            }
+            c.close();
+            txtLastSyncID.setText(Integer.toString(rbr));
+
+            c = myDB.rawQuery("SELECT + FROM " + myTabela + "WHERE redniBroj =" + Integer.toString(rbr) + ";", null);
+            brojac = 0;
+            int idIndex=c.getColumnIndex("_id");
+            int TabelaIndex = c.getColumnIndex("tabela");
+            int NazivIndex = c.getColumnIndex("greskaMsg");
+            int vrijemeIndex=c.getColumnIndex("timestamp");
+            int greskaIndex=c.getColumnIndex("greska");
+
+            for (int j = 0; j < c.getCount(); j++) {
+                Integer id;
+                String tabela;
+                String naziv;
+                String timestamp;
+                Integer greska;
+
+                id=c.getInt(idIndex);
+                tabela = c.getString(TabelaIndex);
+                naziv = c.getString(NazivIndex);
+                timestamp=c.getString(vrijemeIndex);
+                greska=c.getInt(greskaIndex);
+
+                dbLog myLog = new dbLog(id,timestamp,greska,naziv,rbr,tabela);
+                listaLog.add(myLog);
+                brojac++;
+                if (j != c.getCount()) {
+                    c.moveToNext();
+                }
+            }
+            c.close();
+            myDB.close();
+        }
+        else{
+
+        }
+
+
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -168,6 +240,11 @@ public class MainActivity extends AppCompatActivity
 
             akcija = "komitenti";
             urlString = url + akcija + "?d=" + DJELATNIK;
+            new JSON_task(this).execute(urlString, akcija);
+
+            akcija="komitentpj";
+            urlString = url + "idnazivrid" + "?d=" + DJELATNIK +"&t=" + akcija;
+            Log.d(TAG, "onNavigationItemSelected: " + urlString);
             new JSON_task(this).execute(urlString, akcija);
 
         } else if (id==R.id.nav_log){

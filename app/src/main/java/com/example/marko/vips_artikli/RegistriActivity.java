@@ -15,7 +15,7 @@ import android.widget.TextView;
 public class RegistriActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     public static final String TAG = "REGISTRI";
 
-    String[] registri = {"JMJ", "Tip dokumenta", "Podtip dokumenta", "Grupa artikala", "Podgrupa artikala", "Način plaćanja"};
+    String[] registri = {"JMJ", "Tip dokumenta", "Podtip dokumenta", "Grupa artikala", "Podgrupa artikala", "Način plaćanja","PjKomitenta"};
 
     ListView mojListView;
     TextView NoDataText;
@@ -66,6 +66,9 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
             case "Podgrupa artikala":
                 UcitajPodgrupeIzBaze("");
                 break;
+            case "PjKomitenta":
+                UcitajPjKomitentaIzBaze("");
+                break;
             default:
 
         }
@@ -94,7 +97,48 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
         mDatabase.close();
         return izlaz;
     }
+    private void UcitajPjKomitentaIzBaze(String filter) {
+        String myTabela="pjkomitenta";
+        if (!PostaviVidljivostElemenata(myTabela)){
+            return;
+        }
+        ListaPjKomitentAdapter listaPjKom = new ListaPjKomitentAdapter(this, R.layout.row_grupa);
+        mojListView.setAdapter(listaPjKom);
+        Log.d(TAG, " ucitavam tabelu " + myTabela + " dokumenata!");
 
+        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
+        Cursor c;
+        if (filter.equals("")) {
+            c = myDB.rawQuery("SELECT * FROM " +myTabela, null);
+        } else {
+            c = myDB.rawQuery("SELECT * FROM " + myTabela +" where naziv like '%" + filter + "%'", null);
+        }
+
+        int IdIndex = c.getColumnIndex("_id");
+        int NazivIndex = c.getColumnIndex("naziv");
+        int RidIndex=c.getColumnIndex("rid");
+
+        c.moveToFirst();
+        int brojac = 0;
+        for (int j = 0; j < c.getCount(); j++) {
+            long id;
+            String naziv;
+            long rid;
+
+            id = c.getLong(IdIndex);
+            naziv = c.getString(NazivIndex);
+            rid=c.getLong(RidIndex);
+
+            PjKomitent PjKom = new PjKomitent(id, naziv,rid);
+            listaPjKom.add(PjKom);
+            brojac++;
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        Log.d(TAG, " Tabela "+ myTabela +" učitana!");
+    }
     private void UcitajPodgrupeIzBaze(String filter) {
         String myTabela="podgrupa_artikala";
         if (!PostaviVidljivostElemenata(myTabela)){

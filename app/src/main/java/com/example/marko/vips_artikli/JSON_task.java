@@ -1,7 +1,7 @@
 package com.example.marko.vips_artikli;
 
-import android.app.Application;
 import android.app.ProgressDialog;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -184,7 +184,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                                     myTipDokumenta.optString("naziv"));
                             ListaTipova.add(_tipDokumenta);
                         }
-                        Log.d(TAG, "onPostExecute: BROJ TipovaDokumenta =" + ListaTipova.size());
+                        Log.d(TAG, "onPostExecute: BROJ Tipova Dokumenta =" + ListaTipova.size());
                         UpisiTipUBazu(ListaTipova);
                         vrijeme2 = new Date(System.currentTimeMillis());
                         long different = vrijeme2.getTime() - vrijeme1.getTime();
@@ -210,7 +210,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                                     myPodtipDokumenta.optString("naziv"),myPodtipDokumenta.optLong("rid",0));
                             ListaPodTipova.add(_podtipDokumenta);
                         }
-                        Log.d(TAG, "onPostExecute: BROJ PODTipovaDokumenta =" + ListaPodTipova.size());
+                        Log.d(TAG, "onPostExecute: BROJ PodTipova Dokumenta =" + ListaPodTipova.size());
                         UpisiPodtipUBazu(ListaPodTipova);
                         vrijeme2 = new Date(System.currentTimeMillis());
                         long different = vrijeme2.getTime() - vrijeme1.getTime();
@@ -262,7 +262,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                                     myGrupaArtikala.optString("naziv"),myGrupaArtikala.optLong("rid",0));
                             ListaGrupa.add(_grupa);
                         }
-                        Log.d(TAG, "onPostExecute: BROJ PODTipovaDokumenta =" + ListaGrupa.size());
+                        Log.d(TAG, "onPostExecute: BROJ Grupa artikala =" + ListaGrupa.size());
                         UpisiGrupuUBazu(ListaGrupa);
                         vrijeme2 = new Date(System.currentTimeMillis());
                         long different = vrijeme2.getTime() - vrijeme1.getTime();
@@ -288,8 +288,34 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                                     myPodGrupaArtikala.optString("naziv"),myPodGrupaArtikala.optLong("rid",0));
                             ListaPodgrupa.add(_podgrupa);
                         }
-                        Log.d(TAG, "onPostExecute: BROJ PODTipovaDokumenta =" + ListaPodgrupa.size());
+                        Log.d(TAG, "onPostExecute: BROJ Podgrupa artikala =" + ListaPodgrupa.size());
                         UpisiPodGrupuUBazu(ListaPodgrupa);
+                        vrijeme2 = new Date(System.currentTimeMillis());
+                        long different = vrijeme2.getTime() - vrijeme1.getTime();
+                        Log.d(TAG, "onPostExecute: VRIJEME UČITAVANJA S INTERNETA I UPISA U BAZU JE :" + different + "ms");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case "komitentpj":
+                    result = "{\"Komitentpj\":" + result + ",\"ResponseStatus\":{}}";
+
+                    Log.d(TAG, "onPostExecute: " + result);
+                    jObject = null;
+                    try {
+                        jObject = new JSONObject(result);
+                        String podgrupa = jObject.getString("Komitentpj");
+                        JSONArray arr = new JSONArray(podgrupa);
+                        ArrayList<PjKomitent> ListaPjKomitenata = new ArrayList<PjKomitent>();
+                        for (int i = 0; i < arr.length(); i++) {
+                            JSONObject myPjKom = arr.getJSONObject(i);
+                            PjKomitent _PjKom = new PjKomitent(myPjKom.optLong("id", 0),
+                                    myPjKom.optString("naziv"), myPjKom.optLong("rid",0));
+                            ListaPjKomitenata.add(_PjKom);
+                        }
+                        Log.d(TAG, "onPostExecute: BROJ PjKomitenata =" + ListaPjKomitenata.size());
+                        UpisiPjKomitenataUBazu(ListaPjKomitenata);
                         vrijeme2 = new Date(System.currentTimeMillis());
                         long different = vrijeme2.getTime() - vrijeme1.getTime();
                         Log.d(TAG, "onPostExecute: VRIJEME UČITAVANJA S INTERNETA I UPISA U BAZU JE :" + different + "ms");
@@ -333,232 +359,419 @@ public class JSON_task  extends AsyncTask<String, String, String>{
 
     private void UpisiArtikleUBazu(ArrayList<Artikl> Lista) {
 //prvo otvori ili kreiraj bazu komitenata
-        Log.d(TAG, "Otvaram bazu");
-        SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
-        Log.d(TAG, "UpisiArtikleUBazu: brišem tabelu ukoliko postoji");
-        myDB.execSQL("DROP TABLE IF EXISTS artikli");
-        Log.d(TAG, "Kreiram tabelu");
-        myDB.execSQL("CREATE TABLE IF NOT EXISTS artikli (" +
-                "_id VARCHAR, " +
-                "sifra VARCHAR, " +
-                "naziv VARCHAR," +
-                "kataloskiBroj VARCHAR, " +
-                "jmj VARCHAR, " +
-                "kratkiOpis VARCHAR, " +
-                "proizvodjac VARCHAR, " +
-                "dugiOpis VARCHAR, " +
-                "vrstaAmbalaze VARCHAR, " +
-                "brojKoleta double," +
-                "brojKoletaNaPaleti double, " +
-                "stanje double," +
-                "vpc double, " +
-                "mpc double, " +
-                "netto double, " +
-                "brutto double, " +
-                "imaRokTrajanja double, " +
-                "podgrupaID int);");
-        Log.d(TAG, "Brišem sve iz tabele");
-        myDB.execSQL("DELETE FROM artikli");
-        for (int i = 0; i < Lista.size(); i++) {
-            Artikl myArt = Lista.get(i);
-            myDB.execSQL("INSERT INTO artikli (_id, sifra , " +
-                    "naziv ,kataloskiBroj , jmj , kratkiOpis , proizvodjac , dugiOpis , vrstaAmbalaze, brojKoleta, brojKoletaNaPaleti,stanje,vpc,mpc,netto,brutto,imaRokTrajanja,podgrupaID ) VALUES ('" +
-                    myArt.getId() + "','" +
-                    myArt.getSifra() + "','" +
-                    myArt.getNaziv().replaceAll("'", "_") + "','" +
-                    myArt.getKataloskiBroj() + "','" +
-                    myArt.getJmj() + "','" +
-                    myArt.getKratkiOpis() + "','" +
-                    myArt.getProizvodjac() + "','" +
-                    myArt.getDugiOpis() + "','" +
-                    myArt.getVrstaAmbalaze() + "',"
-                    + myArt.getBrojKoleta() + "," +
-                    myArt.getBrojKoletaNaPaleti() + "," +
-                    myArt.getStanje() + "," +
-                    myArt.getVpc() + "," +
-                    myArt.getMpc() + "," +
-                    myArt.getNetto() + "," +
-                    myArt.getBrutto() + "," +
-                    myArt.getImaRokTrajanja() + "," +
-                    myArt.getPodgrupaID()
-                    + ");");
+
+        SQLiteDatabase myDB = null;
+        boolean greska=false;
+        String greskaStr="";
+        try {
+            Log.d(TAG, "Otvaram bazu");
+            myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+            Log.d(TAG, "UpisiArtikleUBazu: brišem tabelu ukoliko postoji");
+            myDB.execSQL("DROP TABLE IF EXISTS artikli");
+            Log.d(TAG, "Kreiram tabelu");
+            myDB.execSQL("CREATE TABLE IF NOT EXISTS artikli (" +
+                    "_id VARCHAR, " +
+                    "sifra VARCHAR, " +
+                    "naziv VARCHAR," +
+                    "kataloskiBroj VARCHAR, " +
+                    "jmj VARCHAR, " +
+                    "kratkiOpis VARCHAR, " +
+                    "proizvodjac VARCHAR, " +
+                    "dugiOpis VARCHAR, " +
+                    "vrstaAmbalaze VARCHAR, " +
+                    "brojKoleta double," +
+                    "brojKoletaNaPaleti double, " +
+                    "stanje double," +
+                    "vpc double, " +
+                    "mpc double, " +
+                    "netto double, " +
+                    "brutto double, " +
+                    "imaRokTrajanja double, " +
+                    "podgrupaID int);");
+            Log.d(TAG, "Brišem sve iz tabele");
+            myDB.execSQL("DELETE FROM artikli");
+            for (int i = 0; i < Lista.size(); i++) {
+                Artikl myArt = Lista.get(i);
+                myDB.execSQL("INSERT INTO artikli (_id, sifra , " +
+                        "naziv ,kataloskiBroj , jmj , kratkiOpis , proizvodjac , dugiOpis , vrstaAmbalaze, brojKoleta, brojKoletaNaPaleti,stanje,vpc,mpc,netto,brutto,imaRokTrajanja,podgrupaID ) VALUES ('" +
+                        myArt.getId() + "','" +
+                        myArt.getSifra() + "','" +
+                        myArt.getNaziv().replaceAll("'", "_") + "','" +
+                        myArt.getKataloskiBroj() + "','" +
+                        myArt.getJmj() + "','" +
+                        myArt.getKratkiOpis() + "','" +
+                        myArt.getProizvodjac() + "','" +
+                        myArt.getDugiOpis() + "','" +
+                        myArt.getVrstaAmbalaze() + "',"
+                        + myArt.getBrojKoleta() + "," +
+                        myArt.getBrojKoletaNaPaleti() + "," +
+                        myArt.getStanje() + "," +
+                        myArt.getVpc() + "," +
+                        myArt.getMpc() + "," +
+                        myArt.getNetto() + "," +
+                        myArt.getBrutto() + "," +
+                        myArt.getImaRokTrajanja() + "," +
+                        myArt.getPodgrupaID()
+                        + ");");
+            }
+            Log.d(TAG, "Gotovo");
+            myDB.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            greskaStr=e.getMessage();
+            greska=true;
+        } finally {
+            if (!greska){
+                UpisiLOG(greska,greskaStr,"artikli");
+            }
+            else{
+                greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                UpisiLOG(greska,greskaStr,"artikli");
+            }
         }
-        Log.d(TAG, "Gotovo");
-        myDB.close();
     }
 
-    private void UpisiJMJUBazu(ArrayList<jmj> Lista) {
-//prvo otvori ili kreiraj bazu komitenata
-        String myTabela = "tip_dokumenta";
-        Log.d(TAG, "Otvaram bazu");
-        SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
-        Log.d(TAG, "UpisiJMJUBazu: brišem tabelu " + myTabela + " ukoliko postoji");
-        myDB.execSQL("DROP TABLE IF EXISTS " + myTabela + ";");
-        Log.d(TAG, "Kreiram tabelu");
-        myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
-                "_id VARCHAR, " +
-                "naziv VARCHAR);");
+    private  void UpisiLOG(boolean greska,String LOGporuka,String tabela){
+        SQLiteDatabase myDB = null;
+        myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
 
-        Log.d(TAG, "Brišem sve iz tabele");
-        myDB.execSQL("DELETE FROM " + myTabela + ";");
-        for (int i = 0; i < Lista.size(); i++) {
-            jmj myJMJ = Lista.get(i);
-            myDB.execSQL("INSERT INTO " + myTabela + " (_id, naziv ) VALUES (" +
-                    myJMJ.getId() + ",'" +
-                    myJMJ.getNaziv()+ "');");
+        myDB.execSQL("CREATE TABLE IF NOT EXISTS log (" +
+                "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "vrijeme datetime default current_timestamp, " +
+                "greska INTEGER, " +
+                "poruka VARCHAR," +
+                "redniBroj INTEGER," +
+                "tabela VARCHAR); " );
 
-            }
-        Log.d(TAG, "Gotovo ");
+        Integer INTgreska=0;
+        if (greska){INTgreska=1;}
+
+        myDB.execSQL("INSERT INTO log (greska ,poruka ,tabela) VALUES ('" +
+                 INTgreska+ "','" + LOGporuka + "','" + tabela +"');");
+
         myDB.close();
+    }
+    private void UpisiJMJUBazu(ArrayList<jmj> Lista) {
+        boolean greska=false;
+        String greskaStr="";
+        String myTabela = "jmj";
+        try {
+
+            Log.d(TAG, "Otvaram bazu");
+            SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+            Log.d(TAG, "UpisiJMJUBazu: brišem tabelu " + myTabela + " ukoliko postoji");
+            myDB.execSQL("DROP TABLE IF EXISTS " + myTabela + ";");
+            Log.d(TAG, "Kreiram tabelu");
+            myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
+                    "_id VARCHAR, " +
+                    "naziv VARCHAR);");
+
+            Log.d(TAG, "Brišem sve iz tabele");
+            myDB.execSQL("DELETE FROM " + myTabela + ";");
+            for (int i = 0; i < Lista.size(); i++) {
+                jmj myJMJ = Lista.get(i);
+                myDB.execSQL("INSERT INTO " + myTabela + " (_id, naziv ) VALUES (" +
+                        myJMJ.getId() + ",'" +
+                        myJMJ.getNaziv()+ "');");
+
+                }
+            Log.d(TAG, "Gotovo ");
+            myDB.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            greskaStr=e.getMessage();
+            greska=true;
+        } finally {
+            if (!greska){
+                UpisiLOG(greska,greskaStr,myTabela);
+            }
+            else{
+                greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                UpisiLOG(greska,greskaStr,myTabela);
+            }
         }
+    }
 
     private void UpisiTipUBazu(ArrayList<TipDokumenta> Lista) {
-//prvo otvori ili kreiraj bazu komitenata
+        boolean greska=false;
+        String greskaStr="";
         String myTabela="tip_dokumenta";
-        Log.d(TAG, "Otvaram bazu");
-        SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
-        Log.d(TAG, "UpisiTipUBazu: brišem tabelu "+ myTabela+" ukoliko postoji");
-        myDB.execSQL("DROP TABLE IF EXISTS "+ myTabela +";");
-        Log.d(TAG, "Kreiram tabelu");
-        myDB.execSQL("CREATE TABLE IF NOT EXISTS "+ myTabela + " (" +
-                "_id VARCHAR, " +
-                "naziv VARCHAR);");
+        try {
 
-        Log.d(TAG, "Brišem sve iz tabele " +myTabela);
-        myDB.execSQL("DELETE FROM "+ myTabela +";");
-        for (int i = 0; i < Lista.size(); i++) {
-            TipDokumenta myTip = Lista.get(i);
-            myDB.execSQL("INSERT INTO " + myTabela +" (_id, naziv ) VALUES (" +
-                    myTip.getId() + ",'" +
-                    myTip.getNaziv()+ "');");
+            Log.d(TAG, "Otvaram bazu");
+            SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+            Log.d(TAG, "UpisiTipUBazu: brišem tabelu "+ myTabela+" ukoliko postoji");
+            myDB.execSQL("DROP TABLE IF EXISTS "+ myTabela +";");
+            Log.d(TAG, "Kreiram tabelu");
+            myDB.execSQL("CREATE TABLE IF NOT EXISTS "+ myTabela + " (" +
+                    "_id VARCHAR, " +
+                    "naziv VARCHAR);");
 
+            Log.d(TAG, "Brišem sve iz tabele " +myTabela);
+            myDB.execSQL("DELETE FROM "+ myTabela +";");
+            for (int i = 0; i < Lista.size(); i++) {
+                TipDokumenta myTip = Lista.get(i);
+                myDB.execSQL("INSERT INTO " + myTabela +" (_id, naziv ) VALUES (" +
+                        myTip.getId() + ",'" +
+                        myTip.getNaziv()+ "');");
+
+            }
+            Log.d(TAG, "Gotovo " + myTabela);
+            myDB.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            greskaStr=e.getMessage();
+            greska=true;
+        } finally {
+            if (!greska){
+                UpisiLOG(greska,greskaStr,myTabela);
+            }
+            else{
+                greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                UpisiLOG(greska,greskaStr,myTabela);
+            }
         }
-        Log.d(TAG, "Gotovo " + myTabela);
-        myDB.close();
     }
 
     private void UpisiPodtipUBazu(ArrayList<PodtipDokumenta> Lista) {
-//prvo otvori ili kreiraj bazu komitenata
+        boolean greska=false;
+        String greskaStr="";
         String myTabela="podtip_dokumenta";
-        Log.d(TAG, "Otvaram bazu");
-        SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
-        Log.d(TAG, "UpisiTipUBazu: brišem tabelu "+ myTabela+" ukoliko postoji");
-        myDB.execSQL("DROP TABLE IF EXISTS "+ myTabela +";");
-        Log.d(TAG, "Kreiram tabelu");
-        myDB.execSQL("CREATE TABLE IF NOT EXISTS "+ myTabela + " (" +
-                "_id VARCHAR, " +
-                "naziv VARCHAR, rid VARCHAR);");
 
-        Log.d(TAG, "Brišem sve iz tabele " +myTabela);
-        myDB.execSQL("DELETE FROM "+ myTabela +";");
-        for (int i = 0; i < Lista.size(); i++) {
-            PodtipDokumenta myPodTip = Lista.get(i);
-            myDB.execSQL("INSERT INTO " + myTabela +" (_id, naziv,rid ) VALUES (" +
-                    myPodTip.getId() + ",'" +
-                    myPodTip.getNaziv()+ "',"+ myPodTip.getRid() +");");
+        try {
+            Log.d(TAG, "Otvaram bazu");
+            SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+            Log.d(TAG, "UpisiTipUBazu: brišem tabelu "+ myTabela+" ukoliko postoji");
+            myDB.execSQL("DROP TABLE IF EXISTS "+ myTabela +";");
+            Log.d(TAG, "Kreiram tabelu");
+            myDB.execSQL("CREATE TABLE IF NOT EXISTS "+ myTabela + " (" +
+                    "_id VARCHAR, " +
+                    "naziv VARCHAR, rid VARCHAR);");
 
+            Log.d(TAG, "Brišem sve iz tabele " +myTabela);
+            myDB.execSQL("DELETE FROM "+ myTabela +";");
+            for (int i = 0; i < Lista.size(); i++) {
+                PodtipDokumenta myPodTip = Lista.get(i);
+                myDB.execSQL("INSERT INTO " + myTabela +" (_id, naziv,rid ) VALUES (" +
+                        myPodTip.getId() + ",'" +
+                        myPodTip.getNaziv()+ "',"+ myPodTip.getRid() +");");
+
+            }
+            Log.d(TAG, "Gotovo " + myTabela);
+            myDB.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            greskaStr=e.getMessage();
+            greska=true;
+        } finally {
+            if (!greska){
+                UpisiLOG(greska,greskaStr,myTabela);
+            }
+            else{
+                greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                UpisiLOG(greska,greskaStr,myTabela);
+            }
         }
-        Log.d(TAG, "Gotovo " + myTabela);
-        myDB.close();
     }
 
     private void UpisiKomitentUBazu(ArrayList<Komitent> Lista) {
-
+        boolean greska=false;
+        String greskaStr="";
         String myTabela = "komitenti";
-        Log.d(TAG, "Otvaram bazu");
-        SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
-        Log.d(TAG, "UpisiTipUBazu: brišem tabelu " + myTabela + " ukoliko postoji");
-        myDB.execSQL("DROP TABLE IF EXISTS " + myTabela + ";");
-        Log.d(TAG, "Kreiram tabelu");
-        myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
-                "_id VARCHAR, " +
-                "naziv VARCHAR, sifra VARCHAR);");
+        try {
+            Log.d(TAG, "Otvaram bazu");
+            SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+            Log.d(TAG, "UpisiTipUBazu: brišem tabelu " + myTabela + " ukoliko postoji");
+            myDB.execSQL("DROP TABLE IF EXISTS " + myTabela + ";");
+            Log.d(TAG, "Kreiram tabelu");
+            myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
+                    "_id VARCHAR, " +
+                    "naziv VARCHAR, sifra VARCHAR);");
 
-        Log.d(TAG, "Brišem sve iz tabele " + myTabela);
-        myDB.execSQL("DELETE FROM " + myTabela + ";");
-        for (int i = 0; i < Lista.size(); i++) {
-            Komitent myKom = Lista.get(i);
-            myDB.execSQL("INSERT INTO " + myTabela + " (_id, naziv,sifra ) VALUES (" +
-                    myKom.getId() + ",'" +
-                    myKom.getNaziv() + "','" + myKom.getSifra() + "');");
+            Log.d(TAG, "Brišem sve iz tabele " + myTabela);
+            myDB.execSQL("DELETE FROM " + myTabela + ";");
+            for (int i = 0; i < Lista.size(); i++) {
+                Komitent myKom = Lista.get(i);
+                myDB.execSQL("INSERT INTO " + myTabela + " (_id, naziv,sifra ) VALUES (" +
+                        myKom.getId() + ",'" +
+                        myKom.getNaziv() + "','" + myKom.getSifra() + "');");
 
+            }
+            Log.d(TAG, "Gotovo " + myTabela);
+            myDB.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            greskaStr=e.getMessage();
+            greska=true;
+        } finally {
+            if (!greska){
+                UpisiLOG(greska,greskaStr,myTabela);
+            }
+            else{
+                greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                UpisiLOG(greska,greskaStr,myTabela);
+            }
         }
-        Log.d(TAG, "Gotovo " + myTabela);
-        myDB.close();
     }
+
     private void UpisiNacinPlacanjaUBazu(ArrayList<NacinPlacanja> Lista) {
-
+        boolean greska=false;
+        String greskaStr="";
         String myTabela="nacin_placanja";
-        Log.d(TAG, "Otvaram bazu" + myTabela);
-        SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
-        Log.d(TAG, "UpisiUBazu: brišem tabelu "+ myTabela+" ukoliko postoji");
-        myDB.execSQL("DROP TABLE IF EXISTS "+ myTabela +";");
-        Log.d(TAG, "Kreiram tabelu");
-        myDB.execSQL("CREATE TABLE IF NOT EXISTS "+ myTabela + " (" +
-                "_id VARCHAR, " +
-                "naziv VARCHAR);");
+        try {
+            Log.d(TAG, "Otvaram bazu" + myTabela);
+            SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+            Log.d(TAG, "UpisiUBazu: brišem tabelu "+ myTabela+" ukoliko postoji");
+            myDB.execSQL("DROP TABLE IF EXISTS "+ myTabela +";");
+            Log.d(TAG, "Kreiram tabelu");
+            myDB.execSQL("CREATE TABLE IF NOT EXISTS "+ myTabela + " (" +
+                    "_id VARCHAR, " +
+                    "naziv VARCHAR);");
 
-        Log.d(TAG, "Brišem sve iz tabele " +myTabela);
-        myDB.execSQL("DELETE FROM "+ myTabela +";");
-        for (int i = 0; i < Lista.size(); i++) {
-            NacinPlacanja myNacinPlacanja = Lista.get(i);
-            myDB.execSQL("INSERT INTO " + myTabela +" (_id, naziv ) VALUES (" +
-                    myNacinPlacanja.getId() + ",'" +
-                    myNacinPlacanja.getNaziv()+ "');");
+            Log.d(TAG, "Brišem sve iz tabele " +myTabela);
+            myDB.execSQL("DELETE FROM "+ myTabela +";");
+            for (int i = 0; i < Lista.size(); i++) {
+                NacinPlacanja myNacinPlacanja = Lista.get(i);
+                myDB.execSQL("INSERT INTO " + myTabela +" (_id, naziv ) VALUES (" +
+                        myNacinPlacanja.getId() + ",'" +
+                        myNacinPlacanja.getNaziv()+ "');");
 
+            }
+            Log.d(TAG, "Gotovo " + myTabela);
+            myDB.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            greskaStr=e.getMessage();
+            greska=true;
+        } finally {
+            if (!greska){
+                UpisiLOG(greska,greskaStr,myTabela);
+            }
+            else{
+                greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                UpisiLOG(greska,greskaStr,myTabela);
+            }
         }
-        Log.d(TAG, "Gotovo " + myTabela);
-        myDB.close();
     }
 
     private void UpisiGrupuUBazu(ArrayList<GrupaArtikala> Lista) {
-//prvo otvori ili kreiraj bazu komitenata
+        boolean greska=false;
+        String greskaStr="";
         String myTabela="grupa_artikala";
-        Log.d(TAG, "Otvaram bazu");
-        SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
-        Log.d(TAG, "UpisiTipUBazu: brišem tabelu "+ myTabela+" ukoliko postoji");
-        myDB.execSQL("DROP TABLE IF EXISTS "+ myTabela +";");
-        Log.d(TAG, "Kreiram tabelu");
-        myDB.execSQL("CREATE TABLE IF NOT EXISTS "+ myTabela + " (" +
-                "_id VARCHAR, " +
-                "naziv VARCHAR, rid VARCHAR);");
+        try {
+            Log.d(TAG, "Otvaram bazu");
+            SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+            Log.d(TAG, "UpisiTipUBazu: brišem tabelu "+ myTabela+" ukoliko postoji");
+            myDB.execSQL("DROP TABLE IF EXISTS "+ myTabela +";");
+            Log.d(TAG, "Kreiram tabelu");
+            myDB.execSQL("CREATE TABLE IF NOT EXISTS "+ myTabela + " (" +
+                    "_id VARCHAR, " +
+                    "naziv VARCHAR, rid VARCHAR);");
 
-        Log.d(TAG, "Brišem sve iz tabele " +myTabela);
-        myDB.execSQL("DELETE FROM "+ myTabela +";");
-        for (int i = 0; i < Lista.size(); i++) {
-            GrupaArtikala myGrupa = Lista.get(i);
-            myDB.execSQL("INSERT INTO " + myTabela +" (_id, naziv,rid ) VALUES (" +
-                    myGrupa.getId() + ",'" +
-                    myGrupa.getNaziv()+ "',"+ myGrupa.getRid() +");");
+            Log.d(TAG, "Brišem sve iz tabele " +myTabela);
+            myDB.execSQL("DELETE FROM "+ myTabela +";");
+            for (int i = 0; i < Lista.size(); i++) {
+                GrupaArtikala myGrupa = Lista.get(i);
+                myDB.execSQL("INSERT INTO " + myTabela +" (_id, naziv,rid ) VALUES (" +
+                        myGrupa.getId() + ",'" +
+                        myGrupa.getNaziv()+ "',"+ myGrupa.getRid() +");");
 
+            }
+            Log.d(TAG, "Gotovo " + myTabela);
+            myDB.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            greskaStr=e.getMessage();
+            greska=true;
+        } finally {
+            if (!greska){
+                UpisiLOG(greska,greskaStr,myTabela);
+            }
+            else{
+                greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                UpisiLOG(greska,greskaStr,myTabela);
+            }
         }
-        Log.d(TAG, "Gotovo " + myTabela);
-        myDB.close();
     }
 
     private void UpisiPodGrupuUBazu(ArrayList<PodgrupaArtikala> Lista) {
-//prvo otvori ili kreiraj bazu komitenata
+        boolean greska=false;
+        String greskaStr="";
         String myTabela="podgrupa_artikala";
-        Log.d(TAG, "Otvaram bazu");
-        SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
-        Log.d(TAG, "UpisiTipUBazu: brišem tabelu "+ myTabela+" ukoliko postoji");
-        myDB.execSQL("DROP TABLE IF EXISTS "+ myTabela +";");
-        Log.d(TAG, "Kreiram tabelu");
-        myDB.execSQL("CREATE TABLE IF NOT EXISTS "+ myTabela + " (" +
-                "_id VARCHAR, " +
-                "naziv VARCHAR, rid VARCHAR);");
+        try {
+            Log.d(TAG, "Otvaram bazu");
+            SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+            Log.d(TAG, "UpisiTipUBazu: brišem tabelu "+ myTabela+" ukoliko postoji");
+            myDB.execSQL("DROP TABLE IF EXISTS "+ myTabela +";");
+            Log.d(TAG, "Kreiram tabelu");
+            myDB.execSQL("CREATE TABLE IF NOT EXISTS "+ myTabela + " (" +
+                    "_id VARCHAR, " +
+                    "naziv VARCHAR, rid VARCHAR);");
 
-        Log.d(TAG, "Brišem sve iz tabele " +myTabela);
-        myDB.execSQL("DELETE FROM "+ myTabela +";");
-        for (int i = 0; i < Lista.size(); i++) {
-            PodgrupaArtikala myPodgrupa = Lista.get(i);
-            myDB.execSQL("INSERT INTO " + myTabela +" (_id, naziv,rid ) VALUES (" +
-                    myPodgrupa.getId() + ",'" +
-                    myPodgrupa.getNaziv()+ "',"+ myPodgrupa.getRid() +");");
+            Log.d(TAG, "Brišem sve iz tabele " +myTabela);
+            myDB.execSQL("DELETE FROM "+ myTabela +";");
+            for (int i = 0; i < Lista.size(); i++) {
+                PodgrupaArtikala myPodgrupa = Lista.get(i);
+                myDB.execSQL("INSERT INTO " + myTabela +" (_id, naziv,rid ) VALUES (" +
+                        myPodgrupa.getId() + ",'" +
+                        myPodgrupa.getNaziv()+ "',"+ myPodgrupa.getRid() +");");
 
+            }
+            Log.d(TAG, "Gotovo " + myTabela);
+            myDB.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            greskaStr=e.getMessage();
+            greska=true;
+        } finally {
+            if (!greska){
+                UpisiLOG(greska,greskaStr,myTabela);
+            }
+            else{
+                greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                UpisiLOG(greska,greskaStr,myTabela);
+            }
         }
-        Log.d(TAG, "Gotovo " + myTabela);
-        myDB.close();
+    }
+
+    private void UpisiPjKomitenataUBazu(ArrayList<PjKomitent> Lista) {
+        boolean greska=false;
+        String greskaStr="";
+        String myTabela="PjKomitenta";
+        try {
+            Log.d(TAG, "Otvaram bazu");
+            SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+            Log.d(TAG, "UpisiTipUBazu: brišem tabelu "+ myTabela+" ukoliko postoji");
+            myDB.execSQL("DROP TABLE IF EXISTS "+ myTabela +";");
+            Log.d(TAG, "Kreiram tabelu");
+            myDB.execSQL("CREATE TABLE IF NOT EXISTS "+ myTabela + " (" +
+                    "_id VARCHAR, " +
+                    "naziv VARCHAR, rid VARCHAR);");
+
+            Log.d(TAG, "Brišem sve iz tabele " +myTabela);
+            myDB.execSQL("DELETE FROM "+ myTabela +";");
+            for (int i = 0; i < Lista.size(); i++) {
+                PjKomitent myPjKom = Lista.get(i);
+                myDB.execSQL("INSERT INTO " + myTabela +" (_id, naziv,rid ) VALUES (" +
+                        myPjKom.getId() + ",'" +
+                        myPjKom.getNaziv()+ "',"+ myPjKom.getRid() +");");
+
+            }
+            Log.d(TAG, "Gotovo " + myTabela);
+            myDB.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            greskaStr=e.getMessage();
+            greska=true;
+        } finally {
+            if (!greska){
+                UpisiLOG(greska,greskaStr,myTabela);
+            }
+            else{
+                greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                UpisiLOG(greska,greskaStr,myTabela);
+            }
+        }
     }
 
 }
