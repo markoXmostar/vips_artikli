@@ -162,6 +162,7 @@ public class ArtikliActivity extends AppCompatActivity {
         }
         c.close();
         Log.d(TAG," Baza učitana!");
+        mDatabase.close();
     }
 
 }

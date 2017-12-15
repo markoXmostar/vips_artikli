@@ -21,8 +21,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ArtikliActivity" />
-        <activity android:name=".JmjActivity" />
-        <activity android:name=".RegistriActivity"></activity>
+        <activity android:name=".RegistriActivity" />
+        <activity android:name=".KomitentiActivity"></activity>
     </application>
 
 </manifest>

@@ -78,17 +78,21 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
     }
     private boolean PostaviVidljivostElemenata(String myTabela){
         SQLiteDatabase mDatabase = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
+        boolean izlaz = false;
         if (!MainActivity.isTableExists(mDatabase, myTabela)) {
             NoDataText.setVisibility(View.VISIBLE);
             mojListView.setVisibility(View.INVISIBLE);
             NoDataText.setEnabled(false);
-            return false;
+            izlaz = false;
+
         }
         else {
             mojListView.setVisibility(View.VISIBLE);
             NoDataText.setVisibility(View.INVISIBLE);
-            return true;
+            izlaz = true;
         }
+        mDatabase.close();
+        return izlaz;
     }
 
     private void UcitajPodgrupeIzBaze(String filter) {

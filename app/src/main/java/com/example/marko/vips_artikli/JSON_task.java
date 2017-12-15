@@ -220,6 +220,32 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                         e.printStackTrace();
                     }
                     break;
+                case "komitenti":
+                    result = "{\"Komitenti\":" + result + ",\"ResponseStatus\":{}}";
+
+                    Log.d(TAG, "onPostExecute: " + result);
+                    jObject = null;
+                    try {
+                        jObject = new JSONObject(result);
+                        String kom = jObject.getString("Komitenti");
+                        JSONArray arr = new JSONArray(kom);
+                        ArrayList<Komitent> ListaKomitenata = new ArrayList<Komitent>();
+                        for (int i = 0; i < arr.length(); i++) {
+                            JSONObject myKomitent = arr.getJSONObject(i);
+                            Komitent _komitent = new Komitent(myKomitent.optLong("id", 0),
+                                    myKomitent.optString("naziv"), myKomitent.optString("sifra"));
+                            ListaKomitenata.add(_komitent);
+                        }
+                        Log.d(TAG, "onPostExecute: BROJ komitenata =" + ListaKomitenata.size());
+                        UpisiKomitentUBazu(ListaKomitenata);
+                        vrijeme2 = new Date(System.currentTimeMillis());
+                        long different = vrijeme2.getTime() - vrijeme1.getTime();
+                        Log.d(TAG, "onPostExecute: VRIJEME UČITAVANJA S INTERNETA I UPISA U BAZU JE :" + different + "ms");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 case "grupaartikala":
                     result = "{\"Grupaartikala\":" + result + ",\"ResponseStatus\":{}}";
 
@@ -358,29 +384,32 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                     + ");");
         }
         Log.d(TAG, "Gotovo");
+        myDB.close();
     }
 
     private void UpisiJMJUBazu(ArrayList<jmj> Lista) {
 //prvo otvori ili kreiraj bazu komitenata
+        String myTabela = "tip_dokumenta";
         Log.d(TAG, "Otvaram bazu");
         SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
-        Log.d(TAG, "UpisiJMJUBazu: brišem tabelu JMJ ukoliko postoji");
-        myDB.execSQL("DROP TABLE IF EXISTS jmj");
+        Log.d(TAG, "UpisiJMJUBazu: brišem tabelu " + myTabela + " ukoliko postoji");
+        myDB.execSQL("DROP TABLE IF EXISTS " + myTabela + ";");
         Log.d(TAG, "Kreiram tabelu");
-        myDB.execSQL("CREATE TABLE IF NOT EXISTS jmj (" +
+        myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
                 "_id VARCHAR, " +
                 "naziv VARCHAR);");
 
         Log.d(TAG, "Brišem sve iz tabele");
-        myDB.execSQL("DELETE FROM jmj");
+        myDB.execSQL("DELETE FROM " + myTabela + ";");
         for (int i = 0; i < Lista.size(); i++) {
             jmj myJMJ = Lista.get(i);
-            myDB.execSQL("INSERT INTO jmj (_id, naziv ) VALUES (" +
+            myDB.execSQL("INSERT INTO " + myTabela + " (_id, naziv ) VALUES (" +
                     myJMJ.getId() + ",'" +
                     myJMJ.getNaziv()+ "');");
 
             }
-            Log.d(TAG, "Gotovo");
+        Log.d(TAG, "Gotovo ");
+        myDB.close();
         }
 
     private void UpisiTipUBazu(ArrayList<TipDokumenta> Lista) {
@@ -405,6 +434,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
 
         }
         Log.d(TAG, "Gotovo " + myTabela);
+        myDB.close();
     }
 
     private void UpisiPodtipUBazu(ArrayList<PodtipDokumenta> Lista) {
@@ -429,8 +459,33 @@ public class JSON_task  extends AsyncTask<String, String, String>{
 
         }
         Log.d(TAG, "Gotovo " + myTabela);
+        myDB.close();
     }
 
+    private void UpisiKomitentUBazu(ArrayList<Komitent> Lista) {
+
+        String myTabela = "komitenti";
+        Log.d(TAG, "Otvaram bazu");
+        SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+        Log.d(TAG, "UpisiTipUBazu: brišem tabelu " + myTabela + " ukoliko postoji");
+        myDB.execSQL("DROP TABLE IF EXISTS " + myTabela + ";");
+        Log.d(TAG, "Kreiram tabelu");
+        myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
+                "_id VARCHAR, " +
+                "naziv VARCHAR, sifra VARCHAR);");
+
+        Log.d(TAG, "Brišem sve iz tabele " + myTabela);
+        myDB.execSQL("DELETE FROM " + myTabela + ";");
+        for (int i = 0; i < Lista.size(); i++) {
+            Komitent myKom = Lista.get(i);
+            myDB.execSQL("INSERT INTO " + myTabela + " (_id, naziv,sifra ) VALUES (" +
+                    myKom.getId() + ",'" +
+                    myKom.getNaziv() + "','" + myKom.getSifra() + "');");
+
+        }
+        Log.d(TAG, "Gotovo " + myTabela);
+        myDB.close();
+    }
     private void UpisiNacinPlacanjaUBazu(ArrayList<NacinPlacanja> Lista) {
 
         String myTabela="nacin_placanja";
@@ -453,6 +508,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
 
         }
         Log.d(TAG, "Gotovo " + myTabela);
+        myDB.close();
     }
 
     private void UpisiGrupuUBazu(ArrayList<GrupaArtikala> Lista) {
@@ -477,6 +533,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
 
         }
         Log.d(TAG, "Gotovo " + myTabela);
+        myDB.close();
     }
 
     private void UpisiPodGrupuUBazu(ArrayList<PodgrupaArtikala> Lista) {
@@ -501,6 +558,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
 
         }
         Log.d(TAG, "Gotovo " + myTabela);
+        myDB.close();
     }
 
 }

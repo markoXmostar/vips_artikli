@@ -110,7 +110,8 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, ArtikliActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_komitenti) {
-
+            Intent intent = new Intent(this, KomitentiActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_jmj) {
             //Intent intent = new Intent(this, JmjActivity.class);
             Intent intent = new Intent(this, RegistriActivity.class);
@@ -162,6 +163,10 @@ public class MainActivity extends AppCompatActivity
             new JSON_task(this).execute(urlString, akcija);
 
             akcija = "artikli";
+            urlString = url + akcija + "?d=" + DJELATNIK;
+            new JSON_task(this).execute(urlString, akcija);
+
+            akcija = "komitenti";
             urlString = url + akcija + "?d=" + DJELATNIK;
             new JSON_task(this).execute(urlString, akcija);
 
