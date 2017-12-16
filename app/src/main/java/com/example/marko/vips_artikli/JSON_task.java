@@ -22,6 +22,7 @@ import java.util.Date;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.marko.vips_artikli.MainActivity.myDATABASE;
+import static com.example.marko.vips_artikli.MainActivity.zadnjaSinkronizacijaID;
 
 /**
  * Created by marko on 1.11.2017.
@@ -422,32 +423,28 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greska=true;
         } finally {
             if (!greska){
-                UpisiLOG(greska,greskaStr,"artikli");
+                UpisiLOG(greska,greskaStr,"artikli",0);
             }
             else{
                 greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
-                UpisiLOG(greska,greskaStr,"artikli");
+                UpisiLOG(greska,greskaStr,"artikli",0);
             }
         }
     }
 
-    private  void UpisiLOG(boolean greska,String LOGporuka,String tabela){
+
+    private  void UpisiLOG(boolean greska,String LOGporuka,String tabela, Integer smjer){
         SQLiteDatabase myDB = null;
         myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
 
-        myDB.execSQL("CREATE TABLE IF NOT EXISTS log (" +
-                "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "vrijeme datetime default current_timestamp, " +
-                "greska INTEGER, " +
-                "poruka VARCHAR," +
-                "redniBroj INTEGER," +
-                "tabela VARCHAR); " );
-
         Integer INTgreska=0;
         if (greska){INTgreska=1;}
+        //smjer 0 za download
+        //smjer 1 za upload
+        Integer lastSyncID=zadnjaSinkronizacijaID+1;
 
-        myDB.execSQL("INSERT INTO log (greska ,poruka ,tabela) VALUES ('" +
-                 INTgreska+ "','" + LOGporuka + "','" + tabela +"');");
+        myDB.execSQL("INSERT INTO log (greska ,poruka , smjer ,tabela, redniBroj) VALUES ('" +
+                 INTgreska+ "','" + LOGporuka + "'," + smjer + ",'" + tabela +"'," + lastSyncID +");");
 
         myDB.close();
     }
@@ -483,11 +480,11 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greska=true;
         } finally {
             if (!greska){
-                UpisiLOG(greska,greskaStr,myTabela);
+                UpisiLOG(greska,greskaStr,myTabela,0);
             }
             else{
                 greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
-                UpisiLOG(greska,greskaStr,myTabela);
+                UpisiLOG(greska,greskaStr,myTabela,0);
             }
         }
     }
@@ -524,11 +521,11 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greska=true;
         } finally {
             if (!greska){
-                UpisiLOG(greska,greskaStr,myTabela);
+                UpisiLOG(greska,greskaStr,myTabela,0);
             }
             else{
                 greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
-                UpisiLOG(greska,greskaStr,myTabela);
+                UpisiLOG(greska,greskaStr,myTabela,0);
             }
         }
     }
@@ -565,11 +562,11 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greska=true;
         } finally {
             if (!greska){
-                UpisiLOG(greska,greskaStr,myTabela);
+                UpisiLOG(greska,greskaStr,myTabela,0);
             }
             else{
                 greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
-                UpisiLOG(greska,greskaStr,myTabela);
+                UpisiLOG(greska,greskaStr,myTabela,0);
             }
         }
     }
@@ -605,11 +602,11 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greska=true;
         } finally {
             if (!greska){
-                UpisiLOG(greska,greskaStr,myTabela);
+                UpisiLOG(greska,greskaStr,myTabela,0);
             }
             else{
                 greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
-                UpisiLOG(greska,greskaStr,myTabela);
+                UpisiLOG(greska,greskaStr,myTabela,0);
             }
         }
     }
@@ -645,11 +642,11 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greska=true;
         } finally {
             if (!greska){
-                UpisiLOG(greska,greskaStr,myTabela);
+                UpisiLOG(greska,greskaStr,myTabela,0);
             }
             else{
                 greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
-                UpisiLOG(greska,greskaStr,myTabela);
+                UpisiLOG(greska,greskaStr,myTabela,0);
             }
         }
     }
@@ -685,11 +682,11 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greska=true;
         } finally {
             if (!greska){
-                UpisiLOG(greska,greskaStr,myTabela);
+                UpisiLOG(greska,greskaStr,myTabela,0);
             }
             else{
                 greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
-                UpisiLOG(greska,greskaStr,myTabela);
+                UpisiLOG(greska,greskaStr,myTabela,0);
             }
         }
     }
@@ -725,11 +722,11 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greska=true;
         } finally {
             if (!greska){
-                UpisiLOG(greska,greskaStr,myTabela);
+                UpisiLOG(greska,greskaStr,myTabela,0);
             }
             else{
                 greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
-                UpisiLOG(greska,greskaStr,myTabela);
+                UpisiLOG(greska,greskaStr,myTabela,0);
             }
         }
     }
@@ -765,11 +762,11 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greska=true;
         } finally {
             if (!greska){
-                UpisiLOG(greska,greskaStr,myTabela);
+                UpisiLOG(greska,greskaStr,myTabela,0);
             }
             else{
                 greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
-                UpisiLOG(greska,greskaStr,myTabela);
+                UpisiLOG(greska,greskaStr,myTabela,0);
             }
         }
     }

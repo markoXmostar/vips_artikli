@@ -104,7 +104,7 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
         }
         ListaPjKomitentAdapter listaPjKom = new ListaPjKomitentAdapter(this, R.layout.row_grupa);
         mojListView.setAdapter(listaPjKom);
-        Log.d(TAG, " ucitavam tabelu " + myTabela + " dokumenata!");
+        Log.d(TAG, " ucitavam tabelu " + myTabela);
 
         SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
         Cursor c;

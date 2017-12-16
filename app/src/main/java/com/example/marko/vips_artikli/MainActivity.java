@@ -3,7 +3,6 @@ package com.example.marko.vips_artikli;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabaseLockedException;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,9 +19,6 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -33,9 +29,14 @@ public class MainActivity extends AppCompatActivity
     public static int DJELATNIK = 2;
     public static String url = "http://vanima.net:8099/api/";
 
+    public static int zadnjaSinkronizacijaID;
+
     TextView txtLastSyncTime;
     TextView txtLastSyncID;
     ListView listSyncLog;
+    TextView txtPotrebnaSinkronizacija;
+    FloatingActionButton fab;
+
     Integer lastSyncID=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,15 +49,21 @@ public class MainActivity extends AppCompatActivity
         txtLastSyncID=(TextView)findViewById(R.id.txtSyncID_main);
         txtLastSyncTime=(TextView) findViewById(R.id.txtSyncTime_main);
         listSyncLog=(ListView)findViewById(R.id.listSyncLog_main);
+        txtPotrebnaSinkronizacija=(TextView)findViewById(R.id.txtPotrebnaSinkronizacija);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+
+
         getLOG();
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Radim download podataka molim pričekajte", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                napraviSinkronizacijuDownload();
+
             }
         });
 
@@ -78,56 +85,89 @@ public class MainActivity extends AppCompatActivity
         ListaDbLogAdapter listaLog = new ListaDbLogAdapter(this, R.layout.row_log);
         listSyncLog.setAdapter(listaLog);
         SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
+        boolean tabelaLogPostoji=true;
         if (isTableExists(myDB, myTabela)){
-            Cursor c;
-            c = myDB.rawQuery("SELECT MAX(redniBroj) AS rbr FROM " + myTabela, null);
-            int IdMax = c.getColumnIndex("rbr");
-            c.moveToFirst();
-            int brojac = 0;
-            for (int j = 0; j < c.getCount(); j++) {
+            if (isFieldExist(myDB,myTabela,"redniBroj")){
+                txtPotrebnaSinkronizacija.setVisibility(View.INVISIBLE);
+                fab.setVisibility(View.INVISIBLE);
+                Cursor c;
+                c = myDB.rawQuery("SELECT MAX(redniBroj) AS rbr FROM " + myTabela, null);
+                int IdMax = c.getColumnIndex("rbr");
+                c.moveToFirst();
+                int brojac = 0;
+                for (int j = 0; j < c.getCount(); j++) {
 
-                rbr = c.getInt(IdMax);
-                brojac++;
-                if (j != c.getCount()) {
-                    c.moveToNext();
+                    rbr = c.getInt(IdMax);
+                    brojac++;
+                    if (j != c.getCount()) {
+                        c.moveToNext();
+                    }
                 }
-            }
-            c.close();
-            txtLastSyncID.setText(Integer.toString(rbr));
+                c.close();
+                txtLastSyncID.setText(Integer.toString(rbr));
+                zadnjaSinkronizacijaID=rbr;
+                Log.d(TAG, "getLOG: ZADNJI RBR =" + Integer.toString(rbr));
+                Cursor z;
+                z = myDB.rawQuery("SELECT * FROM " + myTabela + " WHERE redniBroj =" + rbr + ";", null);
+                brojac = 0;
 
-            c = myDB.rawQuery("SELECT + FROM " + myTabela + "WHERE redniBroj =" + Integer.toString(rbr) + ";", null);
-            brojac = 0;
-            int idIndex=c.getColumnIndex("_id");
-            int TabelaIndex = c.getColumnIndex("tabela");
-            int NazivIndex = c.getColumnIndex("greskaMsg");
-            int vrijemeIndex=c.getColumnIndex("timestamp");
-            int greskaIndex=c.getColumnIndex("greska");
+                /*
+                    myDB.execSQL("CREATE TABLE IF NOT EXISTS log (" +
+                        "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "vrijeme datetime default current_timestamp, " +
+                        "greska INTEGER, " +
+                        "poruka VARCHAR," +
+                        "redniBroj INTEGER," +
+                        "smjer INTEGER," +
+                        "tabela VARCHAR); " );
+                     */
 
-            for (int j = 0; j < c.getCount(); j++) {
-                Integer id;
-                String tabela;
-                String naziv;
-                String timestamp;
-                Integer greska;
+                int idIndex=z.getColumnIndex("_id");
+                int vrijemeIndex=z.getColumnIndex("vrijeme");
+                int greskaIndex=z.getColumnIndex("greska");
+                int NazivIndex = z.getColumnIndex("poruka");
+                int TabelaIndex = z.getColumnIndex("tabela");
 
-                id=c.getInt(idIndex);
-                tabela = c.getString(TabelaIndex);
-                naziv = c.getString(NazivIndex);
-                timestamp=c.getString(vrijemeIndex);
-                greska=c.getInt(greskaIndex);
+                Log.d(TAG, "getLOG: BROJ ZAPISA U LOG TABELI JE" + z.getCount());
+                z.moveToFirst();
+                for (int j = 0; j < z.getCount(); j++) {
+                    Log.d(TAG, "getLOG: POČINJEM FOR PETLJU. brojač= " + brojac);
+                    Integer id;
+                    String tabela;
+                    String naziv;
+                    String timestamp;
+                    Integer greska;
 
-                dbLog myLog = new dbLog(id,timestamp,greska,naziv,rbr,tabela);
-                listaLog.add(myLog);
-                brojac++;
-                if (j != c.getCount()) {
-                    c.moveToNext();
+                    id=z.getInt(idIndex);
+                    tabela = z.getString(TabelaIndex);
+                    naziv = z.getString(NazivIndex);
+                    timestamp=z.getString(vrijemeIndex);
+                    greska=z.getInt(greskaIndex);
+                    Log.d(TAG, "getLOG: ");
+                    dbLog myLog = new dbLog(id,timestamp,greska,naziv,rbr,tabela);
+                    listaLog.add(myLog);
+                    brojac++;
+                    if (j != z.getCount()) {
+                        z.moveToNext();
+                    }
                 }
+                z.close();
+                myDB.close();
             }
-            c.close();
-            myDB.close();
+            else{
+                tabelaLogPostoji=false;
+            }
         }
         else{
-
+            tabelaLogPostoji=false;
+        }
+        if (!tabelaLogPostoji){
+            rekreirajLogTabelu(myDB);
+            rbr=0;
+            txtLastSyncID.setText("-1");
+            txtLastSyncTime.setText("NIKAD!");
+            txtPotrebnaSinkronizacija.setVisibility(View.VISIBLE);
+            fab.setVisibility(View.VISIBLE);
         }
 
 
@@ -191,7 +231,20 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_send) {
 
         } else if (id== R.id.nav_recive){
-            /*
+
+            napraviSinkronizacijuDownload();
+
+        } else if (id==R.id.nav_log){
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void napraviSinkronizacijuDownload(){
+        /*
             url=http://vanima.net:8099/api/
 
             api/artikli?d=2
@@ -204,58 +257,49 @@ public class MainActivity extends AppCompatActivity
             api/idnazivrid?d=2&t=podtipdokumenta
 
              */
-            String akcija = "";
-            String urlString="";
+        String akcija = "";
+        String urlString="";
 
-            akcija = "jmj";
-            urlString = url + "idnaziv" + "?d=" + DJELATNIK +"&t=" + akcija;
-            new JSON_task(this).execute(urlString, akcija);
+        akcija = "jmj";
+        urlString = url + "idnaziv" + "?d=" + DJELATNIK +"&t=" + akcija;
+        new JSON_task(this).execute(urlString, akcija);
 
-            akcija="tipdokumenta";
-            urlString = url + "idnaziv" + "?d=" + DJELATNIK +"&t=" + akcija;
-            new JSON_task(this).execute(urlString, akcija);
+        akcija="tipdokumenta";
+        urlString = url + "idnaziv" + "?d=" + DJELATNIK +"&t=" + akcija;
+        new JSON_task(this).execute(urlString, akcija);
 
-            akcija="podtipdokumenta";
-            urlString = url + "idnazivrid" + "?d=" + DJELATNIK +"&t=" + akcija;
-            Log.d(TAG, "onNavigationItemSelected: " + urlString);
-            new JSON_task(this).execute(urlString, akcija);
+        akcija="podtipdokumenta";
+        urlString = url + "idnazivrid" + "?d=" + DJELATNIK +"&t=" + akcija;
+        Log.d(TAG, "onNavigationItemSelected: " + urlString);
+        new JSON_task(this).execute(urlString, akcija);
 
-            akcija="nacinplacanja";
-            urlString = url + "idnaziv" + "?d=" + DJELATNIK +"&t=" + akcija;
-            new JSON_task(this).execute(urlString, akcija);
+        akcija="nacinplacanja";
+        urlString = url + "idnaziv" + "?d=" + DJELATNIK +"&t=" + akcija;
+        new JSON_task(this).execute(urlString, akcija);
 
-            akcija="grupaartikala";
-            urlString = url + "idnazivrid" + "?d=" + DJELATNIK +"&t=" + akcija;
-            Log.d(TAG, "onNavigationItemSelected: " + urlString);
-            new JSON_task(this).execute(urlString, akcija);
+        akcija="grupaartikala";
+        urlString = url + "idnazivrid" + "?d=" + DJELATNIK +"&t=" + akcija;
+        Log.d(TAG, "onNavigationItemSelected: " + urlString);
+        new JSON_task(this).execute(urlString, akcija);
 
-            akcija="podgrupaartikala";
-            urlString = url + "idnazivrid" + "?d=" + DJELATNIK +"&t=" + akcija;
-            Log.d(TAG, "onNavigationItemSelected: " + urlString);
-            new JSON_task(this).execute(urlString, akcija);
+        akcija="podgrupaartikala";
+        urlString = url + "idnazivrid" + "?d=" + DJELATNIK +"&t=" + akcija;
+        Log.d(TAG, "onNavigationItemSelected: " + urlString);
+        new JSON_task(this).execute(urlString, akcija);
 
-            akcija = "artikli";
-            urlString = url + akcija + "?d=" + DJELATNIK;
-            new JSON_task(this).execute(urlString, akcija);
+        akcija = "artikli";
+        urlString = url + akcija + "?d=" + DJELATNIK;
+        new JSON_task(this).execute(urlString, akcija);
 
-            akcija = "komitenti";
-            urlString = url + akcija + "?d=" + DJELATNIK;
-            new JSON_task(this).execute(urlString, akcija);
+        akcija = "komitenti";
+        urlString = url + akcija + "?d=" + DJELATNIK;
+        new JSON_task(this).execute(urlString, akcija);
 
-            akcija="komitentpj";
-            urlString = url + "idnazivrid" + "?d=" + DJELATNIK +"&t=" + akcija;
-            Log.d(TAG, "onNavigationItemSelected: " + urlString);
-            new JSON_task(this).execute(urlString, akcija);
-
-        } else if (id==R.id.nav_log){
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+        akcija="komitentpj";
+        urlString = url + "idnazivrid" + "?d=" + DJELATNIK +"&t=" + akcija;
+        Log.d(TAG, "onNavigationItemSelected: " + urlString);
+        new JSON_task(this).execute(urlString, akcija);
     }
-
     public static boolean isTableExists(SQLiteDatabase mDatabase, String tableName) {
         Cursor c = null;
         boolean tableExists = false;
@@ -270,5 +314,41 @@ public class MainActivity extends AppCompatActivity
 
         }
         return tableExists;
+    }
+
+
+    public boolean isFieldExist(SQLiteDatabase db, String tableName, String fieldName)
+    {
+        boolean isExist = false;
+        Cursor res = null;
+        try {
+            res = db.rawQuery("Select * from "+ tableName +" limit 1", null);
+            int colIndex = res.getColumnIndex(fieldName);
+            if (colIndex!=-1){
+                isExist = true;
+            }
+
+        } catch (Exception e) {
+        } finally {
+            try { if (res !=null){ res.close(); } } catch (Exception e1) {}
+        }
+        if (!isExist){
+            Log.d(TAG, "isFieldExist: NE POSTOJI KOLONA " + fieldName + " U TABELI " + tableName);
+        }
+        return isExist;
+    }
+
+    private void rekreirajLogTabelu(SQLiteDatabase myDB){
+        myDB.execSQL("DROP TABLE IF EXISTS  log;");
+        myDB.execSQL("CREATE TABLE IF NOT EXISTS log (" +
+                "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "vrijeme datetime default current_timestamp, " +
+                "greska INTEGER, " +
+                "poruka VARCHAR," +
+                "redniBroj INTEGER," +
+                "smjer INTEGER," +
+                "tabela VARCHAR); " );
+        myDB.close();
+        Log.d(TAG, "rekreirajLogTabelu: KREIRANA LOG TABELA!");
     }
 }

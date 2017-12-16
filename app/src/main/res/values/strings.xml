@@ -18,4 +18,5 @@
     <string name="JMJ_title">JMJ</string>
     <string name="Registri_title">Registri</string>
     <string name="NemaPodatakaText">NEMA PODATAKA!</string>
+    <string name="potrebnaSinkronizacijaText">NAPRAVITE SINKRONIZACIJU PODATAKA!!!</string>
 </resources>
