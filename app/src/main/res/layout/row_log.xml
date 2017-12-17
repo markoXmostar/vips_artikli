@@ -37,4 +37,5 @@
         app:layout_constraintEnd_toStartOf="@+id/txtVrijemeSync_log"
         app:layout_constraintStart_toEndOf="@+id/txtNazivTabele_log"
         app:layout_constraintTop_toTopOf="parent" />
+
 </android.support.constraint.ConstraintLayout>

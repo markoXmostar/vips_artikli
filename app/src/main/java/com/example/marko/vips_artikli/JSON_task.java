@@ -422,11 +422,13 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greskaStr=e.getMessage();
             greska=true;
         } finally {
-            if (!greska){
+            if (greska){
                 UpisiLOG(greska,greskaStr,"artikli",0);
+                Log.d(TAG, "UpisiArtikleUBazu: "+ greskaStr);
             }
             else{
                 greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                Log.d(TAG, "UpisiArtikleUBazu: "+ greskaStr);
                 UpisiLOG(greska,greskaStr,"artikli",0);
             }
         }
@@ -479,12 +481,14 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greskaStr=e.getMessage();
             greska=true;
         } finally {
-            if (!greska){
-                UpisiLOG(greska,greskaStr,myTabela,0);
+            if (greska){
+                UpisiLOG(0,greskaStr,myTabela,0);
+                Log.d(TAG, "UpisiJMJUBazu: " + greskaStr);
             }
             else{
-                greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
-                UpisiLOG(greska,greskaStr,myTabela,0);
+                greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
+                Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
+                UpisiLOG(1,greskaStr,myTabela,0);
             }
         }
     }
@@ -520,11 +524,13 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greskaStr=e.getMessage();
             greska=true;
         } finally {
-            if (!greska){
+            if (greska){
+                Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
                 UpisiLOG(greska,greskaStr,myTabela,0);
             }
             else{
-                greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
+                Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
                 UpisiLOG(greska,greskaStr,myTabela,0);
             }
         }
@@ -561,11 +567,13 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greskaStr=e.getMessage();
             greska=true;
         } finally {
-            if (!greska){
+            if (greska){
+                Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
                 UpisiLOG(greska,greskaStr,myTabela,0);
             }
             else{
-                greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
+                Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
                 UpisiLOG(greska,greskaStr,myTabela,0);
             }
         }
@@ -601,11 +609,13 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greskaStr=e.getMessage();
             greska=true;
         } finally {
-            if (!greska){
+            if (greska){
+                Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
                 UpisiLOG(greska,greskaStr,myTabela,0);
             }
             else{
-                greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
+                Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
                 UpisiLOG(greska,greskaStr,myTabela,0);
             }
         }
@@ -641,11 +651,13 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greskaStr=e.getMessage();
             greska=true;
         } finally {
-            if (!greska){
+            if (greska){
+                Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
                 UpisiLOG(greska,greskaStr,myTabela,0);
             }
             else{
-                greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
+                Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
                 UpisiLOG(greska,greskaStr,myTabela,0);
             }
         }
@@ -681,11 +693,13 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greskaStr=e.getMessage();
             greska=true;
         } finally {
-            if (!greska){
+            if (greska){
+                Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
                 UpisiLOG(greska,greskaStr,myTabela,0);
             }
             else{
-                greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
+                Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
                 UpisiLOG(greska,greskaStr,myTabela,0);
             }
         }
@@ -721,11 +735,13 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greskaStr=e.getMessage();
             greska=true;
         } finally {
-            if (!greska){
+            if (greska){
+                Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
                 UpisiLOG(greska,greskaStr,myTabela,0);
             }
             else{
-                greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
+                Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
                 UpisiLOG(greska,greskaStr,myTabela,0);
             }
         }
@@ -761,11 +777,13 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greskaStr=e.getMessage();
             greska=true;
         } finally {
-            if (!greska){
+            if (greska){
+                Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
                 UpisiLOG(greska,greskaStr,myTabela,0);
             }
             else{
-                greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
+                Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
                 UpisiLOG(greska,greskaStr,myTabela,0);
             }
         }
