@@ -56,8 +56,6 @@
         android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toEndOf="parent"
-        app:layout_constraintRight_toStartOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtSyncID_main" />
 </android.support.constraint.ConstraintLayout>
