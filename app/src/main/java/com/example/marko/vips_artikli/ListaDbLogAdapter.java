@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class ListaDbLogAdapter extends ArrayAdapter {
 
     static class LayoutHandler {
         TextView TABELA, NAZIV, VRIJEME;
+        ImageView myOK;
     }
 
     @Override
@@ -57,6 +59,9 @@ public class ListaDbLogAdapter extends ArrayAdapter {
             layoutHandler.TABELA = (TextView) row.findViewById(R.id.txtNazivTabele_log);
             layoutHandler.NAZIV = (TextView) row.findViewById(R.id.txtBrojZapisa_log);
             layoutHandler.VRIJEME = (TextView) row.findViewById(R.id.txtVrijemeSync_log);
+            layoutHandler.myOK = (ImageView) row.findViewById(R.id.imgOk_logrow);
+
+
             row.setTag(layoutHandler);
         } else {
             layoutHandler = (ListaDbLogAdapter.LayoutHandler) row.getTag();
@@ -64,11 +69,14 @@ public class ListaDbLogAdapter extends ArrayAdapter {
         dbLog myLOG = (dbLog) this.getItem(position);
         layoutHandler.TABELA.setText(myLOG.getTabela());
         layoutHandler.TABELA.setTag(myLOG.getGreska());
-        if(myLOG.getGreska()==0){
-            layoutHandler.TABELA.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.myCrvena));
+        if (myLOG.getGreska() == 0) {
+
+            layoutHandler.myOK.setImageResource(R.drawable.img_ok);
+            //layoutHandler.TABELA.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.myCrvena));
         }
         else{
-            layoutHandler.TABELA.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.myZelena));
+            layoutHandler.myOK.setImageResource(R.drawable.img_error);
+            //layoutHandler.TABELA.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.myZelena));
         }
         layoutHandler.NAZIV.setText(myLOG.getGreskaMsg());
         layoutHandler.VRIJEME.setText(myLOG.getTimestamp());

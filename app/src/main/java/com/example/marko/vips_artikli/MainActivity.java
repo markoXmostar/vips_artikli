@@ -1,12 +1,15 @@
 package com.example.marko.vips_artikli;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,6 +21,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -31,11 +38,15 @@ public class MainActivity extends AppCompatActivity
 
     public static int zadnjaSinkronizacijaID;
 
+    public List<UrlTabele> spisakSyncTabela;
+
     TextView txtLastSyncTime;
     TextView txtLastSyncID;
     ListView listSyncLog;
     TextView txtPotrebnaSinkronizacija;
     FloatingActionButton fab;
+
+    View glavniView;
 
     Integer lastSyncID=0;
     @Override
@@ -47,12 +58,12 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         txtLastSyncID=(TextView)findViewById(R.id.txtSyncID_main);
-        txtLastSyncTime=(TextView) findViewById(R.id.txtSyncTime_main);
         listSyncLog=(ListView)findViewById(R.id.listSyncLog_main);
         txtPotrebnaSinkronizacija=(TextView)findViewById(R.id.txtPotrebnaSinkronizacija);
         fab = (FloatingActionButton) findViewById(R.id.fab);
+        spisakSyncTabela = new ArrayList<UrlTabele>();
 
-
+        postaviTabeleZaSync();
         getLOG();
 
 
@@ -60,12 +71,12 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Radim download podataka molim pričekajte", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                napraviSinkronizacijuDownload();
+
+                napraviSinkronizacijuDownload(view);
 
             }
         });
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -79,7 +90,32 @@ public class MainActivity extends AppCompatActivity
         //new JSON_task(this).execute("http://vanima.net:8099/api/artikli?d=2");
     }
 
-    private void getLOG(){
+    public void updateSyncTabele(String akcija, boolean zavrsio) {
+        for (UrlTabele myTb : spisakSyncTabela) {
+            // do something with object
+
+            if (myTb.Akcija == akcija) {
+                Log.d(TAG, "updateSyncTabele: AKC=AKC" + myTb.Akcija + ":" + akcija);
+                myTb.ZavrsenaSyncronizacija = zavrsio;
+            }
+        }
+    }
+
+    public void getLOG() {
+        if (spisakSyncTabela.size() == 0) {
+            return;
+        } else {
+            boolean gotovo = true;
+            for (UrlTabele myTb : spisakSyncTabela) {
+                // do something with object
+                gotovo = gotovo && myTb.ZavrsenaSyncronizacija;
+                Log.d(TAG, "getLOG: GOTOVO =" + gotovo + " do TABELE " + myTb.NazivTabele);
+            }
+            if (!gotovo) {
+                return;
+            }
+        }
+
         String myTabela="log";
         Integer rbr=0;
         ListaDbLogAdapter listaLog = new ListaDbLogAdapter(this, R.layout.row_log);
@@ -104,6 +140,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
                 c.close();
+
                 txtLastSyncID.setText(Integer.toString(rbr));
                 zadnjaSinkronizacijaID=rbr;
                 Log.d(TAG, "getLOG: ZADNJI RBR =" + Integer.toString(rbr));
@@ -129,30 +166,35 @@ public class MainActivity extends AppCompatActivity
                 int TabelaIndex = z.getColumnIndex("tabela");
 
                 Log.d(TAG, "getLOG: BROJ ZAPISA U LOG TABELI JE" + z.getCount());
-                z.moveToFirst();
-                for (int j = 0; j < z.getCount(); j++) {
-                    Log.d(TAG, "getLOG: POČINJEM FOR PETLJU. brojač= " + brojac);
-                    Integer id;
-                    String tabela;
-                    String naziv;
-                    String timestamp;
-                    Integer greska;
+                if (rbr == 0) {
+                    tabelaLogPostoji = false; //ovo je potrebno radi prvog pokretanja!
+                } else {
+                    z.moveToFirst();
+                    for (int j = 0; j < z.getCount(); j++) {
+                        Log.d(TAG, "getLOG: POČINJEM FOR PETLJU. brojač= " + brojac);
+                        Integer id;
+                        String tabela;
+                        String naziv;
+                        String timestamp;
+                        Integer greska;
 
-                    id=z.getInt(idIndex);
-                    tabela = z.getString(TabelaIndex);
-                    naziv = z.getString(NazivIndex);
-                    timestamp=z.getString(vrijemeIndex);
-                    greska=z.getInt(greskaIndex);
-                    Log.d(TAG, "getLOG: ");
-                    dbLog myLog = new dbLog(id,timestamp,greska,naziv,rbr,tabela);
-                    listaLog.add(myLog);
-                    brojac++;
-                    if (j != z.getCount()) {
-                        z.moveToNext();
+                        id = z.getInt(idIndex);
+                        tabela = z.getString(TabelaIndex);
+                        naziv = z.getString(NazivIndex);
+                        timestamp = z.getString(vrijemeIndex);
+                        greska = z.getInt(greskaIndex);
+                        Log.d(TAG, "getLOG: ");
+                        dbLog myLog = new dbLog(id, timestamp, greska, naziv, rbr, tabela);
+                        listaLog.add(myLog);
+                        brojac++;
+                        if (j != z.getCount()) {
+                            z.moveToNext();
+                        }
                     }
+                    z.close();
+
                 }
-                z.close();
-                myDB.close();
+
             }
             else{
                 tabelaLogPostoji=false;
@@ -165,13 +207,12 @@ public class MainActivity extends AppCompatActivity
             rekreirajLogTabelu(myDB);
             rbr=0;
             txtLastSyncID.setText("-1");
-            txtLastSyncTime.setText("NIKAD!");
             txtPotrebnaSinkronizacija.setVisibility(View.VISIBLE);
             fab.setVisibility(View.VISIBLE);
         }
-
-
+        myDB.close();
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -232,7 +273,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id== R.id.nav_recive){
 
-            napraviSinkronizacijuDownload();
+            fab.callOnClick();
 
         } else if (id==R.id.nav_log){
 
@@ -243,63 +284,81 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void napraviSinkronizacijuDownload(){
-        /*
-            url=http://vanima.net:8099/api/
+    public class UrlTabele {
+        public String NazivTabele;
+        public String urlTabele;
+        public boolean ZavrsenaSyncronizacija;
+        public String Akcija;
 
-            api/artikli?d=2
-            api/idnaziv?d=2&t=jmj
-            api/idnaziv?d=2&t=tipdokumenta
-            api/idnaziv?d=2&t=nacinplacanja
-            api/idnaziv?d=2&t=grupaartikala
-            api/idnazivrid?d=2&t=podgrupaartikala
-            api/idnazivrid?d=2&t=komitentpj
-            api/idnazivrid?d=2&t=podtipdokumenta
+        public UrlTabele(String akcija, String urlTabele, boolean zavrsenaSyncronizacija, String nazivTabele) {
+            Akcija = akcija;
+            this.urlTabele = urlTabele;
+            ZavrsenaSyncronizacija = zavrsenaSyncronizacija;
+            NazivTabele = nazivTabele;
+        }
+    }
 
-             */
+
+    private void postaviTabeleZaSync() {
         String akcija = "";
-        String urlString="";
-
+        String urlString = "";
         akcija = "jmj";
-        urlString = url + "idnaziv" + "?d=" + DJELATNIK +"&t=" + akcija;
-        new JSON_task(this).execute(urlString, akcija);
+        urlString = url + "idnaziv" + "?d=" + DJELATNIK + "&t=" + akcija;
+        spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "jmj"));
 
-        akcija="tipdokumenta";
-        urlString = url + "idnaziv" + "?d=" + DJELATNIK +"&t=" + akcija;
-        new JSON_task(this).execute(urlString, akcija);
+        akcija = "tipdokumenta";
+        urlString = url + "idnaziv" + "?d=" + DJELATNIK + "&t=" + akcija;
+        spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "tip_dokumenta"));
 
-        akcija="podtipdokumenta";
-        urlString = url + "idnazivrid" + "?d=" + DJELATNIK +"&t=" + akcija;
+        akcija = "podtipdokumenta";
+        urlString = url + "idnazivrid" + "?d=" + DJELATNIK + "&t=" + akcija;
         Log.d(TAG, "onNavigationItemSelected: " + urlString);
-        new JSON_task(this).execute(urlString, akcija);
+        spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "podtip_dokumenta"));
 
-        akcija="nacinplacanja";
-        urlString = url + "idnaziv" + "?d=" + DJELATNIK +"&t=" + akcija;
-        new JSON_task(this).execute(urlString, akcija);
+        akcija = "nacinplacanja";
+        urlString = url + "idnaziv" + "?d=" + DJELATNIK + "&t=" + akcija;
+        spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "nacin_placanja"));
 
-        akcija="grupaartikala";
-        urlString = url + "idnazivrid" + "?d=" + DJELATNIK +"&t=" + akcija;
+        akcija = "grupaartikala";
+        urlString = url + "idnazivrid" + "?d=" + DJELATNIK + "&t=" + akcija;
         Log.d(TAG, "onNavigationItemSelected: " + urlString);
-        new JSON_task(this).execute(urlString, akcija);
+        spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "grupa_artikala"));
 
-        akcija="podgrupaartikala";
-        urlString = url + "idnazivrid" + "?d=" + DJELATNIK +"&t=" + akcija;
+        akcija = "podgrupaartikala";
+        urlString = url + "idnazivrid" + "?d=" + DJELATNIK + "&t=" + akcija;
         Log.d(TAG, "onNavigationItemSelected: " + urlString);
-        new JSON_task(this).execute(urlString, akcija);
+        spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "podgrupa_artikala"));
 
         akcija = "artikli";
         urlString = url + akcija + "?d=" + DJELATNIK;
-        new JSON_task(this).execute(urlString, akcija);
+        spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "artikli"));
 
         akcija = "komitenti";
         urlString = url + akcija + "?d=" + DJELATNIK;
-        new JSON_task(this).execute(urlString, akcija);
+        spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "komitenti"));
 
-        akcija="komitentpj";
-        urlString = url + "idnazivrid" + "?d=" + DJELATNIK +"&t=" + akcija;
+        akcija = "komitentpj";
+        urlString = url + "idnazivrid" + "?d=" + DJELATNIK + "&t=" + akcija;
         Log.d(TAG, "onNavigationItemSelected: " + urlString);
-        new JSON_task(this).execute(urlString, akcija);
+        spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "PjKomitenta"));
+
     }
+
+    private void napraviSinkronizacijuDownload(View view) {
+
+
+        Snackbar.make(view, "Radim download podataka molim pričekajte", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+
+        Log.d(TAG, "napraviSinkronizacijuDownload: BROJ ABEA ZA SYNC=" + spisakSyncTabela.size());
+
+        for (UrlTabele tbl : spisakSyncTabela) {
+            Log.d(TAG, "napraviSinkronizacijuDownload: Radim tabelu =" + tbl.NazivTabele);
+            tbl.ZavrsenaSyncronizacija = false;
+            new JSON_task(this, tbl).execute(tbl.urlTabele, tbl.Akcija);
+        }
+    }
+
     public static boolean isTableExists(SQLiteDatabase mDatabase, String tableName) {
         Cursor c = null;
         boolean tableExists = false;

@@ -30,7 +30,9 @@ import static com.example.marko.vips_artikli.MainActivity.zadnjaSinkronizacijaID
 
 public class JSON_task  extends AsyncTask<String, String, String>{
 
-        public static final String TAG="JSON";
+    public static final String TAG = "JSON_task";
+
+    private MainActivity.UrlTabele myTbl;
 
     private String tipPodataka = "";
 
@@ -39,9 +41,10 @@ public class JSON_task  extends AsyncTask<String, String, String>{
 
         Date vrijeme1,vrijeme2;
 
-        public JSON_task(MainActivity activity) {
+    public JSON_task(MainActivity activity, MainActivity.UrlTabele _myTbl) {
             myMainActivity=activity;
             pd = new ProgressDialog(activity);
+        myTbl = _myTbl;
         }
 
         @Override
@@ -66,6 +69,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                 String myUrl=params[0];
                 tipPodataka = params[1];
                 URL url =new URL(myUrl);
+                Log.d(TAG, "doInBackground: " + myTbl.urlTabele);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
                 InputStream stream = connection.getInputStream();
@@ -355,6 +359,13 @@ public class JSON_task  extends AsyncTask<String, String, String>{
 
             }
 
+            //ovde treba reći glavnom da je gotovo pa da može napraviti refresh baze
+            Log.d(TAG, "onPostExecute: ZOVEM UPDATE PODATKA ZAVRŠENO za" + myTbl.NazivTabele);
+            myTbl.ZavrsenaSyncronizacija = true;
+            Log.d(TAG, "onPostExecute: ZOVEM UPDATE PODATKA ZAVRŠENO je promjenjeno u ->" + myTbl.ZavrsenaSyncronizacija);
+            //myMainActivity.updateSyncTabele(tipPodataka,true);
+            myMainActivity.getLOG();
+
 
         }
 
@@ -364,13 +375,15 @@ public class JSON_task  extends AsyncTask<String, String, String>{
         SQLiteDatabase myDB = null;
         boolean greska=false;
         String greskaStr="";
+        String myTabela = myTbl.NazivTabele;
+
         try {
             Log.d(TAG, "Otvaram bazu");
             myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
             Log.d(TAG, "UpisiArtikleUBazu: brišem tabelu ukoliko postoji");
-            myDB.execSQL("DROP TABLE IF EXISTS artikli");
+            myDB.execSQL("DROP TABLE IF EXISTS " + myTabela);
             Log.d(TAG, "Kreiram tabelu");
-            myDB.execSQL("CREATE TABLE IF NOT EXISTS artikli (" +
+            myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
                     "_id VARCHAR, " +
                     "sifra VARCHAR, " +
                     "naziv VARCHAR," +
@@ -390,10 +403,10 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                     "imaRokTrajanja double, " +
                     "podgrupaID int);");
             Log.d(TAG, "Brišem sve iz tabele");
-            myDB.execSQL("DELETE FROM artikli");
+            myDB.execSQL("DELETE FROM " + myTabela);
             for (int i = 0; i < Lista.size(); i++) {
                 Artikl myArt = Lista.get(i);
-                myDB.execSQL("INSERT INTO artikli (_id, sifra , " +
+                myDB.execSQL("INSERT INTO " + myTabela + " (_id, sifra , " +
                         "naziv ,kataloskiBroj , jmj , kratkiOpis , proizvodjac , dugiOpis , vrstaAmbalaze, brojKoleta, brojKoletaNaPaleti,stanje,vpc,mpc,netto,brutto,imaRokTrajanja,podgrupaID ) VALUES ('" +
                         myArt.getId() + "','" +
                         myArt.getSifra() + "','" +
@@ -423,37 +436,35 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greska=true;
         } finally {
             if (greska){
-                UpisiLOG(greska,greskaStr,"artikli",0);
+                UpisiLOG(1, greskaStr, myTabela, 0);
                 Log.d(TAG, "UpisiArtikleUBazu: "+ greskaStr);
             }
             else{
                 greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
                 Log.d(TAG, "UpisiArtikleUBazu: "+ greskaStr);
-                UpisiLOG(greska,greskaStr,"artikli",0);
+                UpisiLOG(0, greskaStr, myTabela, 0);
             }
         }
     }
 
 
-    private  void UpisiLOG(boolean greska,String LOGporuka,String tabela, Integer smjer){
+    private void UpisiLOG(int greska, String LOGporuka, String tabela, Integer smjer) {
         SQLiteDatabase myDB = null;
         myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
 
-        Integer INTgreska=0;
-        if (greska){INTgreska=1;}
         //smjer 0 za download
         //smjer 1 za upload
         Integer lastSyncID=zadnjaSinkronizacijaID+1;
 
         myDB.execSQL("INSERT INTO log (greska ,poruka , smjer ,tabela, redniBroj) VALUES ('" +
-                 INTgreska+ "','" + LOGporuka + "'," + smjer + ",'" + tabela +"'," + lastSyncID +");");
+                greska + "','" + LOGporuka + "'," + smjer + ",'" + tabela + "'," + lastSyncID + ");");
 
         myDB.close();
     }
     private void UpisiJMJUBazu(ArrayList<jmj> Lista) {
         boolean greska=false;
         String greskaStr="";
-        String myTabela = "jmj";
+        String myTabela = myTbl.NazivTabele;
         try {
 
             Log.d(TAG, "Otvaram bazu");
@@ -482,13 +493,13 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             greska=true;
         } finally {
             if (greska){
-                UpisiLOG(0,greskaStr,myTabela,0);
+                UpisiLOG(1, greskaStr, myTabela, 0);
                 Log.d(TAG, "UpisiJMJUBazu: " + greskaStr);
             }
             else{
                 greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
                 Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
-                UpisiLOG(1,greskaStr,myTabela,0);
+                UpisiLOG(0, greskaStr, myTabela, 0);
             }
         }
     }
@@ -496,7 +507,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
     private void UpisiTipUBazu(ArrayList<TipDokumenta> Lista) {
         boolean greska=false;
         String greskaStr="";
-        String myTabela="tip_dokumenta";
+        String myTabela = myTbl.NazivTabele;
         try {
 
             Log.d(TAG, "Otvaram bazu");
@@ -526,12 +537,12 @@ public class JSON_task  extends AsyncTask<String, String, String>{
         } finally {
             if (greska){
                 Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
-                UpisiLOG(greska,greskaStr,myTabela,0);
+                UpisiLOG(1, greskaStr, myTabela, 0);
             }
             else{
                 greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
                 Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
-                UpisiLOG(greska,greskaStr,myTabela,0);
+                UpisiLOG(0, greskaStr, myTabela, 0);
             }
         }
     }
@@ -539,7 +550,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
     private void UpisiPodtipUBazu(ArrayList<PodtipDokumenta> Lista) {
         boolean greska=false;
         String greskaStr="";
-        String myTabela="podtip_dokumenta";
+        String myTabela = myTbl.NazivTabele;
 
         try {
             Log.d(TAG, "Otvaram bazu");
@@ -569,12 +580,12 @@ public class JSON_task  extends AsyncTask<String, String, String>{
         } finally {
             if (greska){
                 Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
-                UpisiLOG(greska,greskaStr,myTabela,0);
+                UpisiLOG(1, greskaStr, myTabela, 0);
             }
             else{
                 greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
                 Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
-                UpisiLOG(greska,greskaStr,myTabela,0);
+                UpisiLOG(0, greskaStr, myTabela, 0);
             }
         }
     }
@@ -582,7 +593,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
     private void UpisiKomitentUBazu(ArrayList<Komitent> Lista) {
         boolean greska=false;
         String greskaStr="";
-        String myTabela = "komitenti";
+        String myTabela = myTbl.NazivTabele;
         try {
             Log.d(TAG, "Otvaram bazu");
             SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
@@ -611,12 +622,12 @@ public class JSON_task  extends AsyncTask<String, String, String>{
         } finally {
             if (greska){
                 Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
-                UpisiLOG(greska,greskaStr,myTabela,0);
+                UpisiLOG(1, greskaStr, myTabela, 0);
             }
             else{
                 greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
                 Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
-                UpisiLOG(greska,greskaStr,myTabela,0);
+                UpisiLOG(0, greskaStr, myTabela, 0);
             }
         }
     }
@@ -624,7 +635,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
     private void UpisiNacinPlacanjaUBazu(ArrayList<NacinPlacanja> Lista) {
         boolean greska=false;
         String greskaStr="";
-        String myTabela="nacin_placanja";
+        String myTabela = myTbl.NazivTabele;
         try {
             Log.d(TAG, "Otvaram bazu" + myTabela);
             SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
@@ -653,12 +664,12 @@ public class JSON_task  extends AsyncTask<String, String, String>{
         } finally {
             if (greska){
                 Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
-                UpisiLOG(greska,greskaStr,myTabela,0);
+                UpisiLOG(1, greskaStr, myTabela, 0);
             }
             else{
                 greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
                 Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
-                UpisiLOG(greska,greskaStr,myTabela,0);
+                UpisiLOG(0, greskaStr, myTabela, 0);
             }
         }
     }
@@ -666,7 +677,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
     private void UpisiGrupuUBazu(ArrayList<GrupaArtikala> Lista) {
         boolean greska=false;
         String greskaStr="";
-        String myTabela="grupa_artikala";
+        String myTabela = myTbl.NazivTabele;
         try {
             Log.d(TAG, "Otvaram bazu");
             SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
@@ -695,12 +706,12 @@ public class JSON_task  extends AsyncTask<String, String, String>{
         } finally {
             if (greska){
                 Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
-                UpisiLOG(greska,greskaStr,myTabela,0);
+                UpisiLOG(1, greskaStr, myTabela, 0);
             }
             else{
                 greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
                 Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
-                UpisiLOG(greska,greskaStr,myTabela,0);
+                UpisiLOG(0, greskaStr, myTabela, 0);
             }
         }
     }
@@ -708,7 +719,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
     private void UpisiPodGrupuUBazu(ArrayList<PodgrupaArtikala> Lista) {
         boolean greska=false;
         String greskaStr="";
-        String myTabela="podgrupa_artikala";
+        String myTabela = myTbl.NazivTabele;
         try {
             Log.d(TAG, "Otvaram bazu");
             SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
@@ -737,12 +748,12 @@ public class JSON_task  extends AsyncTask<String, String, String>{
         } finally {
             if (greska){
                 Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
-                UpisiLOG(greska,greskaStr,myTabela,0);
+                UpisiLOG(1, greskaStr, myTabela, 0);
             }
             else{
                 greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
                 Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
-                UpisiLOG(greska,greskaStr,myTabela,0);
+                UpisiLOG(0, greskaStr, myTabela, 0);
             }
         }
     }
@@ -750,7 +761,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
     private void UpisiPjKomitenataUBazu(ArrayList<PjKomitent> Lista) {
         boolean greska=false;
         String greskaStr="";
-        String myTabela="PjKomitenta";
+        String myTabela = myTbl.NazivTabele;
         try {
             Log.d(TAG, "Otvaram bazu");
             SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
@@ -779,12 +790,12 @@ public class JSON_task  extends AsyncTask<String, String, String>{
         } finally {
             if (greska){
                 Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
-                UpisiLOG(greska,greskaStr,myTabela,0);
+                UpisiLOG(1, greskaStr, myTabela, 0);
             }
             else{
                 greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
                 Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
-                UpisiLOG(greska,greskaStr,myTabela,0);
+                UpisiLOG(0, greskaStr, myTabela, 0);
             }
         }
     }
