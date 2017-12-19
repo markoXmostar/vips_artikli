@@ -23,7 +23,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -31,6 +35,8 @@ public class MainActivity extends AppCompatActivity
 
     public static final String TAG="Glavni MainActivity";
     public static final String myDATABASE="VIPS.db";
+    String dateFormat = "yyyy-mm-dd HH:mm:ss";
+
     public static MainActivity ma;
 
     public static int DJELATNIK = 2;
@@ -38,9 +44,19 @@ public class MainActivity extends AppCompatActivity
 
     public static int zadnjaSinkronizacijaID;
 
+    public static void setZadnjaSinkronizacijaVrijeme(Date zadnjaSinkronizacijaVrijeme) {
+        MainActivity._zadnjaSinkronizacijaVrijeme = zadnjaSinkronizacijaVrijeme;
+    }
+
+    public static Date getZadnjaSinkronizacijaVrijeme() {
+        return _zadnjaSinkronizacijaVrijeme;
+    }
+
+    private static Date _zadnjaSinkronizacijaVrijeme;
+
     public List<UrlTabele> spisakSyncTabela;
 
-    TextView txtLastSyncTime;
+    TextView txtLastSyncDate;
     TextView txtLastSyncID;
     ListView listSyncLog;
     TextView txtPotrebnaSinkronizacija;
@@ -58,6 +74,8 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         txtLastSyncID=(TextView)findViewById(R.id.txtSyncID_main);
+        txtLastSyncDate = (TextView) findViewById(R.id.txtDatumZadnjeSinkronizacije_main);
+
         listSyncLog=(ListView)findViewById(R.id.listSyncLog_main);
         txtPotrebnaSinkronizacija=(TextView)findViewById(R.id.txtPotrebnaSinkronizacija);
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -90,17 +108,6 @@ public class MainActivity extends AppCompatActivity
         //new JSON_task(this).execute("http://vanima.net:8099/api/artikli?d=2");
     }
 
-    public void updateSyncTabele(String akcija, boolean zavrsio) {
-        for (UrlTabele myTb : spisakSyncTabela) {
-            // do something with object
-
-            if (myTb.Akcija == akcija) {
-                Log.d(TAG, "updateSyncTabele: AKC=AKC" + myTb.Akcija + ":" + akcija);
-                myTb.ZavrsenaSyncronizacija = zavrsio;
-            }
-        }
-    }
-
     public void getLOG() {
         if (spisakSyncTabela.size() == 0) {
             return;
@@ -122,6 +129,10 @@ public class MainActivity extends AppCompatActivity
         listSyncLog.setAdapter(listaLog);
         SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
         boolean tabelaLogPostoji=true;
+
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+
         if (isTableExists(myDB, myTabela)){
             if (isFieldExist(myDB,myTabela,"redniBroj")){
                 txtPotrebnaSinkronizacija.setVisibility(View.INVISIBLE);
@@ -170,6 +181,7 @@ public class MainActivity extends AppCompatActivity
                     tabelaLogPostoji = false; //ovo je potrebno radi prvog pokretanja!
                 } else {
                     z.moveToFirst();
+
                     for (int j = 0; j < z.getCount(); j++) {
                         Log.d(TAG, "getLOG: POČINJEM FOR PETLJU. brojač= " + brojac);
                         Integer id;
@@ -182,6 +194,12 @@ public class MainActivity extends AppCompatActivity
                         tabela = z.getString(TabelaIndex);
                         naziv = z.getString(NazivIndex);
                         timestamp = z.getString(vrijemeIndex);
+
+                        try {
+                            setZadnjaSinkronizacijaVrijeme(simpleDateFormat.parse(timestamp));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                         greska = z.getInt(greskaIndex);
                         Log.d(TAG, "getLOG: ");
                         dbLog myLog = new dbLog(id, timestamp, greska, naziv, rbr, tabela);
@@ -191,6 +209,10 @@ public class MainActivity extends AppCompatActivity
                             z.moveToNext();
                         }
                     }
+                    if (getZadnjaSinkronizacijaVrijeme() != null) {
+                        txtLastSyncDate.setText(simpleDateFormat.format(getZadnjaSinkronizacijaVrijeme()));
+                    }
+
                     z.close();
 
                 }
@@ -207,7 +229,9 @@ public class MainActivity extends AppCompatActivity
             rekreirajLogTabelu(myDB);
             rbr=0;
             txtLastSyncID.setText("-1");
+            txtLastSyncDate.setText("/ NIKAD");
             txtPotrebnaSinkronizacija.setVisibility(View.VISIBLE);
+
             fab.setVisibility(View.VISIBLE);
         }
         myDB.close();
