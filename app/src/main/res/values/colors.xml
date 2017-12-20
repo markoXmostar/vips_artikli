@@ -3,6 +3,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="defoltnaFABboja">#FF4081</color>
+    <color name="prozirno">@android:color/transparent</color>
     <color name="myCrvena">#f40307</color>
     <color name="myZelena">#2ece1c</color>
 </resources>

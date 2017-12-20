@@ -1,15 +1,12 @@
 package com.example.marko.vips_artikli;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,9 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,7 +55,7 @@ public class MainActivity extends AppCompatActivity
     TextView txtLastSyncID;
     ListView listSyncLog;
     TextView txtPotrebnaSinkronizacija;
-    FloatingActionButton fab;
+    FloatingActionButton fabUpdatePodataka,fabApp1,fabApp2,fabApp3;
 
     View glavniView;
 
@@ -78,7 +73,10 @@ public class MainActivity extends AppCompatActivity
 
         listSyncLog=(ListView)findViewById(R.id.listSyncLog_main);
         txtPotrebnaSinkronizacija=(TextView)findViewById(R.id.txtPotrebnaSinkronizacija);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fabUpdatePodataka = (FloatingActionButton) findViewById(R.id.fabUpdatePodataka);
+        fabApp1 = (FloatingActionButton) findViewById(R.id.fabApp1);
+        fabApp2 = (FloatingActionButton) findViewById(R.id.fabApp2);
+        fabApp3 = (FloatingActionButton) findViewById(R.id.fabApp3);
         spisakSyncTabela = new ArrayList<UrlTabele>();
 
         postaviTabeleZaSync();
@@ -86,7 +84,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        fabUpdatePodataka.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -107,7 +105,32 @@ public class MainActivity extends AppCompatActivity
 
         //new JSON_task(this).execute("http://vanima.net:8099/api/artikli?d=2");
     }
+private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
+        if (potrebnaSyncVisible){
+            Log.d(TAG, "postaviVidljivostFabKontrola: Vidljivost" + !potrebnaSyncVisible);
+            fabUpdatePodataka.setVisibility(View.VISIBLE);
+            txtPotrebnaSinkronizacija.setVisibility(View.VISIBLE);
 
+            fabApp1.setVisibility(View.INVISIBLE);
+            fabApp2.setVisibility(View.INVISIBLE);
+            fabApp3.setVisibility(View.INVISIBLE);
+
+
+            txtLastSyncID.setText("-1");
+            txtLastSyncDate.setText("/ NIKAD");
+        }
+        else{
+            Log.d(TAG, "postaviVidljivostFabKontrola: Vidljivost" + potrebnaSyncVisible);
+            fabUpdatePodataka.setVisibility(View.INVISIBLE);
+            txtPotrebnaSinkronizacija.setVisibility(View.INVISIBLE);
+            fabApp1.setVisibility(View.VISIBLE);
+            fabApp2.setVisibility(View.VISIBLE);
+            fabApp3.setVisibility(View.VISIBLE);
+
+
+        }
+
+}
     public void getLOG() {
         if (spisakSyncTabela.size() == 0) {
             return;
@@ -135,8 +158,8 @@ public class MainActivity extends AppCompatActivity
 
         if (isTableExists(myDB, myTabela)){
             if (isFieldExist(myDB,myTabela,"redniBroj")){
-                txtPotrebnaSinkronizacija.setVisibility(View.INVISIBLE);
-                fab.setVisibility(View.INVISIBLE);
+
+                postaviVidljivostFabKontrola(false);
                 Cursor c;
                 c = myDB.rawQuery("SELECT MAX(redniBroj) AS rbr FROM " + myTabela, null);
                 int IdMax = c.getColumnIndex("rbr");
@@ -228,11 +251,7 @@ public class MainActivity extends AppCompatActivity
         if (!tabelaLogPostoji){
             rekreirajLogTabelu(myDB);
             rbr=0;
-            txtLastSyncID.setText("-1");
-            txtLastSyncDate.setText("/ NIKAD");
-            txtPotrebnaSinkronizacija.setVisibility(View.VISIBLE);
-
-            fab.setVisibility(View.VISIBLE);
+            postaviVidljivostFabKontrola(true);
         }
         myDB.close();
     }
@@ -297,7 +316,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id== R.id.nav_recive){
 
-            fab.callOnClick();
+            fabUpdatePodataka.callOnClick();
 
         } else if (id==R.id.nav_log){
 
