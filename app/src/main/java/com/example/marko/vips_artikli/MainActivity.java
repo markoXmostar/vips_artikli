@@ -1,8 +1,10 @@
 package com.example.marko.vips_artikli;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -400,7 +402,10 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
             tbl.ZavrsenaSyncronizacija = false;
             new JSON_task(this, tbl).execute(tbl.urlTabele, tbl.Akcija);
         }
+
+
     }
+
 
     public static boolean isTableExists(SQLiteDatabase mDatabase, String tableName) {
         Cursor c = null;

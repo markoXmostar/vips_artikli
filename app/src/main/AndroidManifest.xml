@@ -22,7 +22,10 @@
         </activity>
         <activity android:name=".ArtikliActivity" />
         <activity android:name=".RegistriActivity" />
-        <activity android:name=".KomitentiActivity"></activity>
+        <activity android:name=".KomitentiActivity" />
+        <activity
+            android:name=".App1DokumentiActivity"
+            android:label="@string/title_activity_app1_dokumenti"></activity>
     </application>
 
 </manifest>

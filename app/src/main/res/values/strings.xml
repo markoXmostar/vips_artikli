@@ -19,4 +19,5 @@
     <string name="Registri_title">Registri</string>
     <string name="NemaPodatakaText">NEMA PODATAKA!</string>
     <string name="potrebnaSinkronizacijaText">NAPRAVITE SINKRONIZACIJU PODATAKA!!!</string>
+    <string name="title_activity_app1_dokumenti">App1DokumentiActivity</string>
 </resources>

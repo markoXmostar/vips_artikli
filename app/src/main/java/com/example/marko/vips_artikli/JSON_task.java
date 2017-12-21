@@ -50,12 +50,14 @@ public class JSON_task  extends AsyncTask<String, String, String>{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
             vrijeme1 = new Date(System.currentTimeMillis());
             pd = new ProgressDialog(myMainActivity);
             String poruka =(String) myMainActivity.getApplicationContext().getResources().getString(R.string.Poruka_app_molimPricekajte);
             pd.setMessage(poruka);
             pd.setCancelable(false);
             pd.show();
+
         }
 
 
@@ -102,7 +104,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            pd.dismiss();
+
             JSONObject jObject = null;
 
             switch (tipPodataka) {
@@ -365,7 +367,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             Log.d(TAG, "onPostExecute: ZOVEM UPDATE PODATKA ZAVRŠENO je promjenjeno u ->" + myTbl.ZavrsenaSyncronizacija);
             //myMainActivity.updateSyncTabele(tipPodataka,true);
             myMainActivity.getLOG();
-
+            pd.dismiss();
 
         }
 
@@ -384,7 +386,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             myDB.execSQL("DROP TABLE IF EXISTS " + myTabela);
             Log.d(TAG, "Kreiram tabelu");
             myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
-                    "_id VARCHAR, " +
+                    "_id long, " +
                     "sifra VARCHAR, " +
                     "naziv VARCHAR," +
                     "kataloskiBroj VARCHAR, " +
@@ -473,7 +475,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             myDB.execSQL("DROP TABLE IF EXISTS " + myTabela + ";");
             Log.d(TAG, "Kreiram tabelu");
             myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
-                    "_id VARCHAR, " +
+                    "_id long, " +
                     "naziv VARCHAR);");
 
             Log.d(TAG, "Brišem sve iz tabele");
@@ -516,7 +518,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             myDB.execSQL("DROP TABLE IF EXISTS "+ myTabela +";");
             Log.d(TAG, "Kreiram tabelu");
             myDB.execSQL("CREATE TABLE IF NOT EXISTS "+ myTabela + " (" +
-                    "_id VARCHAR, " +
+                    "_id long, " +
                     "naziv VARCHAR);");
 
             Log.d(TAG, "Brišem sve iz tabele " +myTabela);
@@ -559,7 +561,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             myDB.execSQL("DROP TABLE IF EXISTS "+ myTabela +";");
             Log.d(TAG, "Kreiram tabelu");
             myDB.execSQL("CREATE TABLE IF NOT EXISTS "+ myTabela + " (" +
-                    "_id VARCHAR, " +
+                    "_id long, " +
                     "naziv VARCHAR, rid VARCHAR);");
 
             Log.d(TAG, "Brišem sve iz tabele " +myTabela);
@@ -601,7 +603,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             myDB.execSQL("DROP TABLE IF EXISTS " + myTabela + ";");
             Log.d(TAG, "Kreiram tabelu");
             myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
-                    "_id VARCHAR, " +
+                    "_id long, " +
                     "naziv VARCHAR, sifra VARCHAR);");
 
             Log.d(TAG, "Brišem sve iz tabele " + myTabela);
@@ -643,7 +645,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             myDB.execSQL("DROP TABLE IF EXISTS "+ myTabela +";");
             Log.d(TAG, "Kreiram tabelu");
             myDB.execSQL("CREATE TABLE IF NOT EXISTS "+ myTabela + " (" +
-                    "_id VARCHAR, " +
+                    "_id long, " +
                     "naziv VARCHAR);");
 
             Log.d(TAG, "Brišem sve iz tabele " +myTabela);
@@ -685,7 +687,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             myDB.execSQL("DROP TABLE IF EXISTS "+ myTabela +";");
             Log.d(TAG, "Kreiram tabelu");
             myDB.execSQL("CREATE TABLE IF NOT EXISTS "+ myTabela + " (" +
-                    "_id VARCHAR, " +
+                    "_id long, " +
                     "naziv VARCHAR, rid VARCHAR);");
 
             Log.d(TAG, "Brišem sve iz tabele " +myTabela);
@@ -727,7 +729,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             myDB.execSQL("DROP TABLE IF EXISTS "+ myTabela +";");
             Log.d(TAG, "Kreiram tabelu");
             myDB.execSQL("CREATE TABLE IF NOT EXISTS "+ myTabela + " (" +
-                    "_id VARCHAR, " +
+                    "_id long, " +
                     "naziv VARCHAR, rid VARCHAR);");
 
             Log.d(TAG, "Brišem sve iz tabele " +myTabela);
@@ -769,7 +771,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             myDB.execSQL("DROP TABLE IF EXISTS "+ myTabela +";");
             Log.d(TAG, "Kreiram tabelu");
             myDB.execSQL("CREATE TABLE IF NOT EXISTS "+ myTabela + " (" +
-                    "_id VARCHAR, " +
+                    "_id long, " +
                     "naziv VARCHAR, rid VARCHAR);");
 
             Log.d(TAG, "Brišem sve iz tabele " +myTabela);
