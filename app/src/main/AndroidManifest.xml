@@ -25,7 +25,8 @@
         <activity android:name=".KomitentiActivity" />
         <activity
             android:name=".App1DokumentiActivity"
-            android:label="@string/title_activity_app1_dokumenti"></activity>
+            android:label="@string/title_activity_app1_dokumenti" />
+        <activity android:name=".App1ZaglavljeActivity"></activity>
     </application>
 
 </manifest>

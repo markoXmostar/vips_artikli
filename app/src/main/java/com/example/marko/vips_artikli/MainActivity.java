@@ -1,10 +1,8 @@
 package com.example.marko.vips_artikli;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -32,8 +30,10 @@ public class MainActivity extends AppCompatActivity
 
     public static final String TAG="Glavni MainActivity";
     public static final String myDATABASE="VIPS.db";
-    String dateFormat = "yyyy-mm-dd HH:mm:ss";
+    public static final String SqlLiteDateFormat="yyyy-MM-dd HH:mm:ss";
 
+    public static String DatumVrijemeFormat = "dd.MM.yyyy HH:mm:ss";
+    public static String DatumFormat="dd.MM.yyyy";
     public static MainActivity ma;
 
     public static int DJELATNIK = 2;
@@ -92,6 +92,14 @@ public class MainActivity extends AppCompatActivity
 
                 napraviSinkronizacijuDownload(view);
 
+            }
+        });
+
+        fabApp1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, App1DokumentiActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -156,8 +164,8 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
         boolean tabelaLogPostoji=true;
 
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
-
+        SimpleDateFormat simpleSqlDateFormat = new SimpleDateFormat(SqlLiteDateFormat);
+        SimpleDateFormat mojDateFormat=new SimpleDateFormat(DatumVrijemeFormat);
         if (isTableExists(myDB, myTabela)){
             if (isFieldExist(myDB,myTabela,"redniBroj")){
 
@@ -219,15 +227,25 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
                         tabela = z.getString(TabelaIndex);
                         naziv = z.getString(NazivIndex);
                         timestamp = z.getString(vrijemeIndex);
+                        Date dd=new Date();
 
                         try {
-                            setZadnjaSinkronizacijaVrijeme(simpleDateFormat.parse(timestamp));
+                            //dd=simpleDateFormat.parse(timestamp);
+                            dd=mojDateFormat.parse(timestamp);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        String myDatum=mojDateFormat.format(dd);
+                        try {
+                            //setZadnjaSinkronizacijaVrijeme(simpleDateFormat.parse(timestamp));
+                            setZadnjaSinkronizacijaVrijeme(mojDateFormat.parse(myDatum));
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
                         greska = z.getInt(greskaIndex);
                         Log.d(TAG, "getLOG: ");
-                        dbLog myLog = new dbLog(id, timestamp, greska, naziv, rbr, tabela);
+                        //dbLog myLog = new dbLog(id, timestamp, greska, naziv, rbr, tabela);
+                        dbLog myLog = new dbLog(id, myDatum, greska, naziv, rbr, tabela);
                         listaLog.add(myLog);
                         brojac++;
                         if (j != z.getCount()) {
@@ -235,7 +253,7 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
                         }
                     }
                     if (getZadnjaSinkronizacijaVrijeme() != null) {
-                        txtLastSyncDate.setText(simpleDateFormat.format(getZadnjaSinkronizacijaVrijeme()));
+                        txtLastSyncDate.setText(mojDateFormat.format(getZadnjaSinkronizacijaVrijeme()));
                     }
 
                     z.close();

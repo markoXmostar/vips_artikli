@@ -1,5 +1,7 @@
 package com.example.marko.vips_artikli;
 
+import android.text.format.DateFormat;
+
 import java.util.Date;
 
 /**
@@ -16,7 +18,9 @@ public class App1Dokumenti {
     private Date datumSinkronizacije;
     private String napomena;
 
-    public App1Dokumenti(long id, long idTip, long idPodtip, long idKomitent, long idPjKomitenta, Date datumDokumenta, Date datumSinkronizacije, String napomena) {
+    private String KomitentNaziv,PjKomitentNaziv,TipDokumentaNaziv,PodtipDokumentaNaziv;
+
+    public App1Dokumenti(long id, long idTip, long idPodtip, long idKomitent, long idPjKomitenta, Date datumDokumenta, Date datumSinkronizacije, String napomena, String komitentNaziv, String pjKomitentNaziv, String tipDokumentaNaziv, String podtipDokumentaNaziv) {
         this.id = id;
         this.idTip = idTip;
         this.idPodtip = idPodtip;
@@ -25,6 +29,43 @@ public class App1Dokumenti {
         this.datumDokumenta = datumDokumenta;
         this.datumSinkronizacije = datumSinkronizacije;
         this.napomena = napomena;
+        this.KomitentNaziv = komitentNaziv;
+        this.PjKomitentNaziv = pjKomitentNaziv;
+        this.TipDokumentaNaziv = tipDokumentaNaziv;
+        this.PodtipDokumentaNaziv = podtipDokumentaNaziv;
+    }
+
+
+    public String getKomitentNaziv() {
+        return KomitentNaziv;
+    }
+
+    public void setKomitentNaziv(String komitentNaziv) {
+        KomitentNaziv = komitentNaziv;
+    }
+
+    public String getPjKomitentNaziv() {
+        return PjKomitentNaziv;
+    }
+
+    public void setPjKomitentNaziv(String pjKomitentNaziv) {
+        PjKomitentNaziv = pjKomitentNaziv;
+    }
+
+    public String getTipDokumentaNaziv() {
+        return TipDokumentaNaziv;
+    }
+
+    public void setTipDokumentaNaziv(String tipDokumentaNaziv) {
+        TipDokumentaNaziv = tipDokumentaNaziv;
+    }
+
+    public String getPodtipDokumentaNaziv() {
+        return PodtipDokumentaNaziv;
+    }
+
+    public void setPodtipDokumentaNaziv(String podtipDokumentaNaziv) {
+        PodtipDokumentaNaziv = podtipDokumentaNaziv;
     }
 
     public long getId() {
@@ -69,6 +110,10 @@ public class App1Dokumenti {
 
     public Date getDatumDokumenta() {
         return datumDokumenta;
+    }
+
+    public String getDatumDokumentaString(){
+        return  DateFormat.format(MainActivity.DatumFormat, datumDokumenta).toString();
     }
 
     public void setDatumDokumenta(Date datumDokumenta) {
