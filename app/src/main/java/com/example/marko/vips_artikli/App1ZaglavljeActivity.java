@@ -1,6 +1,8 @@
 package com.example.marko.vips_artikli;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -51,8 +53,29 @@ public class App1ZaglavljeActivity extends AppCompatActivity {
             }
         });
 
+        txtKomitent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(App1ZaglavljeActivity.this, PretragaKomitenataActivity.class);
+                startActivityForResult(i, 1);
+            }
+        });
+
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                String result=data.getStringExtra("result");
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }//onActivityResult
 
     private String danMjesecGodinaToFormatString(int dan,int mjesec,int godina){
         SimpleDateFormat dateFormat=new SimpleDateFormat(MainActivity.DatumFormat);

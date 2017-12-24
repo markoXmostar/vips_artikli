@@ -20,4 +20,7 @@
     <string name="NemaPodatakaText">NEMA PODATAKA!</string>
     <string name="potrebnaSinkronizacijaText">NAPRAVITE SINKRONIZACIJU PODATAKA!!!</string>
     <string name="title_activity_app1_dokumenti">App1DokumentiActivity</string>
+    <string name="Izaberi"><u>Izaberi!</u></string>
+    <string name="OKtext">U redu</string>
+    <string name="CANCELtext">Odustani</string>
 </resources>

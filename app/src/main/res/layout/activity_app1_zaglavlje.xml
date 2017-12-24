@@ -12,8 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:background="@color/colorAccent"
-        android:textSize="14sp"
+        android:textAppearance="@style/mojTextStyleZaIzbor"
         app:layout_constraintStart_toEndOf="@+id/textView5"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="31-12-2017" />
@@ -24,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:text="Datum dokumenta"
+        android:text="Datum dokumenta:"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:text="Komitent"
+        android:text="Komitent:"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
@@ -44,8 +43,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:background="@color/colorAccent"
-        android:text="Izaberi komitenta!"
+        android:text="@string/Izaberi"
+        android:textAppearance="@style/mojTextStyleZaIzbor"
         app:layout_constraintStart_toEndOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/txtDatumDokumenta_App1Zaglavlje" />
 
@@ -55,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:text="PJ komitenta"
+        android:text="PJ komitenta:"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
@@ -65,8 +64,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:background="@color/colorAccent"
-        android:text="Izaberi poslovnicu!"
+        android:text="@string/Izaberi"
+        android:textAppearance="@style/mojTextStyleZaIzbor"
         app:layout_constraintStart_toEndOf="@+id/textView8"
         app:layout_constraintTop_toBottomOf="@+id/txtKomitent_App1Zaglavlje" />
 
