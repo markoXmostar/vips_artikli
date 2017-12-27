@@ -4,7 +4,7 @@ package com.example.marko.vips_artikli;
  * Created by rac157 on 15.12.2017.
  */
 
-public class Komitent {
+public class Komitent  {
     private long id;
     private String sifra;
     private String naziv;

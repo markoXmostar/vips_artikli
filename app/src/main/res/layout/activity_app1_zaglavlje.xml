@@ -49,7 +49,7 @@
         app:layout_constraintTop_toBottomOf="@+id/txtDatumDokumenta_App1Zaglavlje" />
 
     <TextView
-        android:id="@+id/textView8"
+        android:id="@+id/labelPjKomitenta_App1Zaglavlje"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
@@ -66,7 +66,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/Izaberi"
         android:textAppearance="@style/mojTextStyleZaIzbor"
-        app:layout_constraintStart_toEndOf="@+id/textView8"
+        app:layout_constraintStart_toEndOf="@+id/labelPjKomitenta_App1Zaglavlje"
         app:layout_constraintTop_toBottomOf="@+id/txtKomitent_App1Zaglavlje" />
 
 </android.support.constraint.ConstraintLayout>
