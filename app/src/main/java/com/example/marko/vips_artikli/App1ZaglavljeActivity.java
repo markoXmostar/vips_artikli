@@ -7,25 +7,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+
 
 public class App1ZaglavljeActivity extends AppCompatActivity {
 
     private static final String TAG="App1Zaglavlje";
-    TextView txtDatumDokumenta,txtKomitent,txtPjKomitenta,labelPjKomitenta;
+    TextView txtDatumDokumenta,txtKomitent,txtPjKomitenta,labelPjKomitenta,txtTipDokumenta,txtPodtipDokumenta,labelPodtipDokumenta;
+    EditText etxtNapomena;
+    Button btnOk,btnCancel;
+
     Calendar kalendar;
     int dan,mjesec,godina;
 
-
+    private String izabraniDatum;
 
     private Komitent izabraniKomitent;
+
 
     public Komitent getIzabraniKomitent() {
         return izabraniKomitent;
@@ -34,12 +37,17 @@ public class App1ZaglavljeActivity extends AppCompatActivity {
         izabraniKomitent = new_izabraniKomitent;
         if (new_izabraniKomitent!=null){
             txtKomitent.setText(izabraniKomitent.getNaziv());
-            txtPjKomitenta.setVisibility(View.VISIBLE);
-            labelPjKomitenta.setVisibility(View.VISIBLE);
+            //txtPjKomitenta.setVisibility(View.VISIBLE);
+            txtPjKomitenta.setEnabled(true);
+            //labelPjKomitenta.setVisibility(View.VISIBLE);
+            labelPjKomitenta.setEnabled(true);
         }
         else {
-            txtPjKomitenta.setVisibility(View.INVISIBLE);
-            labelPjKomitenta.setVisibility(View.INVISIBLE);
+            //txtPjKomitenta.setVisibility(View.INVISIBLE);
+            //labelPjKomitenta.setVisibility(View.INVISIBLE);
+
+            txtPjKomitenta.setEnabled(false);
+            labelPjKomitenta.setEnabled(false);
         }
         setIzabranaPJKomitenta(null);
     }
@@ -54,12 +62,47 @@ public class App1ZaglavljeActivity extends AppCompatActivity {
             txtPjKomitenta.setText(getIzabranaPJKomitenta().getNaziv());
         }
         else {
-            txtPjKomitenta.setText("Izaberi");
+            txtPjKomitenta.setText(getString(R.string.Izaberi));
         }
     }
 
     private PjKomitent izabranaPJKomitenta;
 
+
+    public TipDokumenta getIzabraniTiP() {
+        return izabraniTiP;
+    }
+
+    public void setIzabraniTiP(TipDokumenta izabraniTiP) {
+        this.izabraniTiP = izabraniTiP;
+        if(izabraniTiP!=null){
+            txtTipDokumenta.setText(izabraniTiP.getNaziv());
+            labelPodtipDokumenta.setEnabled(true);
+            txtPodtipDokumenta.setEnabled(true);
+        }else{
+            //txtTipDokumenta.setText(Izaberi);
+            labelPodtipDokumenta.setEnabled(false);
+            txtPodtipDokumenta.setEnabled(false);
+        }
+    }
+
+    private TipDokumenta izabraniTiP;
+
+    public PodtipDokumenta getIzabraniPodtip() {
+        return izabranPodtip;
+
+    }
+
+    public void setIzabranPodtip(PodtipDokumenta izabranPodtip) {
+        this.izabranPodtip = izabranPodtip;
+        if(izabranPodtip!=null){
+            txtPodtipDokumenta.setText(izabranPodtip.getNaziv());
+        }else{
+            txtPjKomitenta.setText(getString(R.string.Izaberi));
+        }
+    }
+
+    private PodtipDokumenta izabranPodtip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +113,15 @@ public class App1ZaglavljeActivity extends AppCompatActivity {
         txtKomitent=(TextView)findViewById(R.id.txtKomitent_App1Zaglavlje);
         txtPjKomitenta=(TextView)findViewById(R.id.txtPjKomitenta_App1Zaglavlje);
         labelPjKomitenta=(TextView)findViewById(R.id.labelPjKomitenta_App1Zaglavlje);
+        txtTipDokumenta=(TextView)findViewById(R.id.txtTipDokumenta_App1Zaglavlje);
+        txtPodtipDokumenta=(TextView)findViewById(R.id.txtPodtipDokumenta_App1Zaglavlje);
+        labelPodtipDokumenta=(TextView)findViewById(R.id.labelPodtipDokumenta_App1Zaglavlje);
+        btnOk=(Button)findViewById(R.id.btnOK_App1ZaglavljeDokumenata);
+        btnCancel=(Button)findViewById(R.id.btnCancel_App1ZaglavljeDokumenata);
+        etxtNapomena=(EditText)findViewById(R.id.etxtNapomena_App1ZaglavljeDokumenta);
+
         setIzabraniKomitent(null);
+        setIzabraniTiP(null);
 
         kalendar=Calendar.getInstance();
 
@@ -80,8 +131,8 @@ public class App1ZaglavljeActivity extends AppCompatActivity {
         godina=kalendar.get(Calendar.YEAR);
 
 
-
-        txtDatumDokumenta.setText(danMjesecGodinaToFormatString(dan,mjesec,godina));
+        izabraniDatum=MainActivity.danMjesecGodinaToFormatString(dan,mjesec,godina);
+        txtDatumDokumenta.setText(izabraniDatum);
 
         txtDatumDokumenta.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,8 +140,8 @@ public class App1ZaglavljeActivity extends AppCompatActivity {
                 DatePickerDialog datePickerDialog=new DatePickerDialog(App1ZaglavljeActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int godina, int mjesec, int dan) {
-
-                        txtDatumDokumenta.setText(danMjesecGodinaToFormatString(dan,mjesec,godina));
+                        izabraniDatum=MainActivity.danMjesecGodinaToFormatString(dan,mjesec,godina);
+                        txtDatumDokumenta.setText(izabraniDatum);
                     }
                 },godina,mjesec,dan);
                 datePickerDialog.show();
@@ -120,7 +171,55 @@ public class App1ZaglavljeActivity extends AppCompatActivity {
             }
         });
 
+        txtTipDokumenta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(App1ZaglavljeActivity.this, PretragaKomitenataActivity.class);
+                i.putExtra("varijanta", "tipDokumenta");
+                Log.d(TAG, "onClick: PUT EXTRA varijanta TIP Dokumenta" );
+                startActivityForResult(i, 3);
+            }
+        });
 
+        txtPodtipDokumenta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(App1ZaglavljeActivity.this, PretragaKomitenataActivity.class);
+                i.putExtra("varijanta", "podtipDokumenta");
+                Log.d(TAG, "onClick: PUT EXTRA varijanta podtipDokumenta" );
+                TipDokumenta izabran=getIzabraniTiP();
+                i.putExtra("idTipDokumenta", izabran.getId());
+                Log.d(TAG, "onClick: PUT EXTRA TipDokumentaID= " +izabran.getId());
+                startActivityForResult(i, 4);
+            }
+        });
+
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("idKomitenta",getIzabraniKomitent().getId());
+                returnIntent.putExtra("idPjKomitenta",getIzabranaPJKomitenta().getId());
+                returnIntent.putExtra("idTipDokumenta",getIzabraniTiP().getId());
+                returnIntent.putExtra("idPodtipDokumenta", getIzabraniPodtip().getId());
+                returnIntent.putExtra("datumDokumenta", izabraniDatum);
+                returnIntent.putExtra("nazivKomitenta",getIzabraniKomitent().getNaziv());
+                returnIntent.putExtra("nazivPjKomitenta",getIzabranaPJKomitenta().getNaziv());
+                returnIntent.putExtra("nazivTipDokumenta",getIzabraniTiP().getNaziv());
+                returnIntent.putExtra("nazivPodtipDokumenta", getIzabraniPodtip().getNaziv());
+                returnIntent.putExtra("napomena",etxtNapomena.getText().toString());
+                setResult(Activity.RESULT_OK,returnIntent);
+                finish();
+            }
+        });
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent returnIntent = new Intent();
+                setResult(Activity.RESULT_CANCELED,returnIntent);
+                finish();
+            }
+        });
     }
 
     @Override
@@ -164,16 +263,40 @@ public class App1ZaglavljeActivity extends AppCompatActivity {
                 setIzabranaPJKomitenta(null);
             }
         }
+        if (requestCode == 3) {
+            if(resultCode == Activity.RESULT_OK){
+                Long idTip=data.getLongExtra("idTipDokumenta",0);
+                String nazivTip=data.getStringExtra("nazivTipDokumenta");
+
+
+                Log.d(TAG, "onActivityResult: vraćeno je:::> Naziv TIP DOKUMENTA =" + nazivTip);
+                Log.d(TAG, "onActivityResult: vraćeno je:::> ID TIP DOKUMENTA =" + idTip.toString());
+
+                TipDokumenta myTip=new TipDokumenta(idTip,nazivTip);
+                setIzabraniTiP(myTip);
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                setIzabraniTiP(null);
+            }
+        }
+        if (requestCode == 4) {
+            if(resultCode == Activity.RESULT_OK){
+                Long idPodtip=data.getLongExtra("idPodtipDokumenta",0);
+                String nazivPodtipa=data.getStringExtra("nazivPodtipDokumenta");
+                Long ridTipDok=data.getLongExtra("ridPodtipDokumenta",0);
+
+                Log.d(TAG, "onActivityResult: vraćeno je:::> nazivPodtipDokumenta=" + nazivPodtipa);
+                Log.d(TAG, "onActivityResult: vraćeno je:::> ridPodtipDokumenta=" + ridTipDok);
+                Log.d(TAG, "onActivityResult: vraćeno je:::> idPodtipDokumenta=" + idPodtip.toString());
+
+                PodtipDokumenta myPodtip=new PodtipDokumenta(idPodtip,nazivPodtipa,ridTipDok);
+                setIzabranPodtip(myPodtip);
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                setIzabranPodtip(null);
+            }
+        }
     }//onActivityResult
 
-    private String danMjesecGodinaToFormatString(int dan,int mjesec,int godina){
-        SimpleDateFormat dateFormat=new SimpleDateFormat(MainActivity.DatumFormat);
-        //SimpleDateFormat dateFormat=new SimpleDateFormat("dd.MM.yyyy");
-        Calendar c=Calendar.getInstance();
-        c.set(godina,mjesec,dan,0,0);
-        Date datum=c.getTime();
 
-        String datumStr=dateFormat.format(datum);
-        return datumStr;
-    }
 }

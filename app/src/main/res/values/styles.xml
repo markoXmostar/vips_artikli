@@ -32,7 +32,6 @@
     <style name="mojTextStyleZaIzbor" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/bojaZaIzborClick</item>
         <item name="android:textStyle">italic</item>
-        
     </style>
 
         

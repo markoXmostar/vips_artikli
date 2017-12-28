@@ -1,5 +1,6 @@
 package com.example.marko.vips_artikli;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -314,15 +316,7 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_artikli) {
+        if (id == R.id.nav_artikli) {
             Intent intent = new Intent(this, ArtikliActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_komitenti) {
@@ -475,5 +469,29 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
                 "tabela VARCHAR); " );
         myDB.close();
         Log.d(TAG, "rekreirajLogTabelu: KREIRANA LOG TABELA!");
+    }
+
+    public static String danMjesecGodinaToFormatString(int dan,int mjesec,int godina){
+        SimpleDateFormat dateFormat=new SimpleDateFormat(MainActivity.DatumFormat);
+        //SimpleDateFormat dateFormat=new SimpleDateFormat("dd.MM.yyyy");
+        Calendar c=Calendar.getInstance();
+        c.set(godina,mjesec,dan,0,0);
+        Date datum=c.getTime();
+
+        String datumStr=dateFormat.format(datum);
+        return datumStr;
+    }
+
+    public static void dropTable(Activity a, String myTable){
+        SQLiteDatabase myDB = null;
+        myDB = a.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+        myDB.execSQL("DROP TABLE " + myTable + ";");
+        myDB.close();
+    }
+    public static void deleteAllTable(Activity a, String myTable){
+        SQLiteDatabase myDB = null;
+        myDB = a.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+        myDB.execSQL("DELETE FROM " + myTable + ";");
+        myDB.close();
     }
 }

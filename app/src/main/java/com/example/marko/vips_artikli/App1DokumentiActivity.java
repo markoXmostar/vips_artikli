@@ -1,36 +1,79 @@
 package com.example.marko.vips_artikli;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import static com.example.marko.vips_artikli.MainActivity.DatumFormat;
 import static com.example.marko.vips_artikli.MainActivity.DatumVrijemeFormat;
 import static com.example.marko.vips_artikli.MainActivity.myDATABASE;
 
-public class App1DokumentiActivity extends Activity {
+public class App1DokumentiActivity extends AppCompatActivity {
     private static String TAG = "App1";
     private static String tabelaApp1 = "dokumenti1";
 
     private ListView listSpisakDokumenata;
     private FloatingActionButton fabNoviDokument;
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.app1_dokumenti_menu, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.drop_table_dokumenti1) {
+            MainActivity.dropTable(App1DokumentiActivity.this,tabelaApp1);
+            finish();
+            return true;
+        }
+        if (id == R.id.delete_all_dokumenti1) {
+            MainActivity.deleteAllTable(App1DokumentiActivity.this,tabelaApp1);
+            ucitajDokumente();
+            return true;
+        }
+        if (id == R.id.sinkroniziraj_dokumenti1) {
+            Toast.makeText(App1DokumentiActivity.this,"Nije implementirana funkcija",Toast.LENGTH_LONG).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app1_dokumenti);
 
+        //getActionBar().setTitle(getString(R.string.title_activity_app1_dokumenti));
+
         listSpisakDokumenata = (ListView) findViewById(R.id.listSpisakDokumenata_App1);
+        listSpisakDokumenata.setItemsCanFocus(false);
         fabNoviDokument = (FloatingActionButton) findViewById(R.id.fabNovoZaglavlje_App1);
 
 
@@ -41,16 +84,116 @@ public class App1DokumentiActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(App1DokumentiActivity.this,App1ZaglavljeActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,1);
+            }
+        });
+
+        listSpisakDokumenata.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                App1Dokumenti selektiranDok=(App1Dokumenti) adapterView.getItemAtPosition(i);
+                Toast.makeText(App1DokumentiActivity.this,selektiranDok.getId() +"/" +selektiranDok.getDatumDokumentaString() + "-" + selektiranDok.getKomitentNaziv(),Toast.LENGTH_LONG).show();
+            }
+        });
+
+        listSpisakDokumenata.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(
+                        App1DokumentiActivity.this);
+                alert.setTitle(R.string.Upozorenje);
+                alert.setMessage(R.string.UpitBrisanjeDokumenta);
+                alert.setPositiveButton(R.string.Da, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //do your work here
+                        dialog.dismiss();
+
+                    }
+                });
+                alert.setNegativeButton(R.string.Ne, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.show();
+                return true;
             }
         });
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                /*
+                upisano:
+                returnIntent.putExtra("idKomitenta",getIzabraniKomitent().getId());
+                returnIntent.putExtra("idPjKomitenta",getIzabranaPJKomitenta().getId());
+                returnIntent.putExtra("idTipDokumenta",getIzabraniTiP().getId());
+                returnIntent.putExtra("idPodtipDokumenta", getIzabraniPodtip().getId());
+                returnIntent.putExtra("datumDokumenta", izabraniDatum);
+                returnIntent.putExtra("nazivKomitenta",getIzabraniKomitent().getNaziv());
+                returnIntent.putExtra("nazivPjKomitenta",getIzabranaPJKomitenta().getNaziv());
+                returnIntent.putExtra("nazivTipDokumenta",getIzabraniTiP().getNaziv());
+                returnIntent.putExtra("nazivPodtipDokumenta", getIzabraniPodtip().getNaziv());
+                returnIntent.putExtra("napomena",etxtNapomena.getText());
+                 */
+                Long IdKomitenta=data.getLongExtra("idKomitenta",-1);
+                Long IdPjKomitenta=data.getLongExtra("idPjKomitenta",-1);
+                Long idTipDokumenta=data.getLongExtra("idTipDokumenta",-1);
+                Long idPodtipDokumenta=data.getLongExtra("idPodtipDokumenta",-1);
+                String datumDokumenta=data.getStringExtra("datumDokumenta");
+                SimpleDateFormat dateFormat = new SimpleDateFormat(DatumFormat);
+                Date datumDok=new Date();
+                SimpleDateFormat dateSQLLiteFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+
+                String SQLDatum;
+                try {
+                    datumDok=dateFormat.parse(datumDokumenta);
+                    SQLDatum= dateSQLLiteFormat.format(datumDok);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, R.string.GreskaUnosDatuma,Toast.LENGTH_LONG).show();
+                    return;
+                }
+                String nazivPjKomitenta=data.getStringExtra("nazivPjKomitenta");
+                String nazivKomitenta=data.getStringExtra("nazivKomitenta");
+                String nazivTipDokumenta=data.getStringExtra("nazivTipDokumenta");
+                String nazivPodtipDokumenta=data.getStringExtra("nazivPodtipDokumenta");
+                String napomena=data.getStringExtra("napomena");
+                if (napomena==null){
+                    napomena="";
+                }
+                SQLiteDatabase myDB = null;
+                Log.d(TAG, "Otvaram bazu");
+                myDB = openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+                myDB.execSQL("INSERT INTO " + tabelaApp1 +" (idTip, TipDokumentaNaziv, idPodtip, PodipDokumentaNaziv, idKomitent, KomitentNaziv, idPjKomitenta, PjKomitentaNaziv, " +
+                        "datumDokumenta, napomena) VALUES (" +
+                        idTipDokumenta + ",'" + nazivTipDokumenta + "', " + idPodtipDokumenta + ",'" + nazivPodtipDokumenta + "', " + IdKomitenta + ",'" + nazivKomitenta + "', " +
+                        IdPjKomitenta + ",'" + nazivPjKomitenta + "','" + SQLDatum +"','" + napomena + "');");
+                myDB.close();
+                ucitajDokumente();
+
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+
+            }
+        }
+    }
+
 
     private void kreirajTabeluDokumenata() {
         SQLiteDatabase myDB = null;
         Log.d(TAG, "Otvaram bazu");
         myDB = openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
         Log.d(TAG, "Kreiram tabelu");
+        //myDB.execSQL("DROP TABLE " + tabelaApp1 + ";");
         myDB.execSQL("CREATE TABLE IF NOT EXISTS " + tabelaApp1 + " (" +
                 "_id Integer PRIMARY KEY AUTOINCREMENT, " +
                 "idTip VARCHAR, " +
@@ -63,6 +206,7 @@ public class App1DokumentiActivity extends Activity {
                 "PjKomitentaNaziv VARCHAR," +
                 "datumDokumenta datetime, " +
                 "datumSinkronizacije datetime," +
+                "datumUpisa datetime default current_timestamp," +
                 "napomena VARCHAR);");
         myDB.close();
 
@@ -73,7 +217,7 @@ public class App1DokumentiActivity extends Activity {
         listSpisakDokumenata.setAdapter(listaDokumenta);
         SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
         Cursor c;
-        c = myDB.rawQuery("SELECT * FROM " + tabelaApp1, null);
+        c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " ORDER BY datumUpisa DESC", null);
 
         SimpleDateFormat simpleDateTimeFormat = new SimpleDateFormat(DatumVrijemeFormat);
         SimpleDateFormat dateFormat = new SimpleDateFormat(DatumFormat);
@@ -94,7 +238,7 @@ public class App1DokumentiActivity extends Activity {
         Date datumDokumenta = new Date();
         Date datumSinkronizacije = new Date();
 
-        int idIndex = c.getColumnIndex("id");
+        int idIndex = c.getColumnIndex("_id");
         int idTipIndex = c.getColumnIndex("idTip");
         int idPodipIndex = c.getColumnIndex("idPodtip");
         int idKomitentIndex = c.getColumnIndex("idKomitent");
@@ -130,7 +274,12 @@ public class App1DokumentiActivity extends Activity {
 
             }
             try {
-                datumSinkronizacije = (Date) simpleDateTimeFormat.parse(datumSinkronizacijeString);
+                if (datumSinkronizacijeString==null){
+                    datumSinkronizacije=null;
+                }else{
+                    datumSinkronizacije = (Date) simpleDateTimeFormat.parse(datumSinkronizacijeString);
+                }
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }

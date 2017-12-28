@@ -25,8 +25,8 @@
         <activity android:name=".KomitentiActivity" />
         <activity
             android:name=".App1DokumentiActivity"
-            android:label="@string/title_activity_app1_dokumenti" />
-        <activity android:name=".App1ZaglavljeActivity" />
+            android:label="@string/NaslovApp1Dokumenti" />"@androi
+        <activity android:name=".App1ZaglavljeActivity"  />
         <activity android:name=".PretragaKomitenataActivity"  >
 
         </activity>

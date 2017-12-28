@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">vips_artikli</string>
+    <string name="app_name">vips</string>
 
     <string name="navigation_drawer_open">Otvori izbornik</string>
     <string name="navigation_drawer_close">Zatvori izbornik</string>
@@ -19,8 +19,15 @@
     <string name="Registri_title">Registri</string>
     <string name="NemaPodatakaText">NEMA PODATAKA!</string>
     <string name="potrebnaSinkronizacijaText">NAPRAVITE SINKRONIZACIJU PODATAKA!!!</string>
-    <string name="title_activity_app1_dokumenti">App1DokumentiActivity</string>
     <string name="Izaberi"><u>Izaberi!</u></string>
     <string name="OKtext">U redu</string>
     <string name="CANCELtext">Odustani</string>
+    <string name="Napomena">Napomena</string>
+    <string name="NaslovApp1Dokumenti">Dokumenti</string>
+    <string name="GreskaUnosDatuma">Greška pri upisu datuma</string>
+    <string name="Upozorenje">Upozorenje!!!</string>
+    <string name="UpitBrisanjeDokumenta">Da li ste sigurni da želite izbrisati ovaj dokument?</string>
+    <string name="Da">DA</string>
+    <string name="Ne">NE</string>
+    <string name="mogucnosti">Mogućnosti</string>
 </resources>

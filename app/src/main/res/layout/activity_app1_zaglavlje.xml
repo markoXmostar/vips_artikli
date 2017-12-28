@@ -8,11 +8,14 @@
 
     <TextView
         android:id="@+id/txtDatumDokumenta_App1Zaglavlje"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:textAppearance="@style/mojTextStyleZaIzbor"
+        android:textSize="@dimen/velicinaTeksta"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView5"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="31-12-2017" />
@@ -24,6 +27,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:text="Datum dokumenta:"
+        android:textSize="@dimen/velicinaTeksta"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,18 +37,22 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
+        android:textSize="@dimen/velicinaTeksta"
         android:text="Komitent:"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/txtDatumDokumenta_App1Zaglavlje" />
 
     <TextView
         android:id="@+id/txtKomitent_App1Zaglavlje"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:textSize="@dimen/velicinaTeksta"
         android:text="@string/Izaberi"
         android:textAppearance="@style/mojTextStyleZaIzbor"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/txtDatumDokumenta_App1Zaglavlje" />
 
@@ -54,19 +62,119 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
+        android:textSize="@dimen/velicinaTeksta"
         android:text="PJ komitenta:"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintTop_toBottomOf="@+id/txtKomitent_App1Zaglavlje" />
 
     <TextView
         android:id="@+id/txtPjKomitenta_App1Zaglavlje"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textSize="@dimen/velicinaTeksta"
+        android:text="@string/Izaberi"
+        android:textAppearance="@style/mojTextStyleZaIzbor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/labelPjKomitenta_App1Zaglavlje"
+        app:layout_constraintTop_toBottomOf="@+id/txtKomitent_App1Zaglavlje" />
+
+    <TextView
+        android:id="@+id/labelTipDokumenta_App1Zaglavlje"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
+        android:textSize="@dimen/velicinaTeksta"
+        android:text="Tip dokumneta"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtPjKomitenta_App1Zaglavlje" />
+
+    <TextView
+        android:id="@+id/txtTipDokumenta_App1Zaglavlje"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textSize="@dimen/velicinaTeksta"
         android:text="@string/Izaberi"
         android:textAppearance="@style/mojTextStyleZaIzbor"
-        app:layout_constraintStart_toEndOf="@+id/labelPjKomitenta_App1Zaglavlje"
-        app:layout_constraintTop_toBottomOf="@+id/txtKomitent_App1Zaglavlje" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/labelTipDokumenta_App1Zaglavlje"
+        app:layout_constraintTop_toBottomOf="@+id/txtPjKomitenta_App1Zaglavlje" />
+
+    <TextView
+        android:id="@+id/labelPodtipDokumenta_App1Zaglavlje"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:textSize="@dimen/velicinaTeksta"
+        android:text="Podtip dokumenta"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtTipDokumenta_App1Zaglavlje" />
+
+    <TextView
+        android:id="@+id/txtPodtipDokumenta_App1Zaglavlje"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textSize="@dimen/velicinaTeksta"
+        android:text="@string/Izaberi"
+        android:textAppearance="@style/mojTextStyleZaIzbor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/labelPodtipDokumenta_App1Zaglavlje"
+        app:layout_constraintTop_toBottomOf="@+id/txtTipDokumenta_App1Zaglavlje" />
+
+    <EditText
+        android:id="@+id/etxtNapomena_App1ZaglavljeDokumenta"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:gravity="left|top"
+        android:hint="@string/Napomena"
+        android:inputType="text"
+        android:minHeight="100dp"
+        android:singleLine="false"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtPodtipDokumenta_App1Zaglavlje" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/btnCancel_App1ZaglavljeDokumenata"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/CANCELtext" />
+
+        <Button
+            android:id="@+id/btnOK_App1ZaglavljeDokumenata"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/OKtext" />
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
