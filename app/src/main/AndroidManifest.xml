@@ -25,11 +25,11 @@
         <activity android:name=".KomitentiActivity" />
         <activity
             android:name=".App1DokumentiActivity"
-            android:label="@string/NaslovApp1Dokumenti" />"@androi
-        <activity android:name=".App1ZaglavljeActivity"  />
-        <activity android:name=".PretragaKomitenataActivity"  >
-
-        </activity>
+            android:label="@string/NaslovApp1Dokumenti" />
+        "@androi
+        <activity android:name=".App1ZaglavljeActivity" />
+        <activity android:name=".PretragaKomitenataActivity"></activity>
+        <activity android:name=".App1StavkeActivity"></activity>
     </application>
 
 </manifest>

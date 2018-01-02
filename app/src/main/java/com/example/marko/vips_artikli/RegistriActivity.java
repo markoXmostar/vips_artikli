@@ -15,7 +15,7 @@ import android.widget.TextView;
 public class RegistriActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     public static final String TAG = "REGISTRI";
 
-    String[] registri = {"JMJ", "Tip dokumenta", "Podtip dokumenta", "Grupa artikala", "Podgrupa artikala", "Način plaćanja","PjKomitenta"};
+    String[] registri = {"JMJ", "Tip dokumenta", "Podtip dokumenta", "Grupa artikala", "Podgrupa artikala", "Način plaćanja","PjKomitenta", "Barcode"};
 
     ListView mojListView;
     TextView NoDataText;
@@ -68,6 +68,9 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
                 break;
             case "PjKomitenta":
                 UcitajPjKomitentaIzBaze("");
+                break;
+            case "Barcode":
+                UcitajListuBarcodeIzBaze("");
                 break;
             default:
 
@@ -381,6 +384,49 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
 
             jmj jmjProvider = new jmj(id, naziv);
             listaJmjAdapter.add(jmjProvider);
+            brojac++;
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        Log.d(TAG, " Tabela jmj učitana!");
+    }
+
+    private void UcitajListuBarcodeIzBaze(String filter) {
+        Log.d(TAG, "UcitajListuBarcodeIzBaze: Start");
+        String myTabela="artiklbarcode";
+        if (!PostaviVidljivostElemenata(myTabela)){
+            return;
+        }
+        Log.d(TAG, "UcitajListuArtiklbarcodeIzBaze: Postoji tabela. Počni učitavanje");
+
+        ListaBarcodeAdapter listaBarcodeAdapter = new ListaBarcodeAdapter(this, R.layout.row_jmj);
+        mojListView.setAdapter(listaBarcodeAdapter);
+        Log.d(TAG, " ucitavam bazu!");
+
+        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
+        Cursor c;
+        if (filter.equals("")) {
+            c = myDB.rawQuery("SELECT * FROM "+ myTabela, null);
+        } else {
+            c = myDB.rawQuery("SELECT * FROM " + myTabela + " where naziv like '%" + filter + "%'", null);
+        }
+
+        int IdIndex = c.getColumnIndex("artiklId");
+        int NazivIndex = c.getColumnIndex("barcode");
+
+        c.moveToFirst();
+        int brojac = 0;
+        Log.d(TAG, "UcitajListuBarcodeIzBaze: Broj podataka u bazi je:" + Integer.toString( c.getCount()+1));
+        for (int j = 0; j < c.getCount(); j++) {
+            long id;
+            String naziv;
+            id = c.getLong(IdIndex);
+            naziv = c.getString(NazivIndex);
+
+            Barcode BarcodeProvider = new Barcode(id, naziv);
+            listaBarcodeAdapter.add(BarcodeProvider);
             brojac++;
             if (j != c.getCount()) {
                 c.moveToNext();

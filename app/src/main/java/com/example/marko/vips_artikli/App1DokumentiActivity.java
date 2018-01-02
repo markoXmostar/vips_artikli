@@ -99,6 +99,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
         listSpisakDokumenata.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                /*
                 AlertDialog.Builder alert = new AlertDialog.Builder(
                         App1DokumentiActivity.this);
                 alert.setTitle(R.string.Upozorenje);
@@ -122,6 +123,33 @@ public class App1DokumentiActivity extends AppCompatActivity {
                 });
 
                 alert.show();
+                */
+                final CharSequence akcije[] = new CharSequence[] {"Izbriši", "Sinkroniziraj", "Prikaži detalje"};
+                final App1Dokumenti selektiranDok=(App1Dokumenti) adapterView.getItemAtPosition(i);
+                AlertDialog.Builder builder = new AlertDialog.Builder(App1DokumentiActivity.this);
+                builder.setTitle("Opcije dokumenta");
+                builder.setItems(akcije, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // the user clicked on colors[which]
+                        switch (which){
+                            case 0:
+                                //izbrisiRedakIzTabele
+                                MainActivity.izbrisiRedakIzTabele(App1DokumentiActivity.this,tabelaApp1,"_id", selektiranDok.getId());
+                                ucitajDokumente();
+                                break;
+                            case 1:
+                                //Sinkronizraj
+                                Toast.makeText(App1DokumentiActivity.this,akcije[which].toString(),Toast.LENGTH_LONG).show();
+                                break;
+                            case 2:
+                                //Detalji
+                                Toast.makeText(App1DokumentiActivity.this,akcije[which].toString(),Toast.LENGTH_LONG).show();
+                                break;
+                        }
+                    }
+                });
+                builder.show();
                 return true;
             }
         });
@@ -220,7 +248,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
         c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " ORDER BY datumUpisa DESC", null);
 
         SimpleDateFormat simpleDateTimeFormat = new SimpleDateFormat(DatumVrijemeFormat);
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DatumFormat);
+        SimpleDateFormat SQLLite_dateFormat = new SimpleDateFormat(MainActivity.SqlLiteDateFormat);
 
         long id;
         long idTip;
@@ -268,7 +296,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
             datumSinkronizacijeString = c.getString(idDatumSinkronizacijeIndex);
             napomena = c.getString(idNapomenaIndex);
             try {
-                datumDokumenta = (Date) dateFormat.parse(datumDokumentaString);
+                datumDokumenta = (Date) SQLLite_dateFormat.parse(datumDokumentaString);
             } catch (ParseException e) {
                 e.printStackTrace();
 
@@ -277,7 +305,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
                 if (datumSinkronizacijeString==null){
                     datumSinkronizacije=null;
                 }else{
-                    datumSinkronizacije = (Date) simpleDateTimeFormat.parse(datumSinkronizacijeString);
+                    datumSinkronizacije = (Date) SQLLite_dateFormat.parse(datumSinkronizacijeString);
                 }
 
             } catch (ParseException e) {

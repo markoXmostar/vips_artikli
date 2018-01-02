@@ -1,6 +1,7 @@
 package com.example.marko.vips_artikli;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -71,6 +72,13 @@ public class ListaApp1DokumentiAdapter extends ArrayAdapter{
             layoutHandler = (ListaApp1DokumentiAdapter.LayoutHandler) row.getTag();
 
         }
+        //alternate row color start
+        if (position % 2 == 1) {
+            row.setBackgroundColor(Color.LTGRAY);
+        } else {
+            //row.setBackgroundColor(Color.DKGRAY);
+        }
+        //alternate row color end
         App1Dokumenti myObject = (App1Dokumenti) this.getItem(position);
         //layoutHandler.ID.setText(komitent.getId());
         layoutHandler.DatumDokumenta.setText(myObject.getDatumDokumentaString());

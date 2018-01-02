@@ -26,21 +26,21 @@
                 <TextView
                     android:id="@+id/txtDatumDokumenta_App1"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="0.33"
                     tools:text="31.12.2017." />
 
                 <TextView
                     android:id="@+id/txtTipDokumenta_App1"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="0.33"
                     tools:text="Otpremnica" />
 
                 <TextView
                     android:id="@+id/txtPodtipDokumenta_App1"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="0.33"
                     tools:text="Otpremnica za VP Čitluk" />
             </LinearLayout>
@@ -54,14 +54,14 @@
                 <TextView
                     android:id="@+id/txtKomitent_App1"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     tools:text="VANIMA d.o.o Mostar" />
 
                 <TextView
                     android:id="@+id/txtPjKOmitenta_App1"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     tools:text="Sjedište" />
             </LinearLayout>

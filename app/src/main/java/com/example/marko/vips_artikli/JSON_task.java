@@ -149,6 +149,32 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                         e.printStackTrace();
                     }
                     break;
+                case "artiklbarcode":
+                    result = "{\"Artiklbarcode\":" + result + ",\"ResponseStatus\":{}}";
+
+                    Log.d(TAG, "onPostExecute: " + result);
+                    jObject = null;
+                    try {
+                        jObject = new JSONObject(result);
+                        String bar = jObject.getString("Artiklbarcode");
+                        JSONArray arr = new JSONArray(bar);
+                        ArrayList<Barcode> ListaBarcode = new ArrayList<Barcode>();
+                        for (int i = 0; i < arr.length(); i++) {
+                            JSONObject myJmj = arr.getJSONObject(i);
+                            Barcode _barcode = new Barcode(myJmj.optLong("artiklId", 0),
+                                    myJmj.optString("barcode"));
+                            ListaBarcode.add(_barcode);
+                        }
+                        Log.d(TAG, "onPostExecute: BROJ JMJ=" + ListaBarcode.size());
+                        UpisiBarcodeUBazu(ListaBarcode);
+                        vrijeme2 = new Date(System.currentTimeMillis());
+                        long different = vrijeme2.getTime() - vrijeme1.getTime();
+                        Log.d(TAG, "onPostExecute: VRIJEME UČITAVANJA S INTERNETA I UPISA U BAZU JE :" + different + "ms");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 case "jmj":
                     result = "{\"Jmj\":" + result + ",\"ResponseStatus\":{}}";
 
@@ -463,6 +489,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
 
         myDB.close();
     }
+
     private void UpisiJMJUBazu(ArrayList<jmj> Lista) {
         boolean greska=false;
         String greskaStr="";
@@ -486,7 +513,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                         myJMJ.getId() + ",'" +
                         myJMJ.getNaziv()+ "');");
 
-                }
+            }
             Log.d(TAG, "Gotovo ");
             myDB.close();
         } catch (SQLException e) {
@@ -497,6 +524,49 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             if (greska){
                 UpisiLOG(1, greskaStr, myTabela, 0);
                 Log.d(TAG, "UpisiJMJUBazu: " + greskaStr);
+            }
+            else{
+                greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
+                Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
+                UpisiLOG(0, greskaStr, myTabela, 0);
+            }
+        }
+    }
+
+    private void UpisiBarcodeUBazu(ArrayList<Barcode> Lista) {
+        boolean greska=false;
+        String greskaStr="";
+        String myTabela = myTbl.NazivTabele;
+        try {
+
+            Log.d(TAG, "Otvaram bazu");
+            SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+            Log.d(TAG, "UpisiBarcodeUBazu: brišem tabelu " + myTabela + " ukoliko postoji");
+            myDB.execSQL("DROP TABLE IF EXISTS " + myTabela + ";");
+            Log.d(TAG, "Kreiram tabelu");
+            myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
+                    "artiklId long, " +
+                    "barcode VARCHAR);");
+
+            Log.d(TAG, "Brišem sve iz tabele");
+            myDB.execSQL("DELETE FROM " + myTabela + ";");
+            for (int i = 0; i < Lista.size(); i++) {
+                Barcode barcode = Lista.get(i);
+                myDB.execSQL("INSERT INTO " + myTabela + " (artiklId, barcode ) VALUES (" +
+                        barcode.getArtiklId() + ",'" +
+                        barcode.getBarcode()+ "');");
+
+            }
+            Log.d(TAG, "Gotovo ");
+            myDB.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            greskaStr=e.getMessage();
+            greska=true;
+        } finally {
+            if (greska){
+                UpisiLOG(1, greskaStr, myTabela, 0);
+                Log.d(TAG, "UpisiBarcodeUBazu: " + greskaStr);
             }
             else{
                 greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";

@@ -33,9 +33,9 @@ public class MainActivity extends AppCompatActivity
     public static final String TAG="Glavni MainActivity";
     public static final String myDATABASE="VIPS.db";
     public static final String SqlLiteDateFormat="yyyy-MM-dd HH:mm:ss";
-
     public static String DatumVrijemeFormat = "dd.MM.yyyy HH:mm:ss";
     public static String DatumFormat="dd.MM.yyyy";
+
     public static MainActivity ma;
 
     public static int DJELATNIK = 2;
@@ -166,8 +166,8 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
         boolean tabelaLogPostoji=true;
 
 
-        SimpleDateFormat simpleSqlDateFormat = new SimpleDateFormat(SqlLiteDateFormat);
-        SimpleDateFormat mojDateFormat=new SimpleDateFormat(DatumVrijemeFormat);
+
+
         if (isTableExists(myDB, myTabela)){
             if (isFieldExist(myDB,myTabela,"redniBroj")){
 
@@ -229,21 +229,12 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
                         tabela = z.getString(TabelaIndex);
                         naziv = z.getString(NazivIndex);
                         timestamp = z.getString(vrijemeIndex);
-                        Date dd=new Date();
+                        Date dd;
+                        dd=getDateFromSQLLiteDBFormat(timestamp);
 
-                        try {
-                            //dd=simpleDateFormat.parse(timestamp);
-                            dd=mojDateFormat.parse(timestamp);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        String myDatum=mojDateFormat.format(dd);
-                        try {
-                            //setZadnjaSinkronizacijaVrijeme(simpleDateFormat.parse(timestamp));
-                            setZadnjaSinkronizacijaVrijeme(mojDateFormat.parse(myDatum));
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
+                        //String myDatum=mojDateFormat.format(dd);
+                        String myDatum=parseDateFromSQLLiteDBFormatToMyFormat(dd);
+                        setZadnjaSinkronizacijaVrijeme(dd);
                         greska = z.getInt(greskaIndex);
                         Log.d(TAG, "getLOG: ");
                         //dbLog myLog = new dbLog(id, timestamp, greska, naziv, rbr, tabela);
@@ -255,7 +246,7 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
                         }
                     }
                     if (getZadnjaSinkronizacijaVrijeme() != null) {
-                        txtLastSyncDate.setText(mojDateFormat.format(getZadnjaSinkronizacijaVrijeme()));
+                        txtLastSyncDate.setText(parseDateFromSQLLiteDBFormatToMyFormat(getZadnjaSinkronizacijaVrijeme()));
                     }
 
                     z.close();
@@ -390,6 +381,10 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
         urlString = url + akcija + "?d=" + DJELATNIK;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "artikli"));
 
+        akcija = "artiklbarcode";
+        urlString = url + akcija + "?d=" + DJELATNIK;
+        spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "artiklbarcode"));
+
         akcija = "komitenti";
         urlString = url + akcija + "?d=" + DJELATNIK;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "komitenti"));
@@ -493,5 +488,29 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
         myDB = a.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
         myDB.execSQL("DELETE FROM " + myTable + ";");
         myDB.close();
+    }
+    public static void izbrisiRedakIzTabele(Activity a, String myTable, String myIDpolje, Long myIDvrijjednost){
+        SQLiteDatabase myDB = null;
+        myDB = a.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+        myDB.execSQL("DELETE FROM " + myTable + " WHERE " + myIDpolje + " = " + myIDvrijjednost +";");
+        myDB.close();
+    }
+
+    public static Date getDateFromSQLLiteDBFormat(String dateFromSqlLiteAsString){
+        Date date=new Date();
+        SimpleDateFormat simpleSqlDateFormat = new SimpleDateFormat(SqlLiteDateFormat);
+        try {
+            date=(Date)simpleSqlDateFormat.parse(dateFromSqlLiteAsString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+    public static String parseDateFromSQLLiteDBFormatToMyFormat(Date date){
+
+        SimpleDateFormat mojDateFormat=new SimpleDateFormat(DatumVrijemeFormat);
+        String myDateString=mojDateFormat.format(date);
+        return myDateString;
+
     }
 }
