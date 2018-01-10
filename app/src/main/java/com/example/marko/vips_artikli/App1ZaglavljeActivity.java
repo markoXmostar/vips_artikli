@@ -84,6 +84,7 @@ public class App1ZaglavljeActivity extends AppCompatActivity {
             labelPodtipDokumenta.setEnabled(false);
             txtPodtipDokumenta.setEnabled(false);
         }
+        setIzabranPodtip(null);
     }
 
     private TipDokumenta izabraniTiP;
@@ -98,7 +99,7 @@ public class App1ZaglavljeActivity extends AppCompatActivity {
         if(izabranPodtip!=null){
             txtPodtipDokumenta.setText(izabranPodtip.getNaziv());
         }else{
-            txtPjKomitenta.setText(getString(R.string.Izaberi));
+            txtPodtipDokumenta.setText(getString(R.string.Izaberi));
         }
     }
 

@@ -1,6 +1,8 @@
 package com.example.marko.vips_artikli;
 
 import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -65,12 +67,13 @@ public class MainActivity extends AppCompatActivity
 
     Integer lastSyncID=0;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         MainActivity ma=this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         txtLastSyncID=(TextView)findViewById(R.id.txtSyncID_main);
         txtLastSyncDate = (TextView) findViewById(R.id.txtDatumZadnjeSinkronizacije_main);
@@ -385,13 +388,20 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
         urlString = url + akcija + "?d=" + DJELATNIK;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "artiklbarcode"));
 
+        akcija = "artikljmj";
+        urlString = url + akcija + "?d=" + DJELATNIK;
+        spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "artikljmj"));
+
+        akcija = "artiklatribut";
+        urlString = url + akcija + "?d=" + DJELATNIK;
+        spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "artiklatribut"));
+
         akcija = "komitenti";
         urlString = url + akcija + "?d=" + DJELATNIK;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "komitenti"));
 
         akcija = "komitentpj";
         urlString = url + "idnazivrid" + "?d=" + DJELATNIK + "&t=" + akcija;
-        Log.d(TAG, "onNavigationItemSelected: " + urlString);
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "PjKomitenta"));
 
     }
@@ -512,5 +522,25 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
         String myDateString=mojDateFormat.format(date);
         return myDateString;
 
+    }
+
+
+    public static String getArtiklNaziv(Activity a, long id){
+        Log.d(TAG, "POČETAK ČITANJA PODATAKA IZ TABELE ARTIKLI: ");
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
+        Cursor c;
+        Log.d(TAG, "OTVOREN CURSOR ARTIKLI: ");
+        c = myDB.rawQuery("SELECT * FROM artikli WHERE _id = "+ id + ";", null);
+        int ArtiklNazivIndex = c.getColumnIndex("naziv");
+        c.moveToFirst();
+        String naziv="";
+        for (int j = 0; j < c.getCount(); j++) {
+            naziv=c.getString(ArtiklNazivIndex);
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        return naziv;
     }
 }

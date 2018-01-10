@@ -175,6 +175,59 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                         e.printStackTrace();
                     }
                     break;
+                case "artikljmj":
+                    result = "{\"Artikljmj\":" + result + ",\"ResponseStatus\":{}}";
+
+                    Log.d(TAG, "onPostExecute: " + result);
+                    jObject = null;
+                    try {
+                        jObject = new JSONObject(result);
+                        String bar = jObject.getString("Artikljmj");
+                        JSONArray arr = new JSONArray(bar);
+                        ArrayList<ArtiklJmj> ListaArtiklJmj = new ArrayList<ArtiklJmj>();
+                        for (int i = 0; i < arr.length(); i++) {
+                            JSONObject myJmj = arr.getJSONObject(i);
+                            ArtiklJmj _artJmj = new ArtiklJmj(myJmj.optLong("artiklId", 0),
+                                    myJmj.optLong("jmjId",0));
+                            ListaArtiklJmj.add(_artJmj);
+                        }
+                        Log.d(TAG, "onPostExecute: BROJ ArtiklJmjID=" + ListaArtiklJmj.size());
+                        UpisiArtiklJmjUBazu(ListaArtiklJmj);
+                        vrijeme2 = new Date(System.currentTimeMillis());
+                        long different = vrijeme2.getTime() - vrijeme1.getTime();
+                        Log.d(TAG, "onPostExecute: VRIJEME UČITAVANJA S INTERNETA I UPISA U BAZU JE :" + different + "ms");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case "artiklatribut":
+                    result = "{\"Artiklatribut\":" + result + ",\"ResponseStatus\":{}}";
+
+                    Log.d(TAG, "onPostExecute: " + result);
+                    jObject = null;
+                    try {
+                        jObject = new JSONObject(result);
+                        String bar = jObject.getString("Artiklatribut");
+                        JSONArray arr = new JSONArray(bar);
+                        ArrayList<ArtiklAtributStanje> ListaArtiklAtribut = new ArrayList<ArtiklAtributStanje>();
+                        for (int i = 0; i < arr.length(); i++) {
+                            JSONObject myObject = arr.getJSONObject(i);
+                            //{"artiklId":176242,"vrijednostId1":42,"vrijednost1":"2017-10-01","atribut1":"Rok trajanja","stanje":0.00000}
+                            ArtiklAtributStanje _artiklAtribut = new ArtiklAtributStanje(myObject.optLong("artiklId", 0),
+                                    myObject.optLong("vrijednostId1",0), myObject.optString("vrijednost1"),myObject.getString("atribut1"),myObject.optDouble("stanje",0));
+                            ListaArtiklAtribut.add(_artiklAtribut);
+                        }
+                        Log.d(TAG, "onPostExecute: BROJ ArtiklAtributStanje=" + ListaArtiklAtribut.size());
+                        UpisiArtiklAtributUBazu(ListaArtiklAtribut);
+                        vrijeme2 = new Date(System.currentTimeMillis());
+                        long different = vrijeme2.getTime() - vrijeme1.getTime();
+                        Log.d(TAG, "onPostExecute: VRIJEME UČITAVANJA S INTERNETA I UPISA U BAZU JE :" + different + "ms");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 case "jmj":
                     result = "{\"Jmj\":" + result + ",\"ResponseStatus\":{}}";
 
@@ -567,6 +620,99 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             if (greska){
                 UpisiLOG(1, greskaStr, myTabela, 0);
                 Log.d(TAG, "UpisiBarcodeUBazu: " + greskaStr);
+            }
+            else{
+                greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
+                Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
+                UpisiLOG(0, greskaStr, myTabela, 0);
+            }
+        }
+    }
+
+    private void UpisiArtiklJmjUBazu(ArrayList<ArtiklJmj> Lista) {
+        boolean greska=false;
+        String greskaStr="";
+        String myTabela = myTbl.NazivTabele;
+        try {
+
+            Log.d(TAG, "Otvaram bazu");
+            SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+            Log.d(TAG, "UpisiArtiklJmjUBazu: brišem tabelu " + myTabela + " ukoliko postoji");
+            myDB.execSQL("DROP TABLE IF EXISTS " + myTabela + ";");
+            Log.d(TAG, "Kreiram tabelu");
+            myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
+                    "artiklId long, " +
+                    "jmjId long);");
+
+            Log.d(TAG, "Brišem sve iz tabele");
+            myDB.execSQL("DELETE FROM " + myTabela + ";");
+            for (int i = 0; i < Lista.size(); i++) {
+                ArtiklJmj object = Lista.get(i);
+                myDB.execSQL("INSERT INTO " + myTabela + " (artiklId, jmjId ) VALUES (" +
+                        Long.toString(object.getArtiklID()) + "," +
+                        Long.toString(object.getJmjID())+ ");");
+
+            }
+            Log.d(TAG, "Gotovo ");
+            myDB.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            greskaStr=e.getMessage();
+            greska=true;
+        } finally {
+            if (greska){
+                UpisiLOG(1, greskaStr, myTabela, 0);
+                Log.d(TAG, "UpisiArticleJmjUBazu: " + greskaStr);
+            }
+            else{
+                greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
+                Log.d(TAG, "UpisiUBazu: "+ greskaStr + "/" +myTabela);
+                UpisiLOG(0, greskaStr, myTabela, 0);
+            }
+        }
+    }
+
+    private void UpisiArtiklAtributUBazu(ArrayList<ArtiklAtributStanje> Lista) {
+        boolean greska=false;
+        String greskaStr="";
+        String myTabela = myTbl.NazivTabele;
+        try {
+
+            Log.d(TAG, "Otvaram bazu");
+            SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+            Log.d(TAG, "UpisiArtiklAtributUBazu: brišem tabelu " + myTabela + " ukoliko postoji");
+            myDB.execSQL("DROP TABLE IF EXISTS " + myTabela + ";");
+            Log.d(TAG, "Kreiram tabelu");
+            //{"artiklId":176242,"vrijednostId1":42,"vrijednost1":"2017-10-01","atribut1":"Rok trajanja","stanje":0.00000}
+            myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
+                    "artiklId long, " +
+                    "vrijednostId1 long," +
+                    "vrijednost1 varchar," +
+                    "atribut1 varchar," +
+                    "stanje double);");
+
+            Log.d(TAG, "Brišem sve iz tabele");
+            myDB.execSQL("DELETE FROM " + myTabela + ";");
+            for (int i = 0; i < Lista.size(); i++) {
+                ArtiklAtributStanje object = Lista.get(i);
+                myDB.execSQL("INSERT INTO " + myTabela + " (artiklId, vrijednostId1, vrijednost1, atribut1, stanje) VALUES (" +
+                        object.getArtiklId() + "," +
+                        object.getVrijednostId1() + ",'" +
+                        object.getVrijednost1() + "','" +
+                        object.getAtribut1() + "'," +
+                        object.getStanje()+ ");");
+
+            }
+            Log.d(TAG, "Gotovo ");
+            myDB.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            greskaStr=e.getMessage();
+            greska=true;
+        } finally {
+            if (greska){
+                UpisiLOG(1, greskaStr, myTabela, 0);
+                Log.d(TAG, "UpisiArtiklAtributUBazu: " + greskaStr);
             }
             else{
                 greskaStr="Uspješno upisano :" +Integer.toString(Lista.size()) + " podataka";
