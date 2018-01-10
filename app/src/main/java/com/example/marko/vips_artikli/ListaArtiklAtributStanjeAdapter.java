@@ -2,11 +2,8 @@ package com.example.marko.vips_artikli;
 
 import android.app.Activity;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,12 +63,14 @@ public class ListaArtiklAtributStanjeAdapter extends ArrayAdapter {
             layoutHandler = (ListaArtiklAtributStanjeAdapter.LayoutHandler) row.getTag();
         }
         ArtiklAtributStanje artiklAtributStanje = (ArtiklAtributStanje) this.getItem(position);
+        /*
         String artNaziv;
         Activity a=(Activity) parent.getContext();
-        artNaziv=MainActivity.getArtiklNaziv(a,artiklAtributStanje.getArtiklId());
+        artNaziv=MainActivity.getArtiklNaziv_byID(a,artiklAtributStanje.getArtiklId());
         layoutHandler.nazivAtributa1.setText(artNaziv);
-        //layoutHandler.nazivAtributa1.setText(artiklAtributStanje.getAtribut1());
-        layoutHandler.vrijednostAtributa1.setText(artiklAtributStanje.getAtribut1() + ":" + artiklAtributStanje.getVrijednost1());
+        */
+        layoutHandler.nazivAtributa1.setText(artiklAtributStanje.getAtribut1());
+        layoutHandler.vrijednostAtributa1.setText(artiklAtributStanje.getVrijednost1());
         layoutHandler.stanje.setText(Double.toString(artiklAtributStanje.getStanje()));
         return row;
 

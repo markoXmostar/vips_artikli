@@ -456,9 +456,9 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
         SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
         Cursor c;
         if (filter.equals("")) {
-            c = myDB.rawQuery("SELECT * FROM "+ myTabela, null);
+            c = myDB.rawQuery("SELECT * FROM "+ myTabela + " ORDER BY artiklId ASC;", null);
         } else {
-            c = myDB.rawQuery("SELECT * FROM " + myTabela + " where artiklId like '%" + filter + "%'", null);
+            c = myDB.rawQuery("SELECT * FROM " + myTabela + " where artiklId like '%" + filter + "%'  ORDER BY artiklId ASC;", null);
         }
 
         int ArtiklIdIndex = c.getColumnIndex("artiklId");

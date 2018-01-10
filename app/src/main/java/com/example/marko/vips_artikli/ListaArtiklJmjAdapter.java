@@ -1,5 +1,6 @@
 package com.example.marko.vips_artikli;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -60,9 +61,20 @@ public class ListaArtiklJmjAdapter extends ArrayAdapter {
         } else {
             layoutHandler = (ListaArtiklJmjAdapter.LayoutHandler) row.getTag();
         }
+
         ArtiklJmj artiklJmj = (ArtiklJmj) this.getItem(position);
+
+        /*
+        String artNaziv,jmjNaziv;
+        Activity a=(Activity) parent.getContext();
+        artNaziv=MainActivity.getArtiklNaziv_byID(a,artiklJmj.getArtiklID());
+        jmjNaziv=MainActivity.getJmjNaziv_byID(a,artiklJmj.getJmjID());
+        layoutHandler.artiklID.setText(artNaziv);
+        layoutHandler.jmjID.setText(jmjNaziv);
+        */
         layoutHandler.artiklID.setText(Long.toString(artiklJmj.getArtiklID()));
         layoutHandler.jmjID.setText(Long.toString(artiklJmj.getJmjID()));
+
         return row;
 
     }

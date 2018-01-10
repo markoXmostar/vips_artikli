@@ -525,12 +525,31 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
     }
 
 
-    public static String getArtiklNaziv(Activity a, long id){
+    public static String getArtiklNaziv_byID(Activity a, long id){
         Log.d(TAG, "POČETAK ČITANJA PODATAKA IZ TABELE ARTIKLI: ");
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
         Cursor c;
         Log.d(TAG, "OTVOREN CURSOR ARTIKLI: ");
         c = myDB.rawQuery("SELECT * FROM artikli WHERE _id = "+ id + ";", null);
+        int ArtiklNazivIndex = c.getColumnIndex("naziv");
+        c.moveToFirst();
+        String naziv="";
+        for (int j = 0; j < c.getCount(); j++) {
+            naziv=c.getString(ArtiklNazivIndex);
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        return naziv;
+    }
+
+    public static String getJmjNaziv_byID(Activity a, long id){
+        Log.d(TAG, "POČETAK ČITANJA PODATAKA IZ TABELE JMJ: ");
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
+        Cursor c;
+        Log.d(TAG, "OTVOREN CURSOR ARTIKLI: ");
+        c = myDB.rawQuery("SELECT * FROM jmj WHERE _id = "+ id + ";", null);
         int ArtiklNazivIndex = c.getColumnIndex("naziv");
         c.moveToFirst();
         String naziv="";
