@@ -28,7 +28,7 @@ import static com.example.marko.vips_artikli.MainActivity.DatumVrijemeFormat;
 import static com.example.marko.vips_artikli.MainActivity.myDATABASE;
 
 public class App1DokumentiActivity extends AppCompatActivity {
-    private static String TAG = "App1";
+    private static String TAG = "App1Dokumenti";
     private static String tabelaApp1 = "dokumenti1";
 
     private ListView listSpisakDokumenata;
@@ -92,7 +92,12 @@ public class App1DokumentiActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 App1Dokumenti selektiranDok=(App1Dokumenti) adapterView.getItemAtPosition(i);
-                Toast.makeText(App1DokumentiActivity.this,selektiranDok.getId() +"/" +selektiranDok.getDatumDokumentaString() + "-" + selektiranDok.getKomitentNaziv(),Toast.LENGTH_LONG).show();
+                //Toast.makeText(App1DokumentiActivity.this,selektiranDok.getId() +"/" +selektiranDok.getDatumDokumentaString() + "-" + selektiranDok.getKomitentNaziv(),Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(App1DokumentiActivity.this, App1PodDokumentiActivity.class);
+                intent.putExtra("idDokumenta", selektiranDok.getId());
+                startActivity(intent);
+
             }
         });
 

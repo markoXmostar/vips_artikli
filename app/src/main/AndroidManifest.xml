@@ -28,8 +28,12 @@
             android:label="@string/NaslovApp1Dokumenti" />
         "@androi
         <activity android:name=".App1ZaglavljeActivity" />
-        <activity android:name=".PretragaKomitenataActivity"></activity>
-        <activity android:name=".App1StavkeActivity"></activity>
+        <activity android:name=".PretragaKomitenataActivity" />
+        <activity android:name=".App1StavkeActivity" />
+        <activity
+            android:name=".App1PodDokumentiActivity"
+            android:label="@string/NaslovApp1Stavke">
+        </activity>
     </application>
 
 </manifest>

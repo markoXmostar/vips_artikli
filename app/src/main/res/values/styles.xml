@@ -29,9 +29,18 @@
         <item name="android:popupBackground">#DFFFFFFF</item>
     </style>
 
+
+
     <style name="mojTextStyleZaIzbor" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/bojaZaIzborClick</item>
         <item name="android:textStyle">italic</item>
+    </style>
+
+
+    <style name="TextVievStyl_Stavke">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">serif-monospace</item>
     </style>
 
         
