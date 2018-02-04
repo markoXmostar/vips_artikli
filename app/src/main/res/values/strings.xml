@@ -31,4 +31,6 @@
     <string name="Ne">NE</string>
     <string name="mogucnosti">Mogućnosti</string>
     <string name="NaslovApp1Stavke">Stavke</string>
+    <string name="NoviDokument">Novi dokument</string>
+    <string name="NovaStavka">Nova stavka</string>
 </resources>

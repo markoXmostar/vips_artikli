@@ -16,7 +16,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -27,9 +26,13 @@
             android:name=".App1DokumentiActivity"
             android:label="@string/NaslovApp1Dokumenti" />
         "@androi
-        <activity android:name=".App1ZaglavljeActivity" />
+        <activity
+            android:name=".App1ZaglavljeActivity"
+            android:label="@string/NoviDokument" />
         <activity android:name=".PretragaKomitenataActivity" />
-        <activity android:name=".App1StavkeActivity" />
+        <activity
+            android:name=".App1StavkeActivity"
+            android:label="@string/NovaStavka" /> />
         <activity
             android:name=".App1PodDokumentiActivity"
             android:label="@string/NaslovApp1Stavke">
