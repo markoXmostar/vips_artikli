@@ -1,5 +1,6 @@
 package com.example.marko.vips_artikli;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.view.MenuItemCompat;
@@ -9,14 +10,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.support.v7.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ArtikliActivity extends AppCompatActivity {
 
     public static final String TAG="ARTIKLI";
+    private int varijantaForme=99;
 
     ListView artiklListView;
     TextView NoDataText;
@@ -77,7 +81,31 @@ public class ArtikliActivity extends AppCompatActivity {
         artiklListView = (ListView) findViewById(R.id.artikliListView);
         artiklListView.setItemsCanFocus(false);
 
+        Bundle b = getIntent().getExtras();
+        if (b != null) {
+            varijantaForme = b.getInt("varijanta");
+        }
+
+
         UcitajListuIzBaze("");
+
+        artiklListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                if (varijantaForme==0){
+
+                    Artikl selektiraniArtikl=(Artikl)adapterView.getItemAtPosition(position);
+                    Log.d(TAG, "greška1: " + selektiraniArtikl.getNaziv());
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("artikl",selektiraniArtikl);
+                    //Toast.makeText(ArtikliActivity.this,selektiraniArtikl.getImaRokTrajanja(),Toast.LENGTH_LONG).show();
+                    setResult(ArtikliActivity.this.RESULT_OK,returnIntent);
+                    finish();
+
+
+                }
+            }
+        });
     }
 
 
@@ -146,7 +174,8 @@ public class ArtikliActivity extends AppCompatActivity {
             mpc=c.getDouble(MpcIndex);
             netto=c.getDouble(NettoIndex);
             brutto=c.getDouble(BruttoIndex);
-            imaRokTrajanja=false;
+            boolean vrijednostImaAtribut = (c.getInt(ImaRokTrajanjaIndex) == 1);
+            imaRokTrajanja=vrijednostImaAtribut;
             podgrupaID=c.getInt(PodgrupaIdIndex);
 
 

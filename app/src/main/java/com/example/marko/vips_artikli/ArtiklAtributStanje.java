@@ -59,4 +59,8 @@ public class ArtiklAtributStanje {
     public void setStanje(double stanje) {
         this.stanje = stanje;
     }
+
+    public String toString(){
+        return getVrijednost1();
+    }
 }

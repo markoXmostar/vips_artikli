@@ -1,10 +1,12 @@
 package com.example.marko.vips_artikli;
 
+import java.io.Serializable;
+
 /**
  * Created by marko on 1.11.2017.
  */
 
-public class Artikl {
+public class Artikl  implements Serializable{
     private long id;
     private String sifra, naziv, kataloskiBroj, jmj, kratkiOpis, proizvodjac, dugiOpis, vrstaAmbalaze;
     private double brojKoleta, brojKoletaNaPaleti, stanje, vpc, mpc, netto, brutto;

@@ -9,15 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
-import static com.example.marko.vips_artikli.MainActivity.DatumFormat;
 import static com.example.marko.vips_artikli.MainActivity.DatumVrijemeFormat;
 import static com.example.marko.vips_artikli.MainActivity.myDATABASE;
 
@@ -30,17 +27,26 @@ public class App1PodDokumentiActivity extends AppCompatActivity {
     ListView listSpisakStavki;
     private FloatingActionButton fabNovaStavka;
 
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app1_pod_dokumenti);
 
-        listSpisakStavki=(ListView)findViewById(R.id.listSpisakStavki_App1);
+
 
         Bundle b = getIntent().getExtras();
         IdDokumenta = b.getInt("idDokumenta");
 
         fabNovaStavka = (FloatingActionButton) findViewById(R.id.fabNovaStavka_App1);
+        listSpisakStavki=(ListView)findViewById(R.id.listSpisakStavki_App1);
+
+
+
+
 
         kreirajTabeluStavki();
         ucitajStavke();

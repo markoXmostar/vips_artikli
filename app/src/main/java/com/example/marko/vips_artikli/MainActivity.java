@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -26,8 +27,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -561,5 +565,37 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
         }
         c.close();
         return naziv;
+    }
+
+    public static List<ArtiklAtributStanje> getListaAtributa(Activity a,long artiklID){
+        List<ArtiklAtributStanje> listaAtributa = new ArrayList<ArtiklAtributStanje>();
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
+        Cursor c;
+        c = myDB.rawQuery("SELECT * FROM artiklatribut where artiklID = " +artiklID + ";", null);
+        int ArtiklIdIndex = c.getColumnIndex("artiklId");
+        int vrijednostId1Index = c.getColumnIndex("vrijednostId1");
+        int vrijednost1Index = c.getColumnIndex("vrijednost1");
+        int atribut1Index = c.getColumnIndex("atribut1");
+        int stanjeIndex = c.getColumnIndex("stanje");
+        c.moveToFirst();
+        for (int j = 0; j < c.getCount(); j++) {
+            long artId;
+            long vrj1Id;
+            String vrijednost;
+            String atribut1;
+            double stanje;
+            artId = c.getLong(ArtiklIdIndex);
+            vrj1Id = c.getLong(vrijednostId1Index);
+            vrijednost=c.getString(vrijednost1Index);
+            atribut1=c.getString(atribut1Index);
+            stanje=c.getDouble(stanjeIndex);
+            ArtiklAtributStanje object = new ArtiklAtributStanje(artId, vrj1Id,vrijednost,atribut1,stanje);
+            listaAtributa.add(object);
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        return  listaAtributa;
     }
 }
