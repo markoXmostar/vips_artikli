@@ -567,11 +567,21 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
         return naziv;
     }
 
-    public static List<ArtiklAtributStanje> getListaAtributa(Activity a,long artiklID){
+    public static List<ArtiklAtributStanje> getListaAtributa(Activity a, long artiklID, String filter) {
+        String myTabela = "artiklatribut";
         List<ArtiklAtributStanje> listaAtributa = new ArrayList<ArtiklAtributStanje>();
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
         Cursor c;
-        c = myDB.rawQuery("SELECT * FROM artiklatribut where artiklID = " +artiklID + ";", null);
+        if (artiklID == -1) {
+            if (filter.equals("")) {
+                c = myDB.rawQuery("SELECT * FROM " + myTabela + " ORDER BY artiklID ASC;", null);
+            } else {
+                c = myDB.rawQuery("SELECT * FROM " + myTabela + " WHERE artiklId LIKE '%" + filter + "%' ORDER BY artiklID ASC;", null);
+            }
+        } else {
+            c = myDB.rawQuery("SELECT * FROM " + myTabela + " where artiklID = " + artiklID + ";", null);
+        }
+
         int ArtiklIdIndex = c.getColumnIndex("artiklId");
         int vrijednostId1Index = c.getColumnIndex("vrijednostId1");
         int vrijednost1Index = c.getColumnIndex("vrijednost1");
@@ -597,5 +607,73 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
         }
         c.close();
         return  listaAtributa;
+    }
+
+    public static List<ArtiklJmj> getListaArtiklJMJ(Activity a, long artiklID, String filter) {
+        List<ArtiklJmj> lista = new ArrayList<ArtiklJmj>();
+        String myTabela = "artikljmj";
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
+        Cursor c;
+        if (artiklID == -1) {
+            if (filter.equals("")) {
+                c = myDB.rawQuery("SELECT * FROM " + myTabela + " ORDER BY artiklId ASC;", null);
+            } else {
+                c = myDB.rawQuery("SELECT * FROM " + myTabela + " where artiklId like '%" + filter + "%'  ORDER BY artiklId ASC;", null);
+            }
+        } else {
+            c = myDB.rawQuery("SELECT * FROM " + myTabela + " WHERE artiklID=" + artiklID + ";", null);
+        }
+        int ArtiklIdIndex = c.getColumnIndex("artiklId");
+        int jmjIdIndex = c.getColumnIndex("jmjId");
+        c.moveToFirst();
+        Log.d(TAG, "ListaArtiklJmjAdapter: Broj podataka u bazi je:" + Integer.toString(c.getCount() + 1));
+        for (int j = 0; j < c.getCount(); j++) {
+            long artId;
+            long jmjId;
+            artId = c.getLong(ArtiklIdIndex);
+            jmjId = c.getLong(jmjIdIndex);
+            ArtiklJmj ArtJmjProvider = new ArtiklJmj(artId, jmjId);
+            lista.add(ArtJmjProvider);
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        return lista;
+    }
+
+    public static List<jmj> getListaJMJ(Activity a, long id, String filter) {
+        List<jmj> lista = new ArrayList<jmj>();
+        String myTabela = "jmj";
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
+        Cursor c;
+        if (id == -1) {
+            if (filter.equals("")) {
+                c = myDB.rawQuery("SELECT * FROM " + myTabela + ";", null);
+            } else {
+                c = myDB.rawQuery("SELECT * FROM " + myTabela + " where naziv like '%" + filter + "%'", null);
+            }
+        } else {
+            c = myDB.rawQuery("SELECT * FROM " + myTabela + " WHERE _id=" + id + ";", null);
+        }
+        int IdIndex = c.getColumnIndex("_id");
+        int NazivIndex = c.getColumnIndex("naziv");
+
+        c.moveToFirst();
+
+        for (int j = 0; j < c.getCount(); j++) {
+            long idJmj;
+            String naziv;
+            idJmj = c.getLong(IdIndex);
+            naziv = c.getString(NazivIndex);
+
+            jmj jmjProvider = new jmj(idJmj, naziv);
+            lista.add(jmjProvider);
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        return lista;
     }
 }

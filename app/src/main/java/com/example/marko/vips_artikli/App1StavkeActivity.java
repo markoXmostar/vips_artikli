@@ -4,16 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -82,6 +78,21 @@ public class App1StavkeActivity extends AppCompatActivity {
     private ArtiklAtributStanje izabraniAtribut;
 
 
+    public ArtiklJmj getIzabranaJMJ() {
+        return izabranaJMJ;
+    }
+
+    public void setIzabranaJMJ(ArtiklJmj izabranaJMJ) {
+        this.izabranaJMJ = izabranaJMJ;
+        if (izabranaJMJ == null) {
+            txtJmj.setText(getString(R.string.Izaberi));
+        } else {
+
+        }
+    }
+
+    private ArtiklJmj izabranaJMJ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,22 +132,44 @@ public class App1StavkeActivity extends AppCompatActivity {
         txtRokTrajanja.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick: počinjem učitavanje atributa");
-                final List<ArtiklAtributStanje> spisakAtributa=MainActivity.getListaAtributa(App1StavkeActivity.this,izabraniArtikl.getId());
-                Log.d(TAG, "onClick: Atributi učitani. broj im je =" +spisakAtributa.size());
-                CharSequence[] items = new CharSequence[spisakAtributa.size()];
-                for (int i = 0; i < spisakAtributa.size(); i++) {
-                    items[i] = spisakAtributa.get(i).toString();
+
+                final List<ArtiklAtributStanje> spisak = MainActivity.getListaAtributa(App1StavkeActivity.this, izabraniArtikl.getId(), "");
+                Log.d(TAG, "onClick: Atributi učitani. broj im je =" + spisak.size());
+                CharSequence[] items = new CharSequence[spisak.size()];
+                for (int i = 0; i < spisak.size(); i++) {
+                    items[i] = spisak.get(i).toString();
                 }
                 AlertDialog.Builder builder = new AlertDialog.Builder(App1StavkeActivity.this);
                 builder.setTitle("Izaberi atribut");
                 builder.setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ArtiklAtributStanje myAtribut= spisakAtributa.get(which);
+                        ArtiklAtributStanje myAtribut = spisak.get(which);
                         setIzabraniAtribut(myAtribut);
                         //Toast.makeText(App1StavkeActivity.this,izabranAtribut.getVrijednost1(),Toast.LENGTH_LONG).show();
                         }
+                });
+                builder.show();
+            }
+        });
+
+        txtJmj.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final List<ArtiklJmj> spisak = MainActivity.getListaArtiklJMJ(App1StavkeActivity.this, izabraniArtikl.getId(), "");
+                CharSequence[] items = new CharSequence[spisak.size()];
+                for (int i = 0; i < spisak.size(); i++) {
+                    items[i] = spisak.get(i).toString();
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(App1StavkeActivity.this);
+                builder.setTitle("Izaberi JMJ");
+                builder.setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ArtiklJmj myAtribut = spisak.get(which);
+                        //setIzabraniAtribut(myAtribut);
+                        //Toast.makeText(App1StavkeActivity.this,izabranAtribut.getVrijednost1(),Toast.LENGTH_LONG).show();
+                    }
                 });
                 builder.show();
             }

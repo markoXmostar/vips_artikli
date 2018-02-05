@@ -31,4 +31,6 @@ public class jmj {
     public void setNaziv(String naziv) {
         this.naziv = naziv;
     }
+
+
 }

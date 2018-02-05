@@ -12,6 +12,8 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.List;
+
 public class RegistriActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     public static final String TAG = "REGISTRI";
 
@@ -357,46 +359,17 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
         Log.d(TAG, " Tabela tip_dokumenta učitana!");
     }
     private void UcitajListuJMJIzBaze(String filter) {
-        Log.d(TAG, "UcitajListuJMJIzBaze: Start");
+
         String myTabela="jmj";
         if (!PostaviVidljivostElemenata(myTabela)){
             return;
         }
-        Log.d(TAG, "UcitajListuJMJIzBaze: Postoji tabela. Počni učitavanje");
-
         ListaJmjAdapter listaJmjAdapter = new ListaJmjAdapter(this, R.layout.row_jmj);
         mojListView.setAdapter(listaJmjAdapter);
-        Log.d(TAG, " ucitavam bazu!");
-
-        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
-        Cursor c;
-        if (filter.equals("")) {
-            c = myDB.rawQuery("SELECT * FROM "+ myTabela, null);
-        } else {
-            c = myDB.rawQuery("SELECT * FROM " + myTabela + " where naziv like '%" + filter + "%'", null);
+        List<jmj> mojaLista = MainActivity.getListaJMJ(this, -1, "");
+        for (int j = 0; j < mojaLista.size(); j++) {
+            listaJmjAdapter.add(mojaLista.get(j));
         }
-
-        int IdIndex = c.getColumnIndex("_id");
-        int NazivIndex = c.getColumnIndex("naziv");
-
-        c.moveToFirst();
-        int brojac = 0;
-        Log.d(TAG, "UcitajListuJMJIzBaze: Broj podataka u bazi je:" + Integer.toString( c.getCount()+1));
-        for (int j = 0; j < c.getCount(); j++) {
-            long id;
-            String naziv;
-            id = c.getLong(IdIndex);
-            naziv = c.getString(NazivIndex);
-
-            jmj jmjProvider = new jmj(id, naziv);
-            listaJmjAdapter.add(jmjProvider);
-            brojac++;
-            if (j != c.getCount()) {
-                c.moveToNext();
-            }
-        }
-        c.close();
-        Log.d(TAG, " Tabela jmj učitana!");
     }
 
     private void UcitajListuBarcodeIzBaze(String filter) {
@@ -442,98 +415,30 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
         Log.d(TAG, " Tabela jmj učitana!");
     }
     private void UcitajListuArtiklJmjIzBaze(String filter) {
-        Log.d(TAG, "UcitajListuArtiklJMJIzBaze: Start");
         String myTabela="artikljmj";
         if (!PostaviVidljivostElemenata(myTabela)){
             return;
         }
-        Log.d(TAG, "UcitajListuArtiklJMJIzBaze: Postoji tabela. Počni učitavanje");
-
         ListaArtiklJmjAdapter listaArtiklJmjAdapter = new ListaArtiklJmjAdapter(this, R.layout.row_jmj);
         mojListView.setAdapter(listaArtiklJmjAdapter);
-        Log.d(TAG, " ucitavam bazu!");
 
-        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
-        Cursor c;
-        if (filter.equals("")) {
-            c = myDB.rawQuery("SELECT * FROM "+ myTabela + " ORDER BY artiklId ASC;", null);
-        } else {
-            c = myDB.rawQuery("SELECT * FROM " + myTabela + " where artiklId like '%" + filter + "%'  ORDER BY artiklId ASC;", null);
+        List<ArtiklJmj> mojaLista = MainActivity.getListaArtiklJMJ(this, -1, "");
+        for (int j = 0; j < mojaLista.size(); j++) {
+            listaArtiklJmjAdapter.add(mojaLista.get(j));
         }
 
-        int ArtiklIdIndex = c.getColumnIndex("artiklId");
-        int jmjIdIndex = c.getColumnIndex("jmjId");
-
-        c.moveToFirst();
-        int brojac = 0;
-        Log.d(TAG, "ListaArtiklJmjAdapter: Broj podataka u bazi je:" + Integer.toString( c.getCount()+1));
-        for (int j = 0; j < c.getCount(); j++) {
-            long artId;
-            long jmjId;
-            artId = c.getLong(ArtiklIdIndex);
-            jmjId = c.getLong(jmjIdIndex);
-
-            ArtiklJmj ArtJmjProvider = new ArtiklJmj(artId, jmjId);
-            listaArtiklJmjAdapter.add(ArtJmjProvider);
-            brojac++;
-            if (j != c.getCount()) {
-                c.moveToNext();
-            }
-        }
-        c.close();
-        Log.d(TAG, " Tabela jmj učitana!");
     }
     private void UcitajListuArtiklAtributaIzBaze(String filter) {
-        Log.d(TAG, "UcitajListuArtiklJMJIzBaze: Start");
+
         String myTabela="artiklatribut";
         if (!PostaviVidljivostElemenata(myTabela)){
             return;
         }
-        Log.d(TAG, "UcitajListuArtiklAtributIzBaze: Postoji tabela. Počni učitavanje");
-
         ListaArtiklAtributStanjeAdapter listaArtiklAtributAdapter = new ListaArtiklAtributStanjeAdapter(this, R.layout.row_grupa);
         mojListView.setAdapter(listaArtiklAtributAdapter);
-        Log.d(TAG, " ucitavam bazu!");
-
-        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
-        Cursor c;
-        if (filter.equals("")) {
-            c = myDB.rawQuery("SELECT * FROM "+ myTabela + " ORDER BY artiklID ASC;", null);
-        } else {
-            c = myDB.rawQuery("SELECT * FROM " + myTabela + " where artiklId like '%" + filter + "%' ORDER BY artiklID ASC;", null);
+        List<ArtiklAtributStanje> mojaLista = MainActivity.getListaAtributa(this, -1, "");
+        for (int j = 0; j < mojaLista.size(); j++) {
+            listaArtiklAtributAdapter.add(mojaLista.get(j));
         }
-
-        int ArtiklIdIndex = c.getColumnIndex("artiklId");
-        int vrijednostId1Index = c.getColumnIndex("vrijednostId1");
-        int vrijednost1Index = c.getColumnIndex("vrijednost1");
-        int atribut1Index = c.getColumnIndex("atribut1");
-        int stanjeIndex = c.getColumnIndex("stanje");
-
-        c.moveToFirst();
-        int brojac = 0;
-        Log.d(TAG, "ListaArtiklAtributAdapter: Broj podataka u bazi je:" + Integer.toString( c.getCount()+1));
-        for (int j = 0; j < c.getCount(); j++) {
-            long artId;
-            long vrj1Id;
-            String vrijednost;
-            String atribut1;
-            double stanje;
-
-            artId = c.getLong(ArtiklIdIndex);
-            vrj1Id = c.getLong(vrijednostId1Index);
-            vrijednost=c.getString(vrijednost1Index);
-            atribut1=c.getString(atribut1Index);
-            stanje=c.getDouble(stanjeIndex);
-
-
-            ArtiklAtributStanje object = new ArtiklAtributStanje(artId, vrj1Id,vrijednost,atribut1,stanje);
-            listaArtiklAtributAdapter.add(object);
-            brojac++;
-            if (j != c.getCount()) {
-                c.moveToNext();
-            }
-        }
-        c.close();
-        Log.d(TAG, " Tabela ArtiklAtribut učitana!");
     }
 }
