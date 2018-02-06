@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 import static com.example.marko.vips_artikli.MainActivity.DatumVrijemeFormat;
 import static com.example.marko.vips_artikli.MainActivity.myDATABASE;
 
-public class App1PodDokumentiActivity extends AppCompatActivity {
+public class App1StavkeActivity extends AppCompatActivity {
     private static String TAG = "App1Stavke";
     private static String tabelaApp1 = "stavke1";
 
@@ -32,7 +32,7 @@ public class App1PodDokumentiActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_app1_pod_dokumenti);
+        setContentView(R.layout.activity_app1_stavke);
 
 
 
@@ -52,7 +52,8 @@ public class App1PodDokumentiActivity extends AppCompatActivity {
         fabNovaStavka.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(App1PodDokumentiActivity.this, App1UnosStavkeActivity.class);
+                Intent intent = new Intent(App1StavkeActivity.this, App1UnosStavkeActivity.class);
+                intent.putExtra("idDokumenta",IdDokumenta);
                 startActivityForResult(intent,1);
             }
         });
@@ -74,7 +75,7 @@ public class App1PodDokumentiActivity extends AppCompatActivity {
         Log.d(TAG, "Otvaram bazu");
         myDB = openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
         Log.d(TAG, "Kreiram tabelu");
-        //myDB.execSQL("DROP TABLE " + tabelaApp1 + ";");
+        myDB.execSQL("DROP TABLE " + tabelaApp1 + ";");
         myDB.execSQL("CREATE TABLE IF NOT EXISTS " + tabelaApp1 + " (" +
                 "_id Integer PRIMARY KEY AUTOINCREMENT, " +
                 "idDokumenta long, " +
@@ -85,6 +86,9 @@ public class App1PodDokumentiActivity extends AppCompatActivity {
                 "idAtributa long," +
                 "vrijednostAtributa datetime, " +
                 "idVrijednostiAtributa long," +
+                "idJmj long," +
+                "nazivJmj VARCHAR," +
+                "napomena VARCHAR," +
                 "datumUpisa datetime default current_timestamp);");
         myDB.close();
     }

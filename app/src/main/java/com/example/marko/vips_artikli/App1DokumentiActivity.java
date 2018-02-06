@@ -94,7 +94,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
                 App1Dokumenti selektiranDok=(App1Dokumenti) adapterView.getItemAtPosition(i);
                 //Toast.makeText(App1DokumentiActivity.this,selektiranDok.getId() +"/" +selektiranDok.getDatumDokumentaString() + "-" + selektiranDok.getKomitentNaziv(),Toast.LENGTH_LONG).show();
 
-                Intent intent = new Intent(App1DokumentiActivity.this, App1PodDokumentiActivity.class);
+                Intent intent = new Intent(App1DokumentiActivity.this, App1StavkeActivity.class);
                 intent.putExtra("idDokumenta", selektiranDok.getId());
                 startActivity(intent);
 

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.Layout;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -30,6 +31,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
     TextView txtJmj;
     EditText txtKolicina;
     EditText txtNapomena;
+
+    Button btnOk,btCancel;
 
     private Artikl izabraniArtikl;
 
@@ -100,12 +103,15 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
     }
 
     private ArtiklJmj izabranaJMJ;
-
+    private long idDokumenta;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app1_unos_stavke);
+
+        Bundle b=getIntent().getExtras();
+        idDokumenta=b.getLong("idDokumenta");
 
         txtArtikl=(TextView)findViewById(R.id.txtArtikal_App1UnosStavke);
         txtRokTrajanja =(TextView)findViewById(R.id.txtRokTrajanja_App1UnosStavke);
@@ -113,6 +119,9 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         txtJmj=(TextView)findViewById(R.id.txtJmj_App1UnosStavke);
         txtKolicina=(EditText)findViewById(R.id.txtKolicina_App1UnosStavke);
         txtNapomena=(EditText) findViewById(R.id.etxtNapomena_App1UnosStavke);
+
+        btnOk=(Button)findViewById(R.id.btnOK_App1UnosStavke);
+        btCancel=(Button)findViewById(R.id.btnCancel_App1UnosStavke);
 
         varijantaPretrageArtikala=0;
         setIzabraniArtikl(null);
@@ -184,6 +193,22 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent returnIntent = new Intent();
+                App1Stavke newStavka=new App1Stavke(-1,idDokumenta,izabraniArtikl.getId(),izabraniArtikl.getNaziv(),izabranaJMJ.getJmjID(),
+                        izabranaJMJ.getNazivJMJ(),izabraniArtikl.isImaRokTrajanja(),izabraniAtribut.getVrijednostId1(),
+                        izabraniAtribut.getVrijednostId1(),izabraniAtribut.getAtribut1(),Double.parseDouble(txtKolicina.getText().toString()),txtNapomena.getText().toString());
+
+                returnIntent.putExtra("stavka",newStavka);
+
+                setResult(Activity.RESULT_OK,returnIntent);
+                finish();
+            }
+        });
+
     }
 
 

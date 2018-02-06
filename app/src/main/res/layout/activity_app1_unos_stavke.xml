@@ -150,14 +150,14 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            android:id="@+id/btnCancel_App1ZaglavljeDokumenata"
+            android:id="@+id/btnCancel_App1UnosStavke"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/CANCELtext" />
 
         <Button
-            android:id="@+id/btnOK_App1ZaglavljeDokumenata"
+            android:id="@+id/btnOK_App1UnosStavke"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

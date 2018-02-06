@@ -34,7 +34,7 @@
             android:name=".App1UnosStavkeActivity"
             android:label="@string/NovaStavka" /> />
         <activity
-            android:name=".App1PodDokumentiActivity"
+            android:name=".App1StavkeActivity"
             android:label="@string/NaslovApp1Stavke">
         </activity>
     </application>
