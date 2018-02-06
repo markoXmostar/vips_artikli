@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -13,7 +15,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class App1StavkeActivity extends AppCompatActivity {
+public class App1UnosStavkeActivity extends AppCompatActivity {
     static final String TAG = "UNOS STAVKE";
     private int varijantaPretrageArtikala;
     /*
@@ -24,15 +26,14 @@ public class App1StavkeActivity extends AppCompatActivity {
 
     TextView txtArtikl;
     TextView txtRokTrajanja;
+    TextView tvRokTrajanja;
     TextView txtJmj;
     EditText txtKolicina;
     EditText txtNapomena;
 
     private Artikl izabraniArtikl;
 
-    private Artikl getIzabraniArtikl() {
-        return izabraniArtikl;
-    }
+    List<ArtiklJmj> spisakJMJ = null;
 
     private void setIzabraniArtikl(Artikl _izabraniArtikl) {
         izabraniArtikl = _izabraniArtikl;
@@ -42,27 +43,36 @@ public class App1StavkeActivity extends AppCompatActivity {
             txtNapomena.setEnabled(false);
             txtRokTrajanja.setEnabled(false);
             txtJmj.setEnabled(false);
-            Log.d(TAG, "setIzabraniArtikl: greška1 = NULL" );
+            txtRokTrajanja.setVisibility(View.GONE);
+            tvRokTrajanja.setVisibility(View.GONE);
+
         }
         else {
             txtArtikl.setText(izabraniArtikl.getNaziv());
-            Log.d(TAG, "setIzabraniArtikl: greška1" + izabraniArtikl.getNaziv() + "/ ima atrinut =" + izabraniArtikl.isImaRokTrajanja());
+            Log.d(TAG, "setIzabraniArtikl: greška1" + izabraniArtikl.getNaziv() + "/ ima atribut =" + izabraniArtikl.isImaRokTrajanja());
             txtKolicina.setEnabled(true);
             txtNapomena.setEnabled(true);
-            txtJmj.setEnabled(true);
+
             if(izabraniArtikl.isImaRokTrajanja()){
                 txtRokTrajanja.setEnabled(true);
-
+                txtRokTrajanja.setVisibility(View.VISIBLE);
+                tvRokTrajanja.setVisibility(View.VISIBLE);
             }
             else {
                 txtRokTrajanja.setEnabled(false);
+                txtRokTrajanja.setVisibility(View.GONE);
+                tvRokTrajanja.setVisibility(View.GONE);
             }
-
+            spisakJMJ = MainActivity.getListaArtiklJMJ(App1UnosStavkeActivity.this, izabraniArtikl.getId(), "");
+            if (spisakJMJ.size() > 1) {
+                txtJmj.setEnabled(true);
+                txtJmj.setText(getString(R.string.Izaberi));
+            } else {
+                txtJmj.setEnabled(false);
+                ArtiklJmj jmj = (ArtiklJmj) spisakJMJ.get(0);
+                setIzabranaJMJ(jmj);
+            }
         }
-    }
-
-    public ArtiklAtributStanje getIzabraniAtribut() {
-        return izabraniAtribut;
     }
 
     public void setIzabraniAtribut(ArtiklAtributStanje izabraniAtribut) {
@@ -78,16 +88,14 @@ public class App1StavkeActivity extends AppCompatActivity {
     private ArtiklAtributStanje izabraniAtribut;
 
 
-    public ArtiklJmj getIzabranaJMJ() {
-        return izabranaJMJ;
-    }
+
 
     public void setIzabranaJMJ(ArtiklJmj izabranaJMJ) {
         this.izabranaJMJ = izabranaJMJ;
         if (izabranaJMJ == null) {
             txtJmj.setText(getString(R.string.Izaberi));
         } else {
-
+            txtJmj.setText(izabranaJMJ.toString());
         }
     }
 
@@ -97,13 +105,15 @@ public class App1StavkeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_app1_stavke);
+        setContentView(R.layout.activity_app1_unos_stavke);
 
         txtArtikl=(TextView)findViewById(R.id.txtArtikal_App1UnosStavke);
         txtRokTrajanja =(TextView)findViewById(R.id.txtRokTrajanja_App1UnosStavke);
+        tvRokTrajanja = (TextView) findViewById(R.id.tvRokTrajanja_App1UnosStavke);
         txtJmj=(TextView)findViewById(R.id.txtJmj_App1UnosStavke);
         txtKolicina=(EditText)findViewById(R.id.txtKolicina_App1UnosStavke);
         txtNapomena=(EditText) findViewById(R.id.etxtNapomena_App1UnosStavke);
+
         varijantaPretrageArtikala=0;
         setIzabraniArtikl(null);
 
@@ -112,7 +122,7 @@ public class App1StavkeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 switch (varijantaPretrageArtikala){
                     case 0:
-                        Intent intent=new Intent(App1StavkeActivity.this,ArtikliActivity.class);
+                        Intent intent = new Intent(App1UnosStavkeActivity.this, ArtikliActivity.class);
                         intent.putExtra("varijanta", 0);
                         startActivityForResult(intent,1);
                         break;
@@ -133,13 +143,13 @@ public class App1StavkeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                final List<ArtiklAtributStanje> spisak = MainActivity.getListaAtributa(App1StavkeActivity.this, izabraniArtikl.getId(), "");
+                final List<ArtiklAtributStanje> spisak = MainActivity.getListaAtributa(App1UnosStavkeActivity.this, izabraniArtikl.getId(), "");
                 Log.d(TAG, "onClick: Atributi učitani. broj im je =" + spisak.size());
                 CharSequence[] items = new CharSequence[spisak.size()];
                 for (int i = 0; i < spisak.size(); i++) {
                     items[i] = spisak.get(i).toString();
                 }
-                AlertDialog.Builder builder = new AlertDialog.Builder(App1StavkeActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(App1UnosStavkeActivity.this);
                 builder.setTitle("Izaberi atribut");
                 builder.setItems(items, new DialogInterface.OnClickListener() {
                     @Override
@@ -156,19 +166,19 @@ public class App1StavkeActivity extends AppCompatActivity {
         txtJmj.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final List<ArtiklJmj> spisak = MainActivity.getListaArtiklJMJ(App1StavkeActivity.this, izabraniArtikl.getId(), "");
+                final List<ArtiklJmj> spisak = spisakJMJ;
                 CharSequence[] items = new CharSequence[spisak.size()];
                 for (int i = 0; i < spisak.size(); i++) {
                     items[i] = spisak.get(i).toString();
                 }
-                AlertDialog.Builder builder = new AlertDialog.Builder(App1StavkeActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(App1UnosStavkeActivity.this);
                 builder.setTitle("Izaberi JMJ");
                 builder.setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         ArtiklJmj myAtribut = spisak.get(which);
-                        //setIzabraniAtribut(myAtribut);
-                        //Toast.makeText(App1StavkeActivity.this,izabranAtribut.getVrijednost1(),Toast.LENGTH_LONG).show();
+                        setIzabranaJMJ(myAtribut);
+
                     }
                 });
                 builder.show();

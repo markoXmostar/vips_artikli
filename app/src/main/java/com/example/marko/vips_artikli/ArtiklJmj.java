@@ -10,10 +10,16 @@ public class ArtiklJmj {
     private long ArtiklID;
     private long JmjID;
     private String nazivJMJ;
-    public ArtiklJmj(long artiklID, long jmjID) {
+
+
+    private String nazivArtikla;
+
+    public ArtiklJmj(long artiklID, long jmjID, String nazivArt, String nazivJM) {
         ArtiklID = artiklID;
         JmjID = jmjID;
-        this.nazivJMJ = nazivJMJ;
+        nazivArtikla = nazivArt;
+        nazivJMJ = nazivJM;
+
     }
 
     public long getArtiklID() {
@@ -32,5 +38,27 @@ public class ArtiklJmj {
         JmjID = jmjID;
     }
 
+    public String getNazivJMJ() {
+        return nazivJMJ;
+    }
 
+    public void setNazivJMJ(String nazivJMJ) {
+        this.nazivJMJ = nazivJMJ;
+    }
+
+    public String getNazivArtikla() {
+        return nazivArtikla;
+    }
+
+    public void setNazivArtikla(String nazivArtikla) {
+        this.nazivArtikla = nazivArtikla;
+    }
+
+    public String toString() {
+        if (nazivJMJ.equals("")) {
+            return super.toString();
+        } else {
+            return nazivJMJ;
+        }
+    }
 }

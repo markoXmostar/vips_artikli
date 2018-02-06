@@ -27,11 +27,11 @@
             android:label="@string/NaslovApp1Dokumenti" />
         "@androi
         <activity
-            android:name=".App1ZaglavljeActivity"
+            android:name=".App1UnosZaglavljaActivity"
             android:label="@string/NoviDokument" />
         <activity android:name=".PretragaKomitenataActivity" />
         <activity
-            android:name=".App1StavkeActivity"
+            android:name=".App1UnosStavkeActivity"
             android:label="@string/NovaStavka" /> />
         <activity
             android:name=".App1PodDokumentiActivity"

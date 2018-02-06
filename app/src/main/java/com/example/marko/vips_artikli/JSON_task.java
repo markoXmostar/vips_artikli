@@ -123,6 +123,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                                     myArtikl.optString("sifra"),
                                     myArtikl.optString("naziv"),
                                     myArtikl.optString("kataloskiBroj"),
+                                    myArtikl.optLong("jmjId", 0),
                                     myArtikl.optString("jmj"),
                                     myArtikl.optString("kratkiOpis"),
                                     myArtikl.optString("proizvodjac"),
@@ -188,7 +189,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                         for (int i = 0; i < arr.length(); i++) {
                             JSONObject myJmj = arr.getJSONObject(i);
                             ArtiklJmj _artJmj = new ArtiklJmj(myJmj.optLong("artiklId", 0),
-                                    myJmj.optLong("jmjId",0));
+                                    myJmj.optLong("jmjId", 0), "", "");
                             ListaArtiklJmj.add(_artJmj);
                         }
                         Log.d(TAG, "onPostExecute: BROJ ArtiklJmjID=" + ListaArtiklJmj.size());
@@ -469,7 +470,8 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                     "sifra VARCHAR, " +
                     "naziv VARCHAR," +
                     "kataloskiBroj VARCHAR, " +
-                    "jmj VARCHAR, " +
+                    "jmjId long, " +
+                    "jmjNaziv VARCHAR, " +
                     "kratkiOpis VARCHAR, " +
                     "proizvodjac VARCHAR, " +
                     "dugiOpis VARCHAR, " +
@@ -488,12 +490,13 @@ public class JSON_task  extends AsyncTask<String, String, String>{
             for (int i = 0; i < Lista.size(); i++) {
                 Artikl myArt = Lista.get(i);
                 myDB.execSQL("INSERT INTO " + myTabela + " (_id, sifra , " +
-                        "naziv ,kataloskiBroj , jmj , kratkiOpis , proizvodjac , dugiOpis , vrstaAmbalaze, brojKoleta, brojKoletaNaPaleti,stanje,vpc,mpc,netto,brutto,imaRokTrajanja,podgrupaID ) VALUES ('" +
+                        "naziv ,kataloskiBroj , jmjId, jmjNaziv, kratkiOpis , proizvodjac , dugiOpis , vrstaAmbalaze, brojKoleta, brojKoletaNaPaleti,stanje,vpc,mpc,netto,brutto,imaRokTrajanja,podgrupaID ) VALUES ('" +
                         myArt.getId() + "','" +
                         myArt.getSifra() + "','" +
                         myArt.getNaziv().replaceAll("'", "_") + "','" +
-                        myArt.getKataloskiBroj() + "','" +
-                        myArt.getJmj() + "','" +
+                        myArt.getKataloskiBroj() + "'," +
+                        myArt.getJmjId() + ",'" +
+                        myArt.getJmjNaziv() + "','" +
                         myArt.getKratkiOpis() + "','" +
                         myArt.getProizvodjac() + "','" +
                         myArt.getDugiOpis() + "','" +

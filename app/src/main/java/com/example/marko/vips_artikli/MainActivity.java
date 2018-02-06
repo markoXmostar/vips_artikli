@@ -611,28 +611,67 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
 
     public static List<ArtiklJmj> getListaArtiklJMJ(Activity a, long artiklID, String filter) {
         List<ArtiklJmj> lista = new ArrayList<ArtiklJmj>();
-        String myTabela = "artikljmj";
+        /*
+        prvo create view da bi uhvatio naziv artikla i naziv jmj u ovu tabelu
+        CREATE VIEW IF NOT EXISTS vwArtiklJmj
+        AS
+       SELECT
+             tbArtJmjOdn.ArtiklID
+             ,tbArt.Naziv AS ArtiklNaziv
+             ,tbArtJmjOdn.JmjID
+             ,tbJmj.Naziv Jmj
+       FROM
+             tbArtJmjOdn INNER JOIN
+             tbArt ON tbArtJmjOdn.ArtiklID = tbArt.ID INNER JOIN
+             tbJmj ON tbArtJmjOdn.JmjID = tbJmj.ID;
+
+         */
+        //String myTabela = "artikljmj";
+        String myView = "vwArtikliJmj";
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
+        Log.d(TAG, "getListaArtiklJMJ: create view START");
+        myDB.execSQL("DROP VIEW IF EXISTS " + myView + ";");
+        myDB.execSQL("CREATE VIEW IF NOT EXISTS vwArtikliJmj " +
+                "AS SELECT " +
+                "artikljmj.artiklId, " +
+                "artikli.naziv AS nazivArtikla, " +
+                "artikljmj.jmjId, " +
+                "jmj.naziv AS nazivJmj" +
+                " FROM " +
+                "artikljmj INNER JOIN artikli ON artikljmj.artiklId = artikli._id INNER JOIN jmj on artikljmj.jmjId = jmj._id;");
+
+        Log.d(TAG, "getListaArtiklJMJ: create view END");
         Cursor c;
         if (artiklID == -1) {
             if (filter.equals("")) {
-                c = myDB.rawQuery("SELECT * FROM " + myTabela + " ORDER BY artiklId ASC;", null);
+                c = myDB.rawQuery("SELECT * FROM " + myView + " ORDER BY artiklId ASC;", null);
             } else {
-                c = myDB.rawQuery("SELECT * FROM " + myTabela + " where artiklId like '%" + filter + "%'  ORDER BY artiklId ASC;", null);
+                c = myDB.rawQuery("SELECT * FROM " + myView + " where artiklId like '%" + filter + "%'  ORDER BY artiklId ASC;", null);
             }
         } else {
-            c = myDB.rawQuery("SELECT * FROM " + myTabela + " WHERE artiklID=" + artiklID + ";", null);
+            c = myDB.rawQuery("SELECT * FROM " + myView + " WHERE artiklId=" + artiklID + ";", null);
         }
+        Log.d(TAG, "getListaArtiklJMJ: broj zapisa je ->" + c.getCount());
+
         int ArtiklIdIndex = c.getColumnIndex("artiklId");
         int jmjIdIndex = c.getColumnIndex("jmjId");
+        int nazivArtiklaIndex = c.getColumnIndex("nazivArtikla");
+        int nazivJmjIndex = c.getColumnIndex("nazivJmj");
+        Log.d(TAG, "getListaArtiklJMJ: " + ArtiklIdIndex + "/" + jmjIdIndex + "/" + nazivArtiklaIndex + "/" + nazivJmjIndex);
         c.moveToFirst();
         Log.d(TAG, "ListaArtiklJmjAdapter: Broj podataka u bazi je:" + Integer.toString(c.getCount() + 1));
         for (int j = 0; j < c.getCount(); j++) {
             long artId;
             long jmjId;
+            String nazivartikla;
+            String nazivjmj;
+
             artId = c.getLong(ArtiklIdIndex);
             jmjId = c.getLong(jmjIdIndex);
-            ArtiklJmj ArtJmjProvider = new ArtiklJmj(artId, jmjId);
+            nazivartikla = c.getString(nazivArtiklaIndex);
+            nazivjmj = c.getString(nazivJmjIndex);
+
+            ArtiklJmj ArtJmjProvider = new ArtiklJmj(artId, jmjId, nazivartikla, nazivjmj);
             lista.add(ArtJmjProvider);
             if (j != c.getCount()) {
                 c.moveToNext();
@@ -641,6 +680,7 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
         c.close();
         return lista;
     }
+
 
     public static List<jmj> getListaJMJ(Activity a, long id, String filter) {
         List<jmj> lista = new ArrayList<jmj>();
@@ -676,4 +716,6 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
         c.close();
         return lista;
     }
+
+
 }

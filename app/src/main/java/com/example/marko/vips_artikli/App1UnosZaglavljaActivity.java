@@ -15,7 +15,7 @@ import android.widget.TextView;
 import java.util.Calendar;
 
 
-public class App1ZaglavljeActivity extends AppCompatActivity {
+public class App1UnosZaglavljaActivity extends AppCompatActivity {
 
     private static final String TAG="App1Zaglavlje";
     TextView txtDatumDokumenta,txtKomitent,txtPjKomitenta,labelPjKomitenta,txtTipDokumenta,txtPodtipDokumenta,labelPodtipDokumenta;
@@ -37,14 +37,16 @@ public class App1ZaglavljeActivity extends AppCompatActivity {
         izabraniKomitent = new_izabraniKomitent;
         if (new_izabraniKomitent!=null){
             txtKomitent.setText(izabraniKomitent.getNaziv());
-            //txtPjKomitenta.setVisibility(View.VISIBLE);
+
+            txtPjKomitenta.setVisibility(View.VISIBLE);
+            labelPjKomitenta.setVisibility(View.VISIBLE);
+
             txtPjKomitenta.setEnabled(true);
-            //labelPjKomitenta.setVisibility(View.VISIBLE);
             labelPjKomitenta.setEnabled(true);
         }
         else {
-            //txtPjKomitenta.setVisibility(View.INVISIBLE);
-            //labelPjKomitenta.setVisibility(View.INVISIBLE);
+            txtPjKomitenta.setVisibility(View.GONE);
+            labelPjKomitenta.setVisibility(View.GONE);
 
             txtPjKomitenta.setEnabled(false);
             labelPjKomitenta.setEnabled(false);
@@ -79,10 +81,14 @@ public class App1ZaglavljeActivity extends AppCompatActivity {
             txtTipDokumenta.setText(izabraniTiP.getNaziv());
             labelPodtipDokumenta.setEnabled(true);
             txtPodtipDokumenta.setEnabled(true);
+            labelPodtipDokumenta.setVisibility(View.VISIBLE);
+            txtPodtipDokumenta.setVisibility(View.VISIBLE);
         }else{
             //txtTipDokumenta.setText(Izaberi);
             labelPodtipDokumenta.setEnabled(false);
             txtPodtipDokumenta.setEnabled(false);
+            labelPodtipDokumenta.setVisibility(View.GONE);
+            txtPodtipDokumenta.setVisibility(View.GONE);
         }
         setIzabranPodtip(null);
     }
@@ -108,7 +114,7 @@ public class App1ZaglavljeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_app1_zaglavlje);
+        setContentView(R.layout.activity_app1_unos_zaglavlje);
 
         txtDatumDokumenta =(TextView)findViewById(R.id.txtDatumDokumenta_App1Zaglavlje);
         txtKomitent=(TextView)findViewById(R.id.txtKomitent_App1Zaglavlje);
@@ -138,7 +144,7 @@ public class App1ZaglavljeActivity extends AppCompatActivity {
         txtDatumDokumenta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePickerDialog datePickerDialog=new DatePickerDialog(App1ZaglavljeActivity.this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(App1UnosZaglavljaActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int godina, int mjesec, int dan) {
                         izabraniDatum=MainActivity.danMjesecGodinaToFormatString(dan,mjesec,godina);
@@ -152,7 +158,7 @@ public class App1ZaglavljeActivity extends AppCompatActivity {
         txtKomitent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(App1ZaglavljeActivity.this, PretragaKomitenataActivity.class);
+                Intent i = new Intent(App1UnosZaglavljaActivity.this, PretragaKomitenataActivity.class);
                 i.putExtra("varijanta", "komitenti");
                 Log.d(TAG, "onClick: PUT EXTRA varijanta komitenti" );
                 startActivityForResult(i, 1);
@@ -162,7 +168,7 @@ public class App1ZaglavljeActivity extends AppCompatActivity {
         txtPjKomitenta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(App1ZaglavljeActivity.this, PretragaKomitenataActivity.class);
+                Intent i = new Intent(App1UnosZaglavljaActivity.this, PretragaKomitenataActivity.class);
                 i.putExtra("varijanta", "pjkomitenti");
                 Log.d(TAG, "onClick: PUT EXTRA varijanta pjkomitenti" );
                 Komitent izabran=getIzabraniKomitent();
@@ -175,7 +181,7 @@ public class App1ZaglavljeActivity extends AppCompatActivity {
         txtTipDokumenta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(App1ZaglavljeActivity.this, PretragaKomitenataActivity.class);
+                Intent i = new Intent(App1UnosZaglavljaActivity.this, PretragaKomitenataActivity.class);
                 i.putExtra("varijanta", "tipDokumenta");
                 Log.d(TAG, "onClick: PUT EXTRA varijanta TIP Dokumenta" );
                 startActivityForResult(i, 3);
@@ -185,7 +191,7 @@ public class App1ZaglavljeActivity extends AppCompatActivity {
         txtPodtipDokumenta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(App1ZaglavljeActivity.this, PretragaKomitenataActivity.class);
+                Intent i = new Intent(App1UnosZaglavljaActivity.this, PretragaKomitenataActivity.class);
                 i.putExtra("varijanta", "podtipDokumenta");
                 Log.d(TAG, "onClick: PUT EXTRA varijanta podtipDokumenta" );
                 TipDokumenta izabran=getIzabraniTiP();

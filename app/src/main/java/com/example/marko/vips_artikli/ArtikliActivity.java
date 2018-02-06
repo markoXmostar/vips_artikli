@@ -136,7 +136,8 @@ public class ArtikliActivity extends AppCompatActivity {
         int ProizvodacIndex=c.getColumnIndex("proizvodjac");
         int KataloskiBrojIndex=c.getColumnIndex("kataloskiBroj");
         int KratkiOpisIndex=c.getColumnIndex("kratkiOpis");
-        int JmjIndex=c.getColumnIndex("jmj");
+        int JmjIndex = c.getColumnIndex("jmjId");
+        int JmjNazivIndex = c.getColumnIndex("jmjNaziv");
         int DugiOpisIndex=c.getColumnIndex("dugiOpis");
         int VrstaAmbalazeIndex=c.getColumnIndex("vrstaAmbalaze");
         int BrojKoletaIndex=c.getColumnIndex("brojKoleta");
@@ -152,8 +153,8 @@ public class ArtikliActivity extends AppCompatActivity {
         c.moveToFirst();
         int brojac=0;
         for (int j=0;j<c.getCount();j++){
-            long id;
-            String sifra, naziv, kataloskiBroj, jmj, kratkiOpis, proizvodjac, dugiOpis, vrstaAmbalaze;
+            long id, jmjId;
+            String sifra, naziv, jmjNaziv, kataloskiBroj, kratkiOpis, proizvodjac, dugiOpis, vrstaAmbalaze;
             double brojKoleta, brojKoletaNaPaleti, stanje, vpc, mpc, netto, brutto;
             boolean imaRokTrajanja;
             int podgrupaID;
@@ -164,7 +165,8 @@ public class ArtikliActivity extends AppCompatActivity {
             proizvodjac=c.getString(ProizvodacIndex);
             kataloskiBroj=c.getString(KataloskiBrojIndex);
             kratkiOpis=c.getString(KratkiOpisIndex);
-            jmj=c.getString(JmjIndex);
+            jmjId = c.getLong(JmjIndex);
+            jmjNaziv = c.getString(JmjNazivIndex);
             dugiOpis=c.getString(DugiOpisIndex);
             vrstaAmbalaze=c.getString(VrstaAmbalazeIndex);
             brojKoleta=c.getDouble(BrojKoletaIndex);
@@ -180,7 +182,7 @@ public class ArtikliActivity extends AppCompatActivity {
 
 
             //Log.d(TAG," Red " + Integer.toString(brojac));
-            Artikl artikliProvider=new Artikl(id,sifra,naziv,kataloskiBroj,jmj,kratkiOpis,proizvodjac,dugiOpis,vrstaAmbalaze,brojKoleta,brojKoletaNaPaleti,stanje,vpc,mpc,netto,brutto,imaRokTrajanja,podgrupaID);
+            Artikl artikliProvider = new Artikl(id, sifra, naziv, kataloskiBroj, jmjId, jmjNaziv, kratkiOpis, proizvodjac, dugiOpis, vrstaAmbalaze, brojKoleta, brojKoletaNaPaleti, stanje, vpc, mpc, netto, brutto, imaRokTrajanja, podgrupaID);
 
 
             listArtikalaAdapter.add(artikliProvider);

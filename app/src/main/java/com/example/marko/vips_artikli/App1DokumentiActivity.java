@@ -83,7 +83,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
         fabNoviDokument.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(App1DokumentiActivity.this,App1ZaglavljeActivity.class);
+                Intent intent = new Intent(App1DokumentiActivity.this, App1UnosZaglavljaActivity.class);
                 startActivityForResult(intent,1);
             }
         });

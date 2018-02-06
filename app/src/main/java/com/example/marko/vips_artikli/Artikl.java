@@ -7,20 +7,37 @@ import java.io.Serializable;
  */
 
 public class Artikl  implements Serializable{
-    private long id;
-    private String sifra, naziv, kataloskiBroj, jmj, kratkiOpis, proizvodjac, dugiOpis, vrstaAmbalaze;
+    private long id, jmjId;
+    private String sifra;
+    private String naziv;
+    private String kataloskiBroj;
+
+    public String getJmjNaziv() {
+        return jmjNaziv;
+    }
+
+    public void setJmjNaziv(String jmjNaziv) {
+        this.jmjNaziv = jmjNaziv;
+    }
+
+    private String jmjNaziv;
+    private String kratkiOpis;
+    private String proizvodjac;
+    private String dugiOpis;
+    private String vrstaAmbalaze;
     private double brojKoleta, brojKoletaNaPaleti, stanje, vpc, mpc, netto, brutto;
     private boolean imaRokTrajanja;
     private int podgrupaID;
 
-    public Artikl(long id, String sifra, String naziv, String kataloskiBroj, String jmj, String kratkiOpis,
+    public Artikl(long id, String sifra, String naziv, String kataloskiBroj, long jmjId, String jmjNaziv, String kratkiOpis,
                   String proizvodjac, String dugiOpis, String vrstaAmbalaze, double brojKoleta, double brojKoletaNaPaleti,
                   double stanje, double vpc, double mpc, double netto, double brutto, boolean imaRokTrajanja, int podgrupaID) {
         this.id = id;
         this.sifra = sifra;
         this.naziv = naziv;
         this.kataloskiBroj = kataloskiBroj;
-        this.jmj = jmj;
+        this.jmjId = jmjId;
+        this.jmjNaziv = jmjNaziv;
         this.kratkiOpis = kratkiOpis;
         this.proizvodjac = proizvodjac;
         this.dugiOpis = dugiOpis;
@@ -70,12 +87,12 @@ public class Artikl  implements Serializable{
         this.kataloskiBroj = kataloskiBroj;
     }
 
-    public String getJmj() {
-        return jmj;
+    public long getJmjId() {
+        return jmjId;
     }
 
-    public void setJmj(String jmj) {
-        this.jmj = jmj;
+    public void setJmjId(long jmjId) {
+        this.jmjId = jmjId;
     }
 
     public String getKratkiOpis() {
