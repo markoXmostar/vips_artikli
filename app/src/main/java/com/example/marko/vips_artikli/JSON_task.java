@@ -700,9 +700,9 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                 ArtiklAtributStanje object = Lista.get(i);
                 myDB.execSQL("INSERT INTO " + myTabela + " (artiklId, vrijednostId1, vrijednost1, atribut1, stanje) VALUES (" +
                         object.getArtiklId() + "," +
-                        object.getVrijednostId1() + ",'" +
-                        object.getVrijednost1() + "','" +
-                        object.getAtribut1() + "'," +
+                        object.getAtributId1() + ",'" +
+                        object.getAtributNaziv1() + "','" +
+                        object.getAtributVrijednost1() + "'," +
                         object.getStanje()+ ");");
 
             }

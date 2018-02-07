@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -165,7 +163,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         ArtiklAtributStanje myAtribut = spisak.get(which);
                         setIzabraniAtribut(myAtribut);
-                        //Toast.makeText(App1StavkeActivity.this,izabranAtribut.getVrijednost1(),Toast.LENGTH_LONG).show();
+                        //Toast.makeText(App1StavkeActivity.this,izabranAtribut.getVrijednostNaziv1(),Toast.LENGTH_LONG).show();
                         }
                 });
                 builder.show();
@@ -198,9 +196,17 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent returnIntent = new Intent();
-                App1Stavke newStavka=new App1Stavke(-1,idDokumenta,izabraniArtikl.getId(),izabraniArtikl.getNaziv(),izabranaJMJ.getJmjID(),
-                        izabranaJMJ.getNazivJMJ(),izabraniArtikl.isImaRokTrajanja(),izabraniAtribut.getVrijednostId1(),
-                        izabraniAtribut.getVrijednostId1(),izabraniAtribut.getAtribut1(),Double.parseDouble(txtKolicina.getText().toString()),txtNapomena.getText().toString());
+                App1Stavke newStavka = new App1Stavke(-1, idDokumenta,
+                        izabraniArtikl.getId(),
+                        izabraniArtikl.getNaziv(),
+                        izabranaJMJ.getJmjID(),
+                        izabranaJMJ.getNazivJMJ(),
+                        izabraniArtikl.isImaRokTrajanja(),
+                        izabraniAtribut.getAtributId1(),
+                        izabraniAtribut.getAtributNaziv1(),
+                        izabraniAtribut.getAtributVrijednost1(),
+                        Double.parseDouble(txtKolicina.getText().toString()),
+                        txtNapomena.getText().toString());
 
                 returnIntent.putExtra("stavka",newStavka);
 

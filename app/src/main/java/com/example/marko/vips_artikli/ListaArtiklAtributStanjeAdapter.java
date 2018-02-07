@@ -1,6 +1,5 @@
 package com.example.marko.vips_artikli;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -69,8 +68,8 @@ public class ListaArtiklAtributStanjeAdapter extends ArrayAdapter {
         artNaziv=MainActivity.getArtiklNaziv_byID(a,artiklAtributStanje.getArtiklId());
         layoutHandler.nazivAtributa1.setText(artNaziv);
         */
-        layoutHandler.nazivAtributa1.setText(artiklAtributStanje.getAtribut1());
-        layoutHandler.vrijednostAtributa1.setText(artiklAtributStanje.getVrijednost1());
+        layoutHandler.nazivAtributa1.setText(artiklAtributStanje.getAtributVrijednost1());
+        layoutHandler.vrijednostAtributa1.setText(artiklAtributStanje.getAtributNaziv1());
         layoutHandler.stanje.setText(Double.toString(artiklAtributStanje.getStanje()));
         return row;
 

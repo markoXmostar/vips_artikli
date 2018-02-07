@@ -7,16 +7,16 @@ package com.example.marko.vips_artikli;
 public class ArtiklAtributStanje {
 
     private long artiklId;
-    private long vrijednostId1;
-    private String vrijednost1;
-    private String atribut1;
+    private long atributId1;
+    private String atributNaziv1;
+    private String atributVrijednost1;
     private double stanje;
 
-    public ArtiklAtributStanje(long artiklId, long vrijednostId1, String vrijednost1, String atribut1, double stanje) {
+    public ArtiklAtributStanje(long artiklId, long atributId1, String atributNaziv1, String atributVrijednost1, double stanje) {
         this.artiklId = artiklId;
-        this.vrijednostId1 = vrijednostId1;
-        this.vrijednost1 = vrijednost1;
-        this.atribut1 = atribut1;
+        this.atributId1 = atributId1;
+        this.atributNaziv1 = atributNaziv1;
+        this.atributVrijednost1 = atributVrijednost1;
         this.stanje = stanje;
     }
 
@@ -28,28 +28,28 @@ public class ArtiklAtributStanje {
         this.artiklId = artiklId;
     }
 
-    public long getVrijednostId1() {
-        return vrijednostId1;
+    public long getAtributId1() {
+        return atributId1;
     }
 
-    public void setVrijednostId1(long vrijednostId1) {
-        this.vrijednostId1 = vrijednostId1;
+    public void setAtributId1(long atributId1) {
+        this.atributId1 = atributId1;
     }
 
-    public String getVrijednost1() {
-        return vrijednost1;
+    public String getAtributNaziv1() {
+        return atributNaziv1;
     }
 
-    public void setVrijednost1(String vrijednost1) {
-        this.vrijednost1 = vrijednost1;
+    public void setAtributNaziv1(String vrijednostNaziv1) {
+        this.atributNaziv1 = vrijednostNaziv1;
     }
 
-    public String getAtribut1() {
-        return atribut1;
+    public String getAtributVrijednost1() {
+        return atributVrijednost1;
     }
 
-    public void setAtribut1(String atribut1) {
-        this.atribut1 = atribut1;
+    public void setAtributVrijednost1(String atributVrijednost1) {
+        this.atributVrijednost1 = atributVrijednost1;
     }
 
     public double getStanje() {
@@ -61,6 +61,6 @@ public class ArtiklAtributStanje {
     }
 
     public String toString(){
-        return getVrijednost1();
+        return getAtributNaziv1();
     }
 }

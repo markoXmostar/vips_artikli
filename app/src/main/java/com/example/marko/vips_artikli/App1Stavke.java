@@ -15,12 +15,13 @@ public class App1Stavke implements Serializable {
     private String jmjNaziv;
     private boolean imaAtribut;
     private long atributId;
-    private long atributVrijednostId;
+    private String atributNaziv;
     private String atributVrijednost;
     private double kolicina;
     private String napomena;
 
-    public App1Stavke(long id, long zaglavljeId, long artiklId, String artiklNaziv, long jmjId, String jmjNaziv, boolean imaAtribut, long atributId, long atributVrijednostId, String atributVrijednost, double kolicina, String napomena) {
+    public App1Stavke(long id, long zaglavljeId, long artiklId, String artiklNaziv, long jmjId, String jmjNaziv,
+                      boolean imaAtribut, long atributId, String atributNaziv, String atributVrijednost, double kolicina, String napomena) {
         this.id = id;
         this.zaglavljeId=zaglavljeId;
         this.artiklId = artiklId;
@@ -29,7 +30,7 @@ public class App1Stavke implements Serializable {
         this.jmjNaziv = jmjNaziv;
         this.imaAtribut = imaAtribut;
         this.atributId = atributId;
-        this.atributVrijednostId = atributVrijednostId;
+        this.atributNaziv = atributNaziv;
         this.atributVrijednost = atributVrijednost;
         this.kolicina = kolicina;
         this.napomena = napomena;
@@ -99,12 +100,12 @@ public class App1Stavke implements Serializable {
         this.atributId = atributId;
     }
 
-    public long getAtributVrijednostId() {
-        return atributVrijednostId;
+    public String getAtributNaziv() {
+        return atributNaziv;
     }
 
-    public void setAtributVrijednostId(long atributVrijednostId) {
-        this.atributVrijednostId = atributVrijednostId;
+    public void setAtributNaziv(String atributNaziv) {
+        this.atributNaziv = atributNaziv;
     }
 
     public String getAtributVrijednost() {
