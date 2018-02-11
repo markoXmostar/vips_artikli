@@ -20,11 +20,14 @@ import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import static com.example.marko.vips_artikli.MainActivity.DatumFormat;
 import static com.example.marko.vips_artikli.MainActivity.DatumVrijemeFormat;
+import static com.example.marko.vips_artikli.MainActivity.ma;
 import static com.example.marko.vips_artikli.MainActivity.myDATABASE;
 
 public class App1DokumentiActivity extends AppCompatActivity {
@@ -58,7 +61,23 @@ public class App1DokumentiActivity extends AppCompatActivity {
             return true;
         }
         if (id == R.id.sinkroniziraj_dokumenti1) {
-            Toast.makeText(App1DokumentiActivity.this,"Nije implementirana funkcija",Toast.LENGTH_LONG).show();
+            //Toast.makeText(App1DokumentiActivity.this,"Nije implementirana funkcija",Toast.LENGTH_LONG).show();
+            List<App1Dokumenti> spisakSvihDokumenta=MainActivity.getListaDokumenta(App1DokumentiActivity.this);
+            List<App1Dokumenti> spisakDokumentaZaSync=MainActivity.getListaDokumenta(App1DokumentiActivity.this);
+            for (App1Dokumenti dok:spisakSvihDokumenta) {
+                if(dok.getDatumSinkronizacije()==null ){
+                    spisakDokumentaZaSync.add(dok);
+                }
+            }
+
+            for (App1Dokumenti dok:spisakDokumentaZaSync) {
+                dok.izbrisiSveStavke();
+                List<App1Stavke> mojeStavke=MainActivity.getListaStavki(dok.getId(),App1DokumentiActivity.this);
+                for (App1Stavke stv:mojeStavke) {
+                    dok.doadajStavku(stv);
+                }
+            }
+            new SendJSON(spisakDokumentaZaSync).execute();
             return true;
         }
 
@@ -104,31 +123,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
         listSpisakDokumenata.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                /*
-                AlertDialog.Builder alert = new AlertDialog.Builder(
-                        App1DokumentiActivity.this);
-                alert.setTitle(R.string.Upozorenje);
-                alert.setMessage(R.string.UpitBrisanjeDokumenta);
-                alert.setPositiveButton(R.string.Da, new DialogInterface.OnClickListener() {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //do your work here
-                        dialog.dismiss();
-
-                    }
-                });
-                alert.setNegativeButton(R.string.Ne, new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        dialog.dismiss();
-                    }
-                });
-
-                alert.show();
-                */
                 final CharSequence akcije[] = new CharSequence[] {"Izbriši", "Sinkroniziraj", "Prikaži detalje"};
                 final App1Dokumenti selektiranDok=(App1Dokumenti) adapterView.getItemAtPosition(i);
                 AlertDialog.Builder builder = new AlertDialog.Builder(App1DokumentiActivity.this);
@@ -145,7 +140,17 @@ public class App1DokumentiActivity extends AppCompatActivity {
                                 break;
                             case 1:
                                 //Sinkronizraj
-                                Toast.makeText(App1DokumentiActivity.this,akcije[which].toString(),Toast.LENGTH_LONG).show();
+                                List<App1Dokumenti> spisakDokZaSync=new ArrayList<App1Dokumenti>();
+                                spisakDokZaSync.add(selektiranDok);
+                                selektiranDok.izbrisiSveStavke();
+                                List<App1Stavke> mojeStavke=MainActivity.getListaStavki(selektiranDok.getId(),App1DokumentiActivity.this);
+                                for (App1Stavke stv:mojeStavke) {
+                                    selektiranDok.doadajStavku(stv);
+                                }
+
+                                new SendJSON(spisakDokZaSync).execute();
+
+                                //Toast.makeText(App1DokumentiActivity.this,akcije[which].toString(),Toast.LENGTH_LONG).show();
                                 break;
                             case 2:
                                 //Detalji
@@ -164,19 +169,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
-                /*
-                upisano:
-                returnIntent.putExtra("idKomitenta",getIzabraniKomitent().getId());
-                returnIntent.putExtra("idPjKomitenta",getIzabranaPJKomitenta().getId());
-                returnIntent.putExtra("idTipDokumenta",getIzabraniTiP().getId());
-                returnIntent.putExtra("idPodtipDokumenta", getIzabraniPodtip().getId());
-                returnIntent.putExtra("datumDokumenta", izabraniDatum);
-                returnIntent.putExtra("nazivKomitenta",getIzabraniKomitent().getNaziv());
-                returnIntent.putExtra("nazivPjKomitenta",getIzabranaPJKomitenta().getNaziv());
-                returnIntent.putExtra("nazivTipDokumenta",getIzabraniTiP().getNaziv());
-                returnIntent.putExtra("nazivPodtipDokumenta", getIzabraniPodtip().getNaziv());
-                returnIntent.putExtra("napomena",etxtNapomena.getText());
-                 */
+
                 Long IdKomitenta=data.getLongExtra("idKomitenta",-1);
                 Long IdPjKomitenta=data.getLongExtra("idPjKomitenta",-1);
                 Long idTipDokumenta=data.getLongExtra("idTipDokumenta",-1);
@@ -248,87 +241,10 @@ public class App1DokumentiActivity extends AppCompatActivity {
     private void ucitajDokumente() {
         ListaApp1DokumentiAdapter listaDokumenta = new ListaApp1DokumentiAdapter(this, R.layout.row_app1_zaglavlje);
         listSpisakDokumenata.setAdapter(listaDokumenta);
-        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
-        Cursor c;
-        c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " ORDER BY datumUpisa DESC", null);
-
-        SimpleDateFormat simpleDateTimeFormat = new SimpleDateFormat(DatumVrijemeFormat);
-        SimpleDateFormat SQLLite_dateFormat = new SimpleDateFormat(MainActivity.SqlLiteDateFormat);
-
-        long id;
-        long idTip;
-        long idPodtip;
-        long idKomitent;
-        long idPjKomitenta;
-        String datumDokumentaString;
-        String datumSinkronizacijeString;
-        String napomena;
-        String komitentNaziv;
-        String komitentPjNaziv;
-        String tipNaziv;
-        String podtipNaziv;
-
-        Date datumDokumenta = new Date();
-        Date datumSinkronizacije = new Date();
-
-        int idIndex = c.getColumnIndex("_id");
-        int idTipIndex = c.getColumnIndex("idTip");
-        int idPodipIndex = c.getColumnIndex("idPodtip");
-        int idKomitentIndex = c.getColumnIndex("idKomitent");
-        int idPjKomitentaIndex = c.getColumnIndex("idPjKomitenta");
-        int idDatumDokumentaIndex = c.getColumnIndex("datumDokumenta");
-        int idDatumSinkronizacijeIndex = c.getColumnIndex("datumSinkronizacije");
-        int idNapomenaIndex = c.getColumnIndex("napomena");
-
-        int idKomitentNaziv = c.getColumnIndex("KomitentNaziv");
-        int idKomitentPjIndex = c.getColumnIndex("PjKomitentaNaziv");
-        int idTipNazivIndex = c.getColumnIndex("TipDokumentaNaziv");
-        int idPodtpNazivIndex = c.getColumnIndex("PodipDokumentaNaziv");
-
-        c.moveToFirst();
-        int brojac = 0;
-        for (int j = 0; j < c.getCount(); j++) {
-            id = c.getLong(idIndex);
-            idTip = c.getLong(idTipIndex);
-            tipNaziv = c.getString(idTipNazivIndex);
-            idPodtip = c.getLong(idPodipIndex);
-            podtipNaziv = c.getString(idPodtpNazivIndex);
-            idKomitent = c.getLong(idKomitentIndex);
-            komitentNaziv = c.getString(idKomitentNaziv);
-            idPjKomitenta = c.getLong(idPjKomitentaIndex);
-            komitentPjNaziv = c.getString(idKomitentPjIndex);
-            datumDokumentaString = c.getString(idDatumDokumentaIndex);
-            datumSinkronizacijeString = c.getString(idDatumSinkronizacijeIndex);
-            napomena = c.getString(idNapomenaIndex);
-            try {
-                datumDokumenta = (Date) SQLLite_dateFormat.parse(datumDokumentaString);
-            } catch (ParseException e) {
-                e.printStackTrace();
-
-            }
-            try {
-                if (datumSinkronizacijeString==null){
-                    datumSinkronizacije=null;
-                }else{
-                    datumSinkronizacije = (Date) SQLLite_dateFormat.parse(datumSinkronizacijeString);
-                }
-
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-
-            App1Dokumenti myObj = new App1Dokumenti(id, idTip, idPodtip, idKomitent, idPjKomitenta, datumDokumenta, datumSinkronizacije, napomena, komitentNaziv, komitentPjNaziv, tipNaziv, podtipNaziv);
-            listaDokumenta.add(myObj);
-
-            brojac++;
-            if (j != c.getCount()) {
-                c.moveToNext();
-            }
+        List<App1Dokumenti> spisakDok=MainActivity.getListaDokumenta(App1DokumentiActivity.this);
+        for (App1Dokumenti dok:spisakDok) {
+            listaDokumenta.add(dok);
         }
-        Log.d(TAG, "ucitajDokumente: U tabeli se nalazi " + brojac + " dokumenta!");
-        c.close();
-        myDB.close();
     }
 
 }

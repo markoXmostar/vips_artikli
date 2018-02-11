@@ -41,10 +41,10 @@ public class JSON_task  extends AsyncTask<String, String, String>{
 
         Date vrijeme1,vrijeme2;
 
-    public JSON_task(MainActivity activity, MainActivity.UrlTabele _myTbl) {
+        public JSON_task(MainActivity activity, MainActivity.UrlTabele _myTbl) {
             myMainActivity=activity;
             pd = new ProgressDialog(activity);
-        myTbl = _myTbl;
+            myTbl = _myTbl;
         }
 
         @Override
@@ -458,13 +458,13 @@ public class JSON_task  extends AsyncTask<String, String, String>{
         boolean greska=false;
         String greskaStr="";
         String myTabela = myTbl.NazivTabele;
-
+        Log.d(TAG, "UpisiArtikleUBazu: XXX ARTIKLI" );
         try {
-            Log.d(TAG, "Otvaram bazu");
+            Log.d(TAG, "XXX Otvaram bazu");
             myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
-            Log.d(TAG, "UpisiArtikleUBazu: brišem tabelu ukoliko postoji");
+            Log.d(TAG, "XXX UpisiArtikleUBazu: brišem tabelu ukoliko postoji");
             myDB.execSQL("DROP TABLE IF EXISTS " + myTabela);
-            Log.d(TAG, "Kreiram tabelu");
+            Log.d(TAG, "XXX Kreiram tabelu");
             myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
                     "_id long, " +
                     "sifra VARCHAR, " +
@@ -485,8 +485,8 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                     "brutto double, " +
                     "imaRokTrajanja double, " +
                     "podgrupaID int);");
-            Log.d(TAG, "Brišem sve iz tabele");
-            myDB.execSQL("DELETE FROM " + myTabela);
+            Log.d(TAG, "XXX Brišem sve iz tabele");
+            myDB.execSQL("XXX DELETE FROM " + myTabela);
             for (int i = 0; i < Lista.size(); i++) {
                 Artikl myArt = Lista.get(i);
                 myDB.execSQL("INSERT INTO " + myTabela + " (_id, sifra , " +
@@ -512,7 +512,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                         myArt.getPodgrupaID()
                         + ");");
             }
-            Log.d(TAG, "Gotovo");
+            Log.d(TAG, "XXX Gotovo");
             myDB.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -521,12 +521,14 @@ public class JSON_task  extends AsyncTask<String, String, String>{
         } finally {
             if (greska){
                 UpisiLOG(1, greskaStr, myTabela, 0);
-                Log.d(TAG, "UpisiArtikleUBazu: "+ greskaStr);
+                Log.d(TAG, "UpisiArtikleUBazu: XXX UPISANO U LOG GREŠKA");
+                Log.d(TAG, "XXX UpisiArtikleUBazu: "+ greskaStr);
             }
             else{
-                greskaStr="Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                greskaStr="XXX Uspješno upisano Artikala:" +Integer.toString(Lista.size());
                 Log.d(TAG, "UpisiArtikleUBazu: "+ greskaStr);
                 UpisiLOG(0, greskaStr, myTabela, 0);
+                Log.d(TAG, "UpisiArtikleUBazu: XXX UPISANO U LOG SVE OK");
             }
         }
     }

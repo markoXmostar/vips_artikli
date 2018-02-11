@@ -41,6 +41,9 @@ public class MainActivity extends AppCompatActivity
     public static final String SqlLiteDateFormat="yyyy-MM-dd HH:mm:ss";
     public static String DatumVrijemeFormat = "dd.MM.yyyy HH:mm:ss";
     public static String DatumFormat="dd.MM.yyyy";
+    public static String BorisovFormatDatuma="yyyy-MM-ddTHH:mm:ss";
+
+    public static String myDecimalFormat="#.##0,00";
 
     public static MainActivity ma;
 
@@ -124,19 +127,24 @@ public class MainActivity extends AppCompatActivity
 
         //new JSON_task(this).execute("http://vanima.net:8099/api/artikli?d=2");
     }
-private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
+private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vidljiveTxtKontrole){
         if (potrebnaSyncVisible){
             Log.d(TAG, "postaviVidljivostFabKontrola: Vidljivost" + !potrebnaSyncVisible);
             fabUpdatePodataka.setVisibility(View.VISIBLE);
-            txtPotrebnaSinkronizacija.setVisibility(View.VISIBLE);
+
 
             fabApp1.setVisibility(View.INVISIBLE);
             fabApp2.setVisibility(View.INVISIBLE);
             fabApp3.setVisibility(View.INVISIBLE);
 
+            if (vidljiveTxtKontrole){
+                txtLastSyncID.setText("-1");
+                txtLastSyncDate.setText("/ NIKAD");
+                txtPotrebnaSinkronizacija.setVisibility(View.VISIBLE);
+            }else{
+                txtPotrebnaSinkronizacija.setVisibility(View.INVISIBLE);
+            }
 
-            txtLastSyncID.setText("-1");
-            txtLastSyncDate.setText("/ NIKAD");
         }
         else{
             Log.d(TAG, "postaviVidljivostFabKontrola: Vidljivost" + potrebnaSyncVisible);
@@ -169,16 +177,19 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
         Integer rbr=0;
         ListaDbLogAdapter listaLog = new ListaDbLogAdapter(this, R.layout.row_log);
         listSyncLog.setAdapter(listaLog);
+
+        List<dbLog> myListaLog=new ArrayList<dbLog>();
+
         SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
         boolean tabelaLogPostoji=true;
 
-
+        int brojZadnjihSyncTabela=0;
 
 
         if (isTableExists(myDB, myTabela)){
             if (isFieldExist(myDB,myTabela,"redniBroj")){
 
-                postaviVidljivostFabKontrola(false);
+                postaviVidljivostFabKontrola(false,true);
                 Cursor c;
                 c = myDB.rawQuery("SELECT MAX(redniBroj) AS rbr FROM " + myTabela, null);
                 int IdMax = c.getColumnIndex("rbr");
@@ -217,7 +228,7 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
                 int greskaIndex=z.getColumnIndex("greska");
                 int NazivIndex = z.getColumnIndex("poruka");
                 int TabelaIndex = z.getColumnIndex("tabela");
-
+                brojZadnjihSyncTabela=z.getCount();
                 Log.d(TAG, "getLOG: BROJ ZAPISA U LOG TABELI JE" + z.getCount());
                 if (rbr == 0) {
                     tabelaLogPostoji = false; //ovo je potrebno radi prvog pokretanja!
@@ -243,10 +254,9 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
                         String myDatum=parseDateFromSQLLiteDBFormatToMyFormat(dd);
                         setZadnjaSinkronizacijaVrijeme(dd);
                         greska = z.getInt(greskaIndex);
-                        Log.d(TAG, "getLOG: ");
-                        //dbLog myLog = new dbLog(id, timestamp, greska, naziv, rbr, tabela);
                         dbLog myLog = new dbLog(id, myDatum, greska, naziv, rbr, tabela);
-                        listaLog.add(myLog);
+                        myListaLog.add(myLog);
+
                         brojac++;
                         if (j != z.getCount()) {
                             z.moveToNext();
@@ -255,11 +265,8 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
                     if (getZadnjaSinkronizacijaVrijeme() != null) {
                         txtLastSyncDate.setText(parseDateFromSQLLiteDBFormatToMyFormat(getZadnjaSinkronizacijaVrijeme()));
                     }
-
                     z.close();
-
                 }
-
             }
             else{
                 tabelaLogPostoji=false;
@@ -268,12 +275,58 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
         else{
             tabelaLogPostoji=false;
         }
+
+        for (dbLog db:myListaLog) {
+            listaLog.add(db);
+        }
+
         if (!tabelaLogPostoji){
             rekreirajLogTabelu(myDB);
             rbr=0;
-            postaviVidljivostFabKontrola(true);
+            postaviVidljivostFabKontrola(true,true);
         }
+        Log.d(TAG, "getLOG: BROJ ZAPISA U LOG TABELI JE " + listaLog.getCount());
+        Log.d(TAG, "getLOG: BROJ POTREBNIH SYNC TABELA JE " + spisakSyncTabela.size());
+
+        if(brojZadnjihSyncTabela!=spisakSyncTabela.size()){
+            //zadnja sinkronizacija je bila nepotpuna
+
+            sastaviTabelePotrebnieZaSinkronizaciju(myListaLog);
+            Log.d(TAG, "getLOG: Zadnja sinkronizacija nepotpuna potrebno je uraditi opet!");
+        }
+        else {
+            Log.d(TAG, "getLOG: Zadnja sinkronizacija uspješna!");
+        }
+
         myDB.close();
+    }
+
+    private void sastaviTabelePotrebnieZaSinkronizaciju(List<dbLog> novaListaLog){
+        for (UrlTabele myTb : spisakSyncTabela) {
+            boolean postoji=false;
+            for (int i=0;i<novaListaLog.size();i++){
+                dbLog db=novaListaLog.get(i);
+                if(myTb.NazivTabele.equals(db.getTabela())){
+                    postoji=true;
+                }
+                /*
+                if (myTb.NazivTabele.equals("artikli") || myTb.NazivTabele.equals("komitenti")){
+                    postoji=true;
+                }
+                */
+            }
+            if (!postoji){
+                dbLog novaTbl=new dbLog(0,"?",1,"Tabela nije up-to-date!!!",novaListaLog.size(),myTb.NazivTabele);
+                novaListaLog.add(0,novaTbl);
+            }
+        }
+
+        ListaDbLogAdapter listaLog = new ListaDbLogAdapter(this, R.layout.row_log);
+        for (dbLog db:novaListaLog) {
+            listaLog.add(db);
+        }
+        listSyncLog.setAdapter(listaLog);
+        postaviVidljivostFabKontrola(true,false);
     }
 
     @Override
@@ -717,5 +770,159 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible){
         return lista;
     }
 
+    public static List<App1Stavke> getListaStavki(long IdDokumenta, Activity a){
 
+        List<App1Stavke> listaStavki=new ArrayList<App1Stavke>();
+
+        Log.d(TAG, "ucitajStavke: IdDOKUMENTA=" + IdDokumenta);
+        String tabelaApp1 = "stavke1";
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
+        Cursor c;
+        Log.d(TAG, "ucitajStavke: " + "SELECT * FROM " + tabelaApp1 + " WHERE idDokumenta=" + IdDokumenta + " ORDER BY datumUpisa DESC");
+        c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " WHERE idDokumenta=" + IdDokumenta +" ORDER BY datumUpisa DESC", null);
+
+        long idStavke;
+        long idArtikla;
+        String nazivArtikla;
+        double kolicina;
+        boolean imaAtribut;
+        long idAtributa;
+        String vrijednostAtributa;
+        String nazivAtributa;
+        long idJmj;
+        String nazivJmj;
+        String napomena;
+
+        int idStavkeIndex = c.getColumnIndex("_id");
+        int idArtiklaIndex = c.getColumnIndex("idArtikla");
+        int nazivArtiklaIndex = c.getColumnIndex("nazivArtikla");
+        int kolicinaIndex = c.getColumnIndex("kolicina");
+        int imaAtributIndex = c.getColumnIndex("imaAtribut");
+        int idAtributaIndex = c.getColumnIndex("idAtributa");
+        int vrijednostAtributaIndex = c.getColumnIndex("vrijednostAtributa");
+        int nazivAtributaIndex = c.getColumnIndex("nazivAtributa");
+        int idJmjIndex = c.getColumnIndex("idJmj");
+        int nazivJmjIndex = c.getColumnIndex("nazivJmj");
+        int napomenaIndex = c.getColumnIndex("napomena");
+
+        c.moveToFirst();
+        int brojac = 0;
+        Log.d(TAG, "ucitajStavke: UCITANO JE STAVKI =" + c.getCount());
+        for (int j = 0; j < c.getCount(); j++) {
+            idStavke = c.getLong(idStavkeIndex);
+            idArtikla = c.getLong(idArtiklaIndex);
+            nazivArtikla = c.getString(nazivArtiklaIndex);
+            kolicina = c.getDouble(kolicinaIndex);
+            imaAtribut = Boolean.parseBoolean(c.getString(imaAtributIndex));
+            idAtributa = c.getLong(idAtributaIndex);
+            vrijednostAtributa = c.getString(vrijednostAtributaIndex);
+            nazivAtributa = c.getString(nazivAtributaIndex);
+            idJmj = c.getLong(idJmjIndex);
+            nazivJmj = c.getString(nazivJmjIndex);
+            napomena = c.getString(napomenaIndex);
+
+
+            App1Stavke myObj = new App1Stavke(idStavke, IdDokumenta, idArtikla, nazivArtikla, idJmj, nazivJmj, imaAtribut, idAtributa, vrijednostAtributa, nazivAtributa, kolicina, napomena);
+            listaStavki.add(myObj);
+
+            brojac++;
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        Log.d(TAG, "ucitajDokumente: U tabeli se nalazi " + brojac + " dokumenta!");
+        c.close();
+        myDB.close();
+        return listaStavki;
+    }
+
+    public static List<App1Dokumenti> getListaDokumenta(Activity a){
+
+        List<App1Dokumenti> listaDokumenta=new ArrayList<App1Dokumenti>();
+        String tabelaApp1 = "dokumenti1";
+
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
+        Cursor c;
+        c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " ORDER BY datumUpisa DESC", null);
+
+        SimpleDateFormat simpleDateTimeFormat = new SimpleDateFormat(DatumVrijemeFormat);
+        SimpleDateFormat SQLLite_dateFormat = new SimpleDateFormat(MainActivity.SqlLiteDateFormat);
+
+        long id;
+        long idTip;
+        long idPodtip;
+        long idKomitent;
+        long idPjKomitenta;
+        String datumDokumentaString;
+        String datumSinkronizacijeString;
+        String napomena;
+        String komitentNaziv;
+        String komitentPjNaziv;
+        String tipNaziv;
+        String podtipNaziv;
+
+        Date datumDokumenta = new Date();
+        Date datumSinkronizacije = new Date();
+
+        int idIndex = c.getColumnIndex("_id");
+        int idTipIndex = c.getColumnIndex("idTip");
+        int idPodipIndex = c.getColumnIndex("idPodtip");
+        int idKomitentIndex = c.getColumnIndex("idKomitent");
+        int idPjKomitentaIndex = c.getColumnIndex("idPjKomitenta");
+        int idDatumDokumentaIndex = c.getColumnIndex("datumDokumenta");
+        int idDatumSinkronizacijeIndex = c.getColumnIndex("datumSinkronizacije");
+        int idNapomenaIndex = c.getColumnIndex("napomena");
+
+        int idKomitentNaziv = c.getColumnIndex("KomitentNaziv");
+        int idKomitentPjIndex = c.getColumnIndex("PjKomitentaNaziv");
+        int idTipNazivIndex = c.getColumnIndex("TipDokumentaNaziv");
+        int idPodtpNazivIndex = c.getColumnIndex("PodipDokumentaNaziv");
+
+        c.moveToFirst();
+        int brojac = 0;
+        for (int j = 0; j < c.getCount(); j++) {
+            id = c.getLong(idIndex);
+            idTip = c.getLong(idTipIndex);
+            tipNaziv = c.getString(idTipNazivIndex);
+            idPodtip = c.getLong(idPodipIndex);
+            podtipNaziv = c.getString(idPodtpNazivIndex);
+            idKomitent = c.getLong(idKomitentIndex);
+            komitentNaziv = c.getString(idKomitentNaziv);
+            idPjKomitenta = c.getLong(idPjKomitentaIndex);
+            komitentPjNaziv = c.getString(idKomitentPjIndex);
+            datumDokumentaString = c.getString(idDatumDokumentaIndex);
+            datumSinkronizacijeString = c.getString(idDatumSinkronizacijeIndex);
+            napomena = c.getString(idNapomenaIndex);
+            try {
+                datumDokumenta = (Date) SQLLite_dateFormat.parse(datumDokumentaString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+
+            }
+            try {
+                if (datumSinkronizacijeString==null){
+                    datumSinkronizacije=null;
+                }else{
+                    datumSinkronizacije = (Date) SQLLite_dateFormat.parse(datumSinkronizacijeString);
+                }
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+            App1Dokumenti myObj = new App1Dokumenti(id, idTip, idPodtip, idKomitent, idPjKomitenta, datumDokumenta, datumSinkronizacije, napomena, komitentNaziv, komitentPjNaziv, tipNaziv, podtipNaziv);
+            listaDokumenta.add(myObj);
+
+            brojac++;
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        Log.d(TAG, "ucitajDokumente: U tabeli se nalazi " + brojac + " dokumenta!");
+        c.close();
+        myDB.close();
+
+        return listaDokumenta;
+    }
 }

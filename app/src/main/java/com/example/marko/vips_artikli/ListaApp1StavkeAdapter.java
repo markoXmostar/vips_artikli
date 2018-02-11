@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,9 +71,13 @@ public class ListaApp1StavkeAdapter extends ArrayAdapter {
             layoutHandler = (ListaApp1StavkeAdapter.LayoutHandler) row.getTag();
 
         }
+
+
+
         //alternate row color start
         if (position % 2 == 1) {
-            row.setBackgroundColor(Color.LTGRAY);
+
+            row.setBackgroundColor(ContextCompat.getColor(this.getContext(), R.color.bojaDrugogReda));
         } else {
             //row.setBackgroundColor(Color.DKGRAY);
         }
@@ -82,7 +87,13 @@ public class ListaApp1StavkeAdapter extends ArrayAdapter {
         layoutHandler.NazivArtikla.setText(myObject.getArtiklNaziv());
         layoutHandler.Jmj.setText(myObject.getJmjNaziv());
         layoutHandler.Kolicina.setText(Double.toString(myObject.getKolicina()));
-        layoutHandler.OpisAtributa.setText(myObject.getArtiklNaziv() + " : " +myObject.getAtributVrijednost());
+        if (myObject.isImaAtribut()){
+            layoutHandler.OpisAtributa.setText(myObject.getAtributNaziv() + " : " +myObject.getAtributVrijednost());
+        }else{
+            layoutHandler.OpisAtributa.setText("");
+            layoutHandler.OpisAtributa.setVisibility(View.GONE);
+        }
+
 
         return row;
 

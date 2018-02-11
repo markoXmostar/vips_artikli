@@ -33,4 +33,7 @@
     <string name="NaslovApp1Stavke">Stavke</string>
     <string name="NoviDokument">Novi dokument</string>
     <string name="NovaStavka">Nova stavka</string>
+    <string name="PorukaDownloadPodataka">Radim download podataka molim pričekajte!</string>
+    <string name="NepotpunUnos">Niste unijeli sve potrebne podatke!</string>
+    <string name="NedozvoljenaNula">Nije dozvoljen unos 0!</string>
 </resources>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,7 +31,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
     EditText txtKolicina;
     EditText txtNapomena;
 
-    Button btnOk,btCancel;
+    Button btnOk, btnCancel;
 
     private Artikl izabraniArtikl;
 
@@ -119,7 +120,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         txtNapomena=(EditText) findViewById(R.id.etxtNapomena_App1UnosStavke);
 
         btnOk=(Button)findViewById(R.id.btnOK_App1UnosStavke);
-        btCancel=(Button)findViewById(R.id.btnCancel_App1UnosStavke);
+        btnCancel =(Button)findViewById(R.id.btnCancel_App1UnosStavke);
 
         varijantaPretrageArtikala=0;
         setIzabraniArtikl(null);
@@ -196,25 +197,82 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent returnIntent = new Intent();
-                App1Stavke newStavka = new App1Stavke(-1, idDokumenta,
-                        izabraniArtikl.getId(),
-                        izabraniArtikl.getNaziv(),
-                        izabranaJMJ.getJmjID(),
-                        izabranaJMJ.getNazivJMJ(),
-                        izabraniArtikl.isImaRokTrajanja(),
-                        izabraniAtribut.getAtributId1(),
-                        izabraniAtribut.getAtributNaziv1(),
-                        izabraniAtribut.getAtributVrijednost1(),
-                        Double.parseDouble(txtKolicina.getText().toString()),
-                        txtNapomena.getText().toString());
+                App1Stavke newStavka=null;
+                Log.d(TAG, "onClick: PRITISNUTO OK DUGME!!!!!!");
+                if(izabraniArtikl==null) {
+                    String poruka= getResources().getString(R.string.NepotpunUnos);
+
+                    Snackbar.make(view, poruka  , Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    return;
+                }
+
+                double myKolicina=0;
+                String text =txtKolicina.getText().toString();
+                if(!text.isEmpty()){
+                    try
+                    {
+                        myKolicina= Double.parseDouble(text);
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                        Snackbar.make(view, e1.getMessage()  , Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                        return;
+                    }
+                }
+                Log.d(TAG, "onClick: myKolicina=" + myKolicina);
+                if(myKolicina==0){
+                    String poruka= getResources().getString(R.string.NedozvoljenaNula);
+                    Snackbar.make(view, poruka  , Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    return;
+                }
+
+
+                if (izabraniArtikl.isImaRokTrajanja()){
+                    Log.d(TAG, "onClick: IMA ROK TRAJANJA TRUE");
+                    newStavka = new App1Stavke(-1, idDokumenta,
+                            izabraniArtikl.getId(),
+                            izabraniArtikl.getNaziv(),
+                            izabranaJMJ.getJmjID(),
+                            izabranaJMJ.getNazivJMJ(),
+                            izabraniArtikl.isImaRokTrajanja(),
+                            izabraniAtribut.getAtributId1(),
+                            izabraniAtribut.getAtributNaziv1(),
+                            izabraniAtribut.getAtributVrijednost1(),
+                            myKolicina,
+                            txtNapomena.getText().toString());
+                }else{
+                    Log.d(TAG, "onClick: IMA ROK TRAJANJA FALSE");
+                    newStavka = new App1Stavke(-1, idDokumenta,
+                            izabraniArtikl.getId(),
+                            izabraniArtikl.getNaziv(),
+                            izabranaJMJ.getJmjID(),
+                            izabranaJMJ.getNazivJMJ(),
+                            izabraniArtikl.isImaRokTrajanja(),
+                            -1,
+                            null,
+                            null,
+                            myKolicina,
+                            txtNapomena.getText().toString());
+                }
+
 
                 returnIntent.putExtra("stavka",newStavka);
-
                 setResult(Activity.RESULT_OK,returnIntent);
                 finish();
             }
         });
 
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent returnIntent = new Intent();
+                setResult(Activity.RESULT_CANCELED,returnIntent);
+                finish();
+            }
+        });
     }
 
 

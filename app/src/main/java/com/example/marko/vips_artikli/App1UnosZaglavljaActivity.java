@@ -3,6 +3,7 @@ package com.example.marko.vips_artikli;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -204,6 +206,13 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (izabraniKomitent==null || izabraniTiP==null || izabranaPJKomitenta==null || izabranPodtip==null){
+                    String poruka= getResources().getString(R.string.NepotpunUnos);
+                    Snackbar.make(view, poruka  , Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    return;
+                }
+
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("idKomitenta",getIzabraniKomitent().getId());
                 returnIntent.putExtra("idPjKomitenta",getIzabranaPJKomitenta().getId());

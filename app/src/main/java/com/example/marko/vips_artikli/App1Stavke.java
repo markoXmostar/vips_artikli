@@ -1,5 +1,7 @@
 package com.example.marko.vips_artikli;
 
+import android.support.annotation.Nullable;
+
 import java.io.Serializable;
 
 /**
@@ -92,6 +94,7 @@ public class App1Stavke implements Serializable {
         this.imaAtribut = imaAtribut;
     }
 
+
     public long getAtributId() {
         return atributId;
     }
@@ -100,6 +103,7 @@ public class App1Stavke implements Serializable {
         this.atributId = atributId;
     }
 
+
     public String getAtributNaziv() {
         return atributNaziv;
     }
@@ -107,6 +111,7 @@ public class App1Stavke implements Serializable {
     public void setAtributNaziv(String atributNaziv) {
         this.atributNaziv = atributNaziv;
     }
+
 
     public String getAtributVrijednost() {
         return atributVrijednost;
