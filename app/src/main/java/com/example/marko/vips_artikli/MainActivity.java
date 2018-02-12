@@ -310,7 +310,8 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
                 */
             }
             if (!postoji){
-                dbLog novaTbl=new dbLog(0,"?",1,"Tabela nije up-to-date!!!",novaListaLog.size(),myTb.NazivTabele);
+                String poruka=getResources().getString(R.string.TabelaNijeUpToDate);
+                dbLog novaTbl=new dbLog(0,"?",1,poruka,novaListaLog.size(),myTb.NazivTabele);
                 novaListaLog.add(0,novaTbl);
             }
         }
@@ -904,7 +905,7 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
                 e.printStackTrace();
             }
 
-
+            Log.d(TAG, "getListaDokumenta: DOKUMENT: _id=" + id +"/ datumSinkronizacije=" + datumSinkronizacijeString);
             App1Dokumenti myObj = new App1Dokumenti(id, idTip, idPodtip, idKomitent, idPjKomitenta, datumDokumenta, datumSinkronizacije, napomena, komitentNaziv, komitentPjNaziv, tipNaziv, podtipNaziv);
             listaDokumenta.add(myObj);
 
@@ -923,14 +924,10 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
     public static void updateZaglavljaPoslijeSinkronizacije(Activity a, List<App1Dokumenti> spisakSyncDokumenta) {
 
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
-        Cursor c;
-        Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat mojDateFormat = new SimpleDateFormat(SqlLiteDateFormat);
-        String trenutnoVrijeme = mojDateFormat.format(currentTime);
         for (App1Dokumenti dok : spisakSyncDokumenta) {
-            c = myDB.rawQuery("UPDATE dokumnenti1 SET datumSinkronizacije =  '" + trenutnoVrijeme + "' WHERE _id=" + dok.getId() + ";", null);
+            myDB.execSQL("UPDATE dokumenti1 SET datumSinkronizacije=datetime('now') WHERE _id=" + dok.getId() + ";");
+            Log.d(TAG, "updateZaglavljaPoslijeSinkronizacije: UPDATE ODRAĐEN!");
         }
-
-
+        myDB.close();
     }
 }

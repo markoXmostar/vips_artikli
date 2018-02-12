@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import java.util.List;
  */
 
 public class ListaApp1DokumentiAdapter extends ArrayAdapter{
+    private static String TAG="LISTA DOKUMENATA ADAPTER: ";
     List list = new ArrayList();
 
     public ListaApp1DokumentiAdapter(@NonNull Context context, int resource) {
@@ -89,9 +91,11 @@ public class ListaApp1DokumentiAdapter extends ArrayAdapter{
         layoutHandler.TipDkumenta.setText(myObject.getTipDokumentaNaziv());
         layoutHandler.PodtipDokumenta.setText(myObject.getPodtipDokumentaNaziv());
         if (myObject.getDatumSinkronizacije()==null){
+            Log.d(TAG, "getView:  NIJE SINKRONIZIRAN");
             layoutHandler.Slika.setImageResource(R.drawable.img_error);
         }
         else{
+            Log.d(TAG, "getView:  SINKRONIZIRAN!");
             layoutHandler.Slika.setImageResource(R.drawable.img_ok);
         }
         return row;

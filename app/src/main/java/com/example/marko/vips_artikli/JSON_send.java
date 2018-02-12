@@ -1,6 +1,9 @@
 package com.example.marko.vips_artikli;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -10,8 +13,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
@@ -27,12 +28,21 @@ public class JSON_send extends AsyncTask<String, String, String> {
     private static String TAG = "SendData_JSON";
 
     List<App1Dokumenti> spisakDokumenta;
+    Activity myActivity=null;
+    private ProgressDialog progressDialog;
 
-    public JSON_send(List<App1Dokumenti> spisakDokumentaZaSync) {
+    public JSON_send(Activity a,List<App1Dokumenti> spisakDokumentaZaSync) {
         spisakDokumenta = spisakDokumentaZaSync;
+        myActivity=a;
     }
 
     protected void onPreExecute() {
+        progressDialog = new ProgressDialog(myActivity);
+        progressDialog = new ProgressDialog(myActivity);
+        String poruka =(String) myActivity.getApplicationContext().getResources().getString(R.string.Poruka_app_molimPricekajte);
+        progressDialog.setMessage(poruka);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
     }
 
 
@@ -131,7 +141,8 @@ public class JSON_send extends AsyncTask<String, String, String> {
     protected void onPostExecute(String result) {
         Log.d(TAG, "onPostExecute: " + result);
         if (result.equals("OK")) {
-
+            MainActivity.updateZaglavljaPoslijeSinkronizacije(myActivity,spisakDokumenta);
         }
+        progressDialog.dismiss();
     }
 }

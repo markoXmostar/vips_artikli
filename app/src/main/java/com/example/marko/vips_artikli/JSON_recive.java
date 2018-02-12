@@ -36,14 +36,14 @@ public class JSON_recive extends AsyncTask<String, String, String> {
 
     private String tipPodataka = "";
 
-        private ProgressDialog pd;
+        private ProgressDialog progressDialog;
         private MainActivity myMainActivity;
 
         Date vrijeme1,vrijeme2;
 
     public JSON_recive(MainActivity activity, MainActivity.UrlTabele _myTbl) {
             myMainActivity=activity;
-            pd = new ProgressDialog(activity);
+            progressDialog = new ProgressDialog(activity);
             myTbl = _myTbl;
         }
 
@@ -52,11 +52,11 @@ public class JSON_recive extends AsyncTask<String, String, String> {
             super.onPreExecute();
 
             vrijeme1 = new Date(System.currentTimeMillis());
-            pd = new ProgressDialog(myMainActivity);
+            progressDialog = new ProgressDialog(myMainActivity);
             String poruka =(String) myMainActivity.getApplicationContext().getResources().getString(R.string.Poruka_app_molimPricekajte);
-            pd.setMessage(poruka);
-            pd.setCancelable(false);
-            pd.show();
+            progressDialog.setMessage(poruka);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
 
         }
 
@@ -447,7 +447,7 @@ public class JSON_recive extends AsyncTask<String, String, String> {
             Log.d(TAG, "onPostExecute: ZOVEM UPDATE PODATKA ZAVRŠENO je promjenjeno u ->" + myTbl.ZavrsenaSyncronizacija);
             //myMainActivity.updateSyncTabele(tipPodataka,true);
             myMainActivity.getLOG();
-            pd.dismiss();
+            progressDialog.dismiss();
 
         }
 

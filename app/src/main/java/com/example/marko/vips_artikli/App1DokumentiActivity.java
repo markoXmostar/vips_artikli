@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 import static com.example.marko.vips_artikli.MainActivity.DatumFormat;
 import static com.example.marko.vips_artikli.MainActivity.myDATABASE;
@@ -74,7 +75,17 @@ public class App1DokumentiActivity extends AppCompatActivity {
                     dok.doadajStavku(stv);
                 }
             }
-            new JSON_send(spisakDokumentaZaSync).execute();
+            try {
+                String rezultat=new JSON_send(App1DokumentiActivity.this,spisakDokumentaZaSync).execute().get();
+                if (rezultat.equals("OK")){
+                    ucitajDokumente();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            ucitajDokumente();
             return true;
         }
 
@@ -145,8 +156,18 @@ public class App1DokumentiActivity extends AppCompatActivity {
                                     selektiranDok.doadajStavku(stv);
                                 }
 
-                                new JSON_send(spisakDokZaSync).execute();
-
+                                try {
+                                    String rezultat=new JSON_send(App1DokumentiActivity.this,spisakDokZaSync).execute().get();
+                                    Log.d(TAG, "onClick: REZULTAT ASYNCTASKA JE=>" + rezultat);
+                                    if (rezultat.equals("OK")){
+                                        ucitajDokumente();
+                                    }
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                } catch (ExecutionException e) {
+                                    e.printStackTrace();
+                                }
+                                ucitajDokumente();
                                 //Toast.makeText(App1DokumentiActivity.this,akcije[which].toString(),Toast.LENGTH_LONG).show();
                                 break;
                             case 2:
