@@ -28,7 +28,7 @@ import static com.example.marko.vips_artikli.MainActivity.zadnjaSinkronizacijaID
  * Created by marko on 1.11.2017.
  */
 
-public class JSON_task  extends AsyncTask<String, String, String>{
+public class JSON_recive extends AsyncTask<String, String, String> {
 
     public static final String TAG = "JSON_task";
 
@@ -41,7 +41,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
 
         Date vrijeme1,vrijeme2;
 
-        public JSON_task(MainActivity activity, MainActivity.UrlTabele _myTbl) {
+    public JSON_recive(MainActivity activity, MainActivity.UrlTabele _myTbl) {
             myMainActivity=activity;
             pd = new ProgressDialog(activity);
             myTbl = _myTbl;
@@ -486,7 +486,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                     "imaRokTrajanja double, " +
                     "podgrupaID int);");
             Log.d(TAG, "XXX Brišem sve iz tabele");
-            myDB.execSQL("XXX DELETE FROM " + myTabela);
+            myDB.execSQL("DELETE FROM " + myTabela);
             for (int i = 0; i < Lista.size(); i++) {
                 Artikl myArt = Lista.get(i);
                 myDB.execSQL("INSERT INTO " + myTabela + " (_id, sifra , " +
@@ -525,7 +525,7 @@ public class JSON_task  extends AsyncTask<String, String, String>{
                 Log.d(TAG, "XXX UpisiArtikleUBazu: "+ greskaStr);
             }
             else{
-                greskaStr="XXX Uspješno upisano Artikala:" +Integer.toString(Lista.size());
+                greskaStr = "Uspješno upisano Artikala:" + Integer.toString(Lista.size());
                 Log.d(TAG, "UpisiArtikleUBazu: "+ greskaStr);
                 UpisiLOG(0, greskaStr, myTabela, 0);
                 Log.d(TAG, "UpisiArtikleUBazu: XXX UPISANO U LOG SVE OK");

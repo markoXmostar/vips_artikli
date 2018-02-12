@@ -1,13 +1,10 @@
 package com.example.marko.vips_artikli;
 
 import android.app.Activity;
-import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -27,11 +24,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -474,7 +468,7 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
         for (UrlTabele tbl : spisakSyncTabela) {
             Log.d(TAG, "napraviSinkronizacijuDownload: Radim tabelu =" + tbl.NazivTabele);
             tbl.ZavrsenaSyncronizacija = false;
-            new JSON_task(this, tbl).execute(tbl.urlTabele, tbl.Akcija);
+            new JSON_recive(this, tbl).execute(tbl.urlTabele, tbl.Akcija);
         }
 
 
@@ -924,5 +918,19 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
         myDB.close();
 
         return listaDokumenta;
+    }
+
+    public static void updateZaglavljaPoslijeSinkronizacije(Activity a, List<App1Dokumenti> spisakSyncDokumenta) {
+
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
+        Cursor c;
+        Date currentTime = Calendar.getInstance().getTime();
+        SimpleDateFormat mojDateFormat = new SimpleDateFormat(SqlLiteDateFormat);
+        String trenutnoVrijeme = mojDateFormat.format(currentTime);
+        for (App1Dokumenti dok : spisakSyncDokumenta) {
+            c = myDB.rawQuery("UPDATE dokumnenti1 SET datumSinkronizacije =  '" + trenutnoVrijeme + "' WHERE _id=" + dok.getId() + ";", null);
+        }
+
+
     }
 }

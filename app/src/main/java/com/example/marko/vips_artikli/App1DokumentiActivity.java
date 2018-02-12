@@ -3,7 +3,6 @@ package com.example.marko.vips_artikli;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.app.Activity;
@@ -26,8 +25,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.example.marko.vips_artikli.MainActivity.DatumFormat;
-import static com.example.marko.vips_artikli.MainActivity.DatumVrijemeFormat;
-import static com.example.marko.vips_artikli.MainActivity.ma;
 import static com.example.marko.vips_artikli.MainActivity.myDATABASE;
 
 public class App1DokumentiActivity extends AppCompatActivity {
@@ -77,7 +74,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
                     dok.doadajStavku(stv);
                 }
             }
-            new SendJSON(spisakDokumentaZaSync).execute();
+            new JSON_send(spisakDokumentaZaSync).execute();
             return true;
         }
 
@@ -148,7 +145,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
                                     selektiranDok.doadajStavku(stv);
                                 }
 
-                                new SendJSON(spisakDokZaSync).execute();
+                                new JSON_send(spisakDokZaSync).execute();
 
                                 //Toast.makeText(App1DokumentiActivity.this,akcije[which].toString(),Toast.LENGTH_LONG).show();
                                 break;
@@ -164,6 +161,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
             }
         });
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
