@@ -36,15 +36,18 @@ public class JSON_recive extends AsyncTask<String, String, String> {
 
     private String tipPodataka = "";
 
+    private String porukaNaEkranu = null;
+
         private ProgressDialog progressDialog;
         private MainActivity myMainActivity;
 
         Date vrijeme1,vrijeme2;
 
-    public JSON_recive(MainActivity activity, MainActivity.UrlTabele _myTbl) {
+    public JSON_recive(MainActivity activity, MainActivity.UrlTabele _myTbl, String poruka) {
             myMainActivity=activity;
             progressDialog = new ProgressDialog(activity);
             myTbl = _myTbl;
+        porukaNaEkranu = poruka;
         }
 
         @Override
@@ -54,6 +57,7 @@ public class JSON_recive extends AsyncTask<String, String, String> {
             vrijeme1 = new Date(System.currentTimeMillis());
             progressDialog = new ProgressDialog(myMainActivity);
             String poruka =(String) myMainActivity.getApplicationContext().getResources().getString(R.string.Poruka_app_molimPricekajte);
+            poruka = poruka + " " + porukaNaEkranu;
             progressDialog.setMessage(poruka);
             progressDialog.setCancelable(false);
             progressDialog.show();

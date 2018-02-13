@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -311,6 +312,7 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
             }
             if (!postoji){
                 String poruka=getResources().getString(R.string.TabelaNijeUpToDate);
+
                 dbLog novaTbl=new dbLog(0,"?",1,poruka,novaListaLog.size(),myTb.NazivTabele);
                 novaListaLog.add(0,novaTbl);
             }
@@ -352,6 +354,9 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.action_download_podataka) {
+            fabUpdatePodataka.callOnClick();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -378,10 +383,7 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
 
             fabUpdatePodataka.callOnClick();
 
-        } else if (id==R.id.nav_log){
-
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -465,11 +467,24 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
                 .setAction("Action", null).show();
 
         Log.d(TAG, "napraviSinkronizacijuDownload: BROJ ABEA ZA SYNC=" + spisakSyncTabela.size());
-
+        int brojac = 0;
+        int ukupnoZaSync = spisakSyncTabela.size();
         for (UrlTabele tbl : spisakSyncTabela) {
             Log.d(TAG, "napraviSinkronizacijuDownload: Radim tabelu =" + tbl.NazivTabele);
             tbl.ZavrsenaSyncronizacija = false;
-            new JSON_recive(this, tbl).execute(tbl.urlTabele, tbl.Akcija);
+
+            brojac += 1;
+            new JSON_recive(this, tbl, "").execute(tbl.urlTabele, tbl.Akcija);
+            /*
+            try {
+
+               String result=new JSON_recive(this, tbl,brojac + "/" + ukupnoZaSync).execute(tbl.urlTabele, tbl.Akcija).get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            */
         }
 
 
@@ -766,12 +781,17 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
     }
 
     public static List<App1Stavke> getListaStavki(long IdDokumenta, Activity a){
+        String tabelaApp1 = "stavke1";
 
-        List<App1Stavke> listaStavki=new ArrayList<App1Stavke>();
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
+        if (!isTableExists(myDB, tabelaApp1)) {
+            return null;
+        }
+        List<App1Stavke> listaStavki = new ArrayList<App1Stavke>();
 
         Log.d(TAG, "ucitajStavke: IdDOKUMENTA=" + IdDokumenta);
-        String tabelaApp1 = "stavke1";
-        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
+
+
         Cursor c;
         Log.d(TAG, "ucitajStavke: " + "SELECT * FROM " + tabelaApp1 + " WHERE idDokumenta=" + IdDokumenta + " ORDER BY datumUpisa DESC");
         c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " WHERE idDokumenta=" + IdDokumenta +" ORDER BY datumUpisa DESC", null);

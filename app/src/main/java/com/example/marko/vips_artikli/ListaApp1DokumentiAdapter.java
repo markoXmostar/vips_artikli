@@ -91,11 +91,9 @@ public class ListaApp1DokumentiAdapter extends ArrayAdapter{
         layoutHandler.TipDkumenta.setText(myObject.getTipDokumentaNaziv());
         layoutHandler.PodtipDokumenta.setText(myObject.getPodtipDokumentaNaziv());
         if (myObject.getDatumSinkronizacije()==null){
-            Log.d(TAG, "getView:  NIJE SINKRONIZIRAN");
             layoutHandler.Slika.setImageResource(R.drawable.img_error);
         }
         else{
-            Log.d(TAG, "getView:  SINKRONIZIRAN!");
             layoutHandler.Slika.setImageResource(R.drawable.img_ok);
         }
         return row;

@@ -20,6 +20,7 @@ import android.widget.Toast;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -61,7 +62,8 @@ public class App1DokumentiActivity extends AppCompatActivity {
         if (id == R.id.sinkroniziraj_dokumenti1) {
             //Toast.makeText(App1DokumentiActivity.this,"Nije implementirana funkcija",Toast.LENGTH_LONG).show();
             List<App1Dokumenti> spisakSvihDokumenta=MainActivity.getListaDokumenta(App1DokumentiActivity.this);
-            List<App1Dokumenti> spisakDokumentaZaSync=MainActivity.getListaDokumenta(App1DokumentiActivity.this);
+            //List<App1Dokumenti> spisakDokumentaZaSync=MainActivity.getListaDokumenta(App1DokumentiActivity.this);
+            List<App1Dokumenti> spisakDokumentaZaSync = new ArrayList<App1Dokumenti>();
             for (App1Dokumenti dok:spisakSvihDokumenta) {
                 if(dok.getDatumSinkronizacije()==null ){
                     spisakDokumentaZaSync.add(dok);
@@ -78,14 +80,23 @@ public class App1DokumentiActivity extends AppCompatActivity {
             try {
                 String rezultat=new JSON_send(App1DokumentiActivity.this,spisakDokumentaZaSync).execute().get();
                 if (rezultat.equals("OK")){
+                    MainActivity.updateZaglavljaPoslijeSinkronizacije(App1DokumentiActivity.this, spisakDokumentaZaSync);
                     ucitajDokumente();
+
+                    //for (App1Dokumenti dok:spisakDokumentaZaSync) {
+                    //dok.setDatumSinkronizacije(Calendar.getInstance().getTime());
+                    //}
                 }
+                Log.d(TAG, "UODATE URAĐEN ZA " + spisakDokumentaZaSync.size() + " DOKUMENATA!");
+                //ListaApp1DokumentiAdapter listaDokumenta =(ListaApp1DokumentiAdapter)listSpisakDokumenata.getAdapter();
+                //listaDokumenta.notifyDataSetChanged();
+                //listSpisakDokumenata.invalidateViews();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
-            ucitajDokumente();
+            //ucitajDokumente();
             return true;
         }
 
@@ -123,6 +134,11 @@ public class App1DokumentiActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(App1DokumentiActivity.this, App1StavkeActivity.class);
                 intent.putExtra("idDokumenta", selektiranDok.getId());
+                boolean isSync = false;
+                if (selektiranDok.getDatumSinkronizacije() != null) {
+                    isSync = true;
+                }
+                intent.putExtra("isSync", isSync);
                 startActivity(intent);
 
             }
@@ -132,8 +148,15 @@ public class App1DokumentiActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                final CharSequence akcije[] = new CharSequence[] {"Izbriši", "Sinkroniziraj", "Prikaži detalje"};
+
                 final App1Dokumenti selektiranDok=(App1Dokumenti) adapterView.getItemAtPosition(i);
+                final CharSequence akcije[];
+                if (selektiranDok.getDatumSinkronizacije() == null) {
+                    akcije = new CharSequence[]{"Izbriši", "Sinkroniziraj", "Prikaži detalje"};
+                } else {
+                    akcije = new CharSequence[]{"Izbriši", "Prikaži detalje"};
+                }
+                //final CharSequence akcije[] = new CharSequence[] {"Izbriši", "Sinkroniziraj", "Prikaži detalje"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(App1DokumentiActivity.this);
                 builder.setTitle("Opcije dokumenta");
                 builder.setItems(akcije, new DialogInterface.OnClickListener() {
@@ -160,6 +183,9 @@ public class App1DokumentiActivity extends AppCompatActivity {
                                     String rezultat=new JSON_send(App1DokumentiActivity.this,spisakDokZaSync).execute().get();
                                     Log.d(TAG, "onClick: REZULTAT ASYNCTASKA JE=>" + rezultat);
                                     if (rezultat.equals("OK")){
+
+                                        //ucitajDokumente();
+                                        MainActivity.updateZaglavljaPoslijeSinkronizacije(App1DokumentiActivity.this, spisakDokZaSync);
                                         ucitajDokumente();
                                     }
                                 } catch (InterruptedException e) {

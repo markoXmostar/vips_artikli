@@ -21,15 +21,13 @@
         <menu>
             <item
                 android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/ic_file_upload_black_24dp"
                 android:title="@string/PosaljiPodatke_title" />
             <item
                 android:id="@+id/nav_recive"
+                android:icon="@drawable/ic_file_download_black_24dp"
                 android:title="@string/PrimiPodatke_title" />
-            <item
-                android:id="@+id/nav_log"
-                android:icon="@drawable/ic_menu_send"
-                android:title="@string/Log_title" />
+
         </menu>
     </item>
 

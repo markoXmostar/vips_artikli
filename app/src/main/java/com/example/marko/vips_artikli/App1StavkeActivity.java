@@ -44,10 +44,16 @@ public class App1StavkeActivity extends AppCompatActivity {
 
 
         Bundle b = getIntent().getExtras();
+
         final long IdDok = b.getLong("idDokumenta");
         IdDokumenta = IdDok;
-        //this.setTitle("STAVKE idDok=[" + IdDok + "]");
+
         fabNovaStavka = (FloatingActionButton) findViewById(R.id.fabNovaStavka_App1);
+        final boolean isSync = b.getBoolean("isSync");
+        if (isSync) {
+            fabNovaStavka.setVisibility(View.INVISIBLE);
+        }
+
         listSpisakStavki=(ListView)findViewById(R.id.listSpisakStavki_App1);
 
 

@@ -141,7 +141,7 @@ public class JSON_send extends AsyncTask<String, String, String> {
     protected void onPostExecute(String result) {
         Log.d(TAG, "onPostExecute: " + result);
         if (result.equals("OK")) {
-            MainActivity.updateZaglavljaPoslijeSinkronizacije(myActivity,spisakDokumenta);
+            //MainActivity.updateZaglavljaPoslijeSinkronizacije(myActivity,spisakDokumenta);
         }
         progressDialog.dismiss();
     }
