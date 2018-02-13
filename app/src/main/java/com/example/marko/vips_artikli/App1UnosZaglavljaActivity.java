@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -37,6 +36,7 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
     }
     public void setIzabraniKomitent(Komitent new_izabraniKomitent) {
         izabraniKomitent = new_izabraniKomitent;
+
         if (new_izabraniKomitent!=null){
             txtKomitent.setText(izabraniKomitent.getNaziv());
 
@@ -79,6 +79,7 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
 
     public void setIzabraniTiP(TipDokumenta izabraniTiP) {
         this.izabraniTiP = izabraniTiP;
+        izabranPodtip = null;
         if(izabraniTiP!=null){
             txtTipDokumenta.setText(izabraniTiP.getNaziv());
             labelPodtipDokumenta.setEnabled(true);
@@ -160,7 +161,7 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
         txtKomitent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(App1UnosZaglavljaActivity.this, PretragaKomitenataActivity.class);
+                Intent i = new Intent(App1UnosZaglavljaActivity.this, PretragaKomitenata_Tipova_Podtipova_PJKomitenata_Activity.class);
                 i.putExtra("varijanta", "komitenti");
                 Log.d(TAG, "onClick: PUT EXTRA varijanta komitenti" );
                 startActivityForResult(i, 1);
@@ -170,7 +171,7 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
         txtPjKomitenta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(App1UnosZaglavljaActivity.this, PretragaKomitenataActivity.class);
+                Intent i = new Intent(App1UnosZaglavljaActivity.this, PretragaKomitenata_Tipova_Podtipova_PJKomitenata_Activity.class);
                 i.putExtra("varijanta", "pjkomitenti");
                 Log.d(TAG, "onClick: PUT EXTRA varijanta pjkomitenti" );
                 Komitent izabran=getIzabraniKomitent();
@@ -183,7 +184,7 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
         txtTipDokumenta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(App1UnosZaglavljaActivity.this, PretragaKomitenataActivity.class);
+                Intent i = new Intent(App1UnosZaglavljaActivity.this, PretragaKomitenata_Tipova_Podtipova_PJKomitenata_Activity.class);
                 i.putExtra("varijanta", "tipDokumenta");
                 Log.d(TAG, "onClick: PUT EXTRA varijanta TIP Dokumenta" );
                 startActivityForResult(i, 3);
@@ -193,7 +194,7 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
         txtPodtipDokumenta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(App1UnosZaglavljaActivity.this, PretragaKomitenataActivity.class);
+                Intent i = new Intent(App1UnosZaglavljaActivity.this, PretragaKomitenata_Tipova_Podtipova_PJKomitenata_Activity.class);
                 i.putExtra("varijanta", "podtipDokumenta");
                 Log.d(TAG, "onClick: PUT EXTRA varijanta podtipDokumenta" );
                 TipDokumenta izabran=getIzabraniTiP();

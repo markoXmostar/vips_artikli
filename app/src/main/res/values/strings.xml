@@ -37,4 +37,5 @@
     <string name="NepotpunUnos">Niste unijeli sve potrebne podatke!</string>
     <string name="NedozvoljenaNula">Nije dozvoljen unos 0!</string>
     <string name="TabelaNijeUpToDate">Tabela nije up-to-date!!!</string>
+    <string name="PosaljiPodatke">Pošalji podatke</string>
 </resources>

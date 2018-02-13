@@ -39,6 +39,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
 
     private void setIzabraniArtikl(Artikl _izabraniArtikl) {
         izabraniArtikl = _izabraniArtikl;
+        izabraniAtribut = null;
+        izabranaJMJ = null;
 
         if (izabraniArtikl==null){
             txtKolicina.setEnabled(false);
@@ -193,6 +195,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             }
         });
 
+
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -200,13 +203,20 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                 App1Stavke newStavka=null;
                 Log.d(TAG, "onClick: PRITISNUTO OK DUGME!!!!!!");
                 if(izabraniArtikl==null) {
-                    String poruka= getResources().getString(R.string.NepotpunUnos);
-
-                    Snackbar.make(view, poruka  , Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+                    ispisiPorukuNisteUnijeliPotrebnePodatke(view);
+                    return;
+                } else {
+                    if (izabraniArtikl.isImaRokTrajanja()) {
+                        if (izabraniAtribut == null) {
+                            ispisiPorukuNisteUnijeliPotrebnePodatke(view);
+                            return;
+                        }
+                    }
+                }
+                if (izabranaJMJ == null) {
+                    ispisiPorukuNisteUnijeliPotrebnePodatke(view);
                     return;
                 }
-
                 double myKolicina=0;
                 String text =txtKolicina.getText().toString();
                 if(!text.isEmpty()){
@@ -275,7 +285,12 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         });
     }
 
+    private void ispisiPorukuNisteUnijeliPotrebnePodatke(View view) {
 
+        String poruka = getResources().getString(R.string.NepotpunUnos);
+        Snackbar.make(view, poruka, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+    }
 
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){

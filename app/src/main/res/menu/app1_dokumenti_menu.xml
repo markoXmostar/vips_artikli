@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/drop_table_dokumenti1"
-        android:orderInCategory="100"
-        android:title="Izbriši tabelu dokumenti1"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/delete_all_dokumenti1"
-        android:orderInCategory="200"
-        android:title="Izbriši podatke iz tabele dokumenti1"
-        app:showAsAction="never" />
+
     <item
         android:id="@+id/sinkroniziraj_dokumenti1"
+        android:icon="@drawable/ic_file_upload_white_24dp"
         android:orderInCategory="300"
-        android:title="Sinkroniziraj podatke"
-        app:showAsAction="never" />
+        android:title="@string/PosaljiPodatke_title"
+        app:showAsAction="always|withText" />
 </menu>

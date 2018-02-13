@@ -14,7 +14,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
-public class PretragaKomitenataActivity extends AppCompatActivity {
+public class PretragaKomitenata_Tipova_Podtipova_PJKomitenata_Activity extends AppCompatActivity {
     private static final String TAG="PretragaKomitenata";
 
     EditText txtFilter;

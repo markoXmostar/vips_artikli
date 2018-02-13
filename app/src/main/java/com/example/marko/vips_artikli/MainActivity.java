@@ -91,6 +91,10 @@ public class MainActivity extends AppCompatActivity
         postaviTabeleZaSync();
         getLOG();
 
+        //kreiraj potrebne tabele ako ne postoje!
+        kreirajTabeluDokumenata(this);
+        kreirajTabeluStavki(this);
+        //kraj
 
 
         fabUpdatePodataka.setOnClickListener(new View.OnClickListener() {
@@ -949,5 +953,87 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
             Log.d(TAG, "updateZaglavljaPoslijeSinkronizacije: UPDATE ODRAĐEN!");
         }
         myDB.close();
+    }
+
+    public static boolean sendAllDokuments(Activity a) {
+        boolean odgovor = false;
+        List<App1Dokumenti> spisakSvihDokumenta = MainActivity.getListaDokumenta(a);
+        List<App1Dokumenti> spisakDokumentaZaSync = new ArrayList<App1Dokumenti>();
+        for (App1Dokumenti dok : spisakSvihDokumenta) {
+            if (dok.getDatumSinkronizacije() == null) {
+                spisakDokumentaZaSync.add(dok);
+            }
+        }
+
+        for (App1Dokumenti dok : spisakDokumentaZaSync) {
+            dok.izbrisiSveStavke();
+            List<App1Stavke> mojeStavke = MainActivity.getListaStavki(dok.getId(), a);
+            for (App1Stavke stv : mojeStavke) {
+                dok.doadajStavku(stv);
+            }
+        }
+        try {
+            String rezultat = new JSON_send(a, spisakDokumentaZaSync).execute().get();
+            if (rezultat.equals("OK")) {
+                MainActivity.updateZaglavljaPoslijeSinkronizacije(a, spisakDokumentaZaSync);
+                odgovor = true;
+            }
+            Log.d(TAG, "UODATE URAĐEN ZA " + spisakDokumentaZaSync.size() + " DOKUMENATA!");
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return odgovor;
+    }
+
+    public static void kreirajTabeluStavki(Activity a) {
+        String tabelaApp1 = "stavke1";
+        SQLiteDatabase myDB = null;
+        Log.d(TAG, "Otvaram bazu");
+        myDB = a.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+        Log.d(TAG, "Kreiram tabelu");
+        //myDB.execSQL("DROP TABLE " + tabelaApp1 + ";");
+        myDB.execSQL("CREATE TABLE IF NOT EXISTS " + tabelaApp1 + " (" +
+                "_id Integer PRIMARY KEY AUTOINCREMENT, " +
+                "idDokumenta long, " +
+                "idArtikla long," +
+                "nazivArtikla VARCHAR," +
+                "kolicina decimal," +
+                "imaAtribut boolean, " +
+                "idAtributa long," +
+                "vrijednostAtributa VARCHAR, " +
+                "nazivAtributa VARCHAR," +
+                "idJmj long," +
+                "nazivJmj VARCHAR," +
+                "napomena VARCHAR," +
+                "datumUpisa datetime default current_timestamp);");
+        myDB.close();
+    }
+
+    public static void kreirajTabeluDokumenata(Activity a) {
+        String tabelaApp1 = "dokumenti1";
+        SQLiteDatabase myDB = null;
+        Log.d(TAG, "Otvaram bazu");
+        myDB = a.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+        Log.d(TAG, "Kreiram tabelu");
+        //myDB.execSQL("DROP TABLE " + tabelaApp1 + ";");
+        myDB.execSQL("CREATE TABLE IF NOT EXISTS " + tabelaApp1 + " (" +
+                "_id Integer PRIMARY KEY AUTOINCREMENT, " +
+                "idTip VARCHAR, " +
+                "TipDokumentaNaziv VARCHAR," +
+                "idPodtip VARCHAR," +
+                "PodipDokumentaNaziv VARCHAR," +
+                "idKomitent VARCHAR, " +
+                "KomitentNaziv VARCHAR," +
+                "idPjKomitenta VARCHAR, " +
+                "PjKomitentaNaziv VARCHAR," +
+                "datumDokumenta datetime, " +
+                "datumSinkronizacije datetime," +
+                "datumUpisa datetime default current_timestamp," +
+                "napomena VARCHAR);");
+        myDB.close();
+
     }
 }

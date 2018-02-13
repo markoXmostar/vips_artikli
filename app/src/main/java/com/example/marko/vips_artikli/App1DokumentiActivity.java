@@ -47,8 +47,8 @@ public class App1DokumentiActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
+        /*
         if (id == R.id.drop_table_dokumenti1) {
             MainActivity.dropTable(App1DokumentiActivity.this,tabelaApp1);
             finish();
@@ -59,44 +59,11 @@ public class App1DokumentiActivity extends AppCompatActivity {
             ucitajDokumente();
             return true;
         }
+        */
         if (id == R.id.sinkroniziraj_dokumenti1) {
-            //Toast.makeText(App1DokumentiActivity.this,"Nije implementirana funkcija",Toast.LENGTH_LONG).show();
-            List<App1Dokumenti> spisakSvihDokumenta=MainActivity.getListaDokumenta(App1DokumentiActivity.this);
-            //List<App1Dokumenti> spisakDokumentaZaSync=MainActivity.getListaDokumenta(App1DokumentiActivity.this);
-            List<App1Dokumenti> spisakDokumentaZaSync = new ArrayList<App1Dokumenti>();
-            for (App1Dokumenti dok:spisakSvihDokumenta) {
-                if(dok.getDatumSinkronizacije()==null ){
-                    spisakDokumentaZaSync.add(dok);
-                }
+            if (MainActivity.sendAllDokuments(App1DokumentiActivity.this)) {
+                ucitajDokumente();
             }
-
-            for (App1Dokumenti dok:spisakDokumentaZaSync) {
-                dok.izbrisiSveStavke();
-                List<App1Stavke> mojeStavke=MainActivity.getListaStavki(dok.getId(),App1DokumentiActivity.this);
-                for (App1Stavke stv:mojeStavke) {
-                    dok.doadajStavku(stv);
-                }
-            }
-            try {
-                String rezultat=new JSON_send(App1DokumentiActivity.this,spisakDokumentaZaSync).execute().get();
-                if (rezultat.equals("OK")){
-                    MainActivity.updateZaglavljaPoslijeSinkronizacije(App1DokumentiActivity.this, spisakDokumentaZaSync);
-                    ucitajDokumente();
-
-                    //for (App1Dokumenti dok:spisakDokumentaZaSync) {
-                    //dok.setDatumSinkronizacije(Calendar.getInstance().getTime());
-                    //}
-                }
-                Log.d(TAG, "UODATE URAĐEN ZA " + spisakDokumentaZaSync.size() + " DOKUMENATA!");
-                //ListaApp1DokumentiAdapter listaDokumenta =(ListaApp1DokumentiAdapter)listSpisakDokumenata.getAdapter();
-                //listaDokumenta.notifyDataSetChanged();
-                //listSpisakDokumenata.invalidateViews();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-            //ucitajDokumente();
             return true;
         }
 
@@ -260,27 +227,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
 
 
     private void kreirajTabeluDokumenata() {
-        SQLiteDatabase myDB = null;
-        Log.d(TAG, "Otvaram bazu");
-        myDB = openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
-        Log.d(TAG, "Kreiram tabelu");
-        //myDB.execSQL("DROP TABLE " + tabelaApp1 + ";");
-        myDB.execSQL("CREATE TABLE IF NOT EXISTS " + tabelaApp1 + " (" +
-                "_id Integer PRIMARY KEY AUTOINCREMENT, " +
-                "idTip VARCHAR, " +
-                "TipDokumentaNaziv VARCHAR," +
-                "idPodtip VARCHAR," +
-                "PodipDokumentaNaziv VARCHAR," +
-                "idKomitent VARCHAR, " +
-                "KomitentNaziv VARCHAR," +
-                "idPjKomitenta VARCHAR, " +
-                "PjKomitentaNaziv VARCHAR," +
-                "datumDokumenta datetime, " +
-                "datumSinkronizacije datetime," +
-                "datumUpisa datetime default current_timestamp," +
-                "napomena VARCHAR);");
-        myDB.close();
-
+        MainActivity.kreirajTabeluDokumenata(App1DokumentiActivity.this);
     }
 
     private void ucitajDokumente() {

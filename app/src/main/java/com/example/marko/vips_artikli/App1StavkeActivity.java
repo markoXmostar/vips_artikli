@@ -113,26 +113,7 @@ public class App1StavkeActivity extends AppCompatActivity {
     }
 
     private void kreirajTabeluStavki() {
-        SQLiteDatabase myDB = null;
-        Log.d(TAG, "Otvaram bazu");
-        myDB = openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
-        Log.d(TAG, "Kreiram tabelu");
-        //myDB.execSQL("DROP TABLE " + tabelaApp1 + ";");
-        myDB.execSQL("CREATE TABLE IF NOT EXISTS " + tabelaApp1 + " (" +
-                "_id Integer PRIMARY KEY AUTOINCREMENT, " +
-                "idDokumenta long, " +
-                "idArtikla long," +
-                "nazivArtikla VARCHAR," +
-                "kolicina decimal," +
-                "imaAtribut boolean, " +
-                "idAtributa long," +
-                "vrijednostAtributa VARCHAR, " +
-                "nazivAtributa VARCHAR," +
-                "idJmj long," +
-                "nazivJmj VARCHAR," +
-                "napomena VARCHAR," +
-                "datumUpisa datetime default current_timestamp);");
-        myDB.close();
+        MainActivity.kreirajTabeluStavki(App1StavkeActivity.this);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
