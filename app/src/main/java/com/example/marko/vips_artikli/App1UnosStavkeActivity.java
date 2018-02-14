@@ -149,19 +149,29 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                     Artikl artikl = MainActivity.getArtiklByBarcode(App1UnosStavkeActivity.this, barcodeText);
                     if (artikl != null) {
                         setIzabraniArtikl(artikl);
+                        txtBarcode.setText(barcodeText);
+
+
+                    } else {
+                        setIzabraniArtikl(null);
+                        txtBarcode.setText(barcodeText);
+                        txtBarcode.requestFocus();
+                        txtBarcode.selectAll();
                     }
 
-                    txtBarcode.setText(barcodeText);
+
                     barcodeText = "";
                     return false; //ovaj false znači da se enter ne pr ocesira dalje
                 }
                 if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
                     char c = (char) keyEvent.getUnicodeChar();
-                    barcodeText += c;
-                    Log.d(TAG, "onKey: key pressed =" + c);
-                    Log.d(TAG, "onKey: barcode=" + barcodeText);
+                    if (Character.isDigit(c)) {
+                        barcodeText += c;
+                        Log.d(TAG, "onKey: key pressed =" + c);
+                        Log.d(TAG, "onKey: barcode=" + barcodeText);
+                    }
                 }
-                return true;
+                return false;
             }
         });
 

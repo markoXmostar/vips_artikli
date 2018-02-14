@@ -604,7 +604,8 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
         Artikl artikl = null;
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
         Cursor c;
-        c = myDB.rawQuery("SELECT * FROM barcode WHERE barcode = " + barcode + ";", null);
+        c = myDB.rawQuery("SELECT * FROM artiklbarcode WHERE barcode = '" + barcode + "';", null);
+        Log.d(TAG, "getArtiklByBarcode: BARCODE" + barcode);
         int ArtikIdIndex = c.getColumnIndex("artiklId");
         c.moveToFirst();
         long artId = 0;
@@ -617,6 +618,7 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
         c.close();
 
         if (artId > 0) {
+            Log.d(TAG, "getArtiklByBarcode: DOHVAĆAM ARTIKL PO ID=" + artId);
             artikl = getArtiklById(a, artId);
         }
         return artikl;
@@ -628,7 +630,7 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
         SQLiteDatabase mDatabase = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
         Cursor c;
-        c = myDB.rawQuery("SELECT  * FROM artikli WHERE _id=" + artId + " LIMIT 1;", null);
+        c = myDB.rawQuery("SELECT  * FROM artikli WHERE _id=" + artId + ";", null);
 
         int IdIndex = c.getColumnIndex("_id");
         int SifraIndex = c.getColumnIndex("sifra");
