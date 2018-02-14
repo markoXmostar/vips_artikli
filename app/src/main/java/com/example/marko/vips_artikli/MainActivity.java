@@ -2,6 +2,7 @@ package com.example.marko.vips_artikli;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -38,12 +39,14 @@ public class MainActivity extends AppCompatActivity
     public static String DatumFormat="dd.MM.yyyy";
     public static String BorisovFormatDatuma="yyyy-MM-ddTHH:mm:ss";
 
-    public static String myDecimalFormat="#.##0,00";
-
-    public static MainActivity ma;
-
     public static int DJELATNIK = 2;
     public static String url = "http://vanima.net:8099/api/";
+
+    public static int vrstaPretrageArtikala = 0;
+    public static int vrstaAplikacije = 1;
+
+    public static final String PREFS_VRSTA_APLIKACIJE = "MyAppType";
+    public static final String PREFS_VRSTA_PRETRAGE_ARTIKALA = "MyArtSearch";
 
     public static int zadnjaSinkronizacijaID;
 
@@ -75,6 +78,8 @@ public class MainActivity extends AppCompatActivity
         MainActivity ma=this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //prvo postavke
 
 
         txtLastSyncID=(TextView)findViewById(R.id.txtSyncID_main);
@@ -595,7 +600,97 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
 
     }
 
+    public static Artikl getArtiklByBarcode(Activity a, String barcode) {
+        Artikl artikl = null;
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
+        Cursor c;
+        c = myDB.rawQuery("SELECT * FROM barcode WHERE barcode = " + barcode + ";", null);
+        int ArtikIdIndex = c.getColumnIndex("artiklId");
+        c.moveToFirst();
+        long artId = 0;
+        for (int j = 0; j < c.getCount(); j++) {
+            artId = c.getLong(ArtikIdIndex);
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
 
+        if (artId > 0) {
+            artikl = getArtiklById(a, artId);
+        }
+        return artikl;
+    }
+
+    public static Artikl getArtiklById(Activity a, long artId) {
+        Artikl artikl = null;
+
+        SQLiteDatabase mDatabase = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
+        Cursor c;
+        c = myDB.rawQuery("SELECT  * FROM artikli WHERE _id=" + artId + " LIMIT 1;", null);
+
+        int IdIndex = c.getColumnIndex("_id");
+        int SifraIndex = c.getColumnIndex("sifra");
+        int NazivIndex = c.getColumnIndex("naziv");
+        int ProizvodacIndex = c.getColumnIndex("proizvodjac");
+        int KataloskiBrojIndex = c.getColumnIndex("kataloskiBroj");
+        int KratkiOpisIndex = c.getColumnIndex("kratkiOpis");
+        int JmjIndex = c.getColumnIndex("jmjId");
+        int JmjNazivIndex = c.getColumnIndex("jmjNaziv");
+        int DugiOpisIndex = c.getColumnIndex("dugiOpis");
+        int VrstaAmbalazeIndex = c.getColumnIndex("vrstaAmbalaze");
+        int BrojKoletaIndex = c.getColumnIndex("brojKoleta");
+        int BrojKoletaNaPaletiIndex = c.getColumnIndex("brojKoletaNaPaleti");
+        int StanjeIndex = c.getColumnIndex("stanje");
+        int VpcIndex = c.getColumnIndex("vpc");
+        int MpcIndex = c.getColumnIndex("mpc");
+        int NettoIndex = c.getColumnIndex("netto");
+        int BruttoIndex = c.getColumnIndex("brutto");
+        int ImaRokTrajanjaIndex = c.getColumnIndex("imaRokTrajanja");
+        int PodgrupaIdIndex = c.getColumnIndex("podgrupaID");
+
+        c.moveToFirst();
+
+        for (int j = 0; j < c.getCount(); j++) {
+            long id, jmjId;
+            String sifra, naziv, jmjNaziv, kataloskiBroj, kratkiOpis, proizvodjac, dugiOpis, vrstaAmbalaze;
+            double brojKoleta, brojKoletaNaPaleti, stanje, vpc, mpc, netto, brutto;
+            boolean imaRokTrajanja;
+            int podgrupaID;
+
+            id = c.getLong(IdIndex);
+            sifra = c.getString(SifraIndex);
+            naziv = c.getString(NazivIndex);
+            proizvodjac = c.getString(ProizvodacIndex);
+            kataloskiBroj = c.getString(KataloskiBrojIndex);
+            kratkiOpis = c.getString(KratkiOpisIndex);
+            jmjId = c.getLong(JmjIndex);
+            jmjNaziv = c.getString(JmjNazivIndex);
+            dugiOpis = c.getString(DugiOpisIndex);
+            vrstaAmbalaze = c.getString(VrstaAmbalazeIndex);
+            brojKoleta = c.getDouble(BrojKoletaIndex);
+            brojKoletaNaPaleti = c.getDouble(BrojKoletaNaPaletiIndex);
+            stanje = c.getDouble(StanjeIndex);
+            vpc = c.getDouble(VpcIndex);
+            mpc = c.getDouble(MpcIndex);
+            netto = c.getDouble(NettoIndex);
+            brutto = c.getDouble(BruttoIndex);
+            boolean vrijednostImaAtribut = (c.getInt(ImaRokTrajanjaIndex) == 1);
+            imaRokTrajanja = vrijednostImaAtribut;
+            podgrupaID = c.getInt(PodgrupaIdIndex);
+
+            artikl = new Artikl(id, sifra, naziv, kataloskiBroj, jmjId, jmjNaziv, kratkiOpis, proizvodjac, dugiOpis, vrstaAmbalaze, brojKoleta, brojKoletaNaPaleti, stanje, vpc, mpc, netto, brutto, imaRokTrajanja, podgrupaID);
+
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        mDatabase.close();
+
+        return artikl;
+    }
     public static String getArtiklNaziv_byID(Activity a, long id){
         Log.d(TAG, "POČETAK ČITANJA PODATAKA IZ TABELE ARTIKLI: ");
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);

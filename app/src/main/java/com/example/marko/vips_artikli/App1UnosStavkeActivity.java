@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,6 +31,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
     TextView txtJmj;
     EditText txtKolicina;
     EditText txtNapomena;
+    EditText txtBarcode;
+    TextView tvBarcode;
 
     Button btnOk, btnCancel;
 
@@ -114,6 +117,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         Bundle b=getIntent().getExtras();
         idDokumenta=b.getLong("idDokumenta");
 
+
         txtArtikl=(TextView)findViewById(R.id.txtArtikal_App1UnosStavke);
         txtRokTrajanja =(TextView)findViewById(R.id.txtRokTrajanja_App1UnosStavke);
         tvRokTrajanja = (TextView) findViewById(R.id.tvRokTrajanja_App1UnosStavke);
@@ -121,11 +125,45 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         txtKolicina=(EditText)findViewById(R.id.txtKolicina_App1UnosStavke);
         txtNapomena=(EditText) findViewById(R.id.etxtNapomena_App1UnosStavke);
 
+        txtBarcode = (EditText) findViewById(R.id.txtBarcode_App1UnosStavke);
+        tvBarcode = (TextView) findViewById(R.id.tvBarcode_App1UnosStavke);
+
+
         btnOk=(Button)findViewById(R.id.btnOK_App1UnosStavke);
         btnCancel =(Button)findViewById(R.id.btnCancel_App1UnosStavke);
 
+
         varijantaPretrageArtikala=0;
         setIzabraniArtikl(null);
+
+        txtBarcode.setOnKeyListener(new View.OnKeyListener() {
+            String barcodeText = "";
+
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+
+                //txtBarcode.setText("");
+                if ((keyCode == KeyEvent.KEYCODE_ENTER) && (keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
+
+
+                    Artikl artikl = MainActivity.getArtiklByBarcode(App1UnosStavkeActivity.this, barcodeText);
+                    if (artikl != null) {
+                        setIzabraniArtikl(artikl);
+                    }
+
+                    txtBarcode.setText(barcodeText);
+                    barcodeText = "";
+                    return false; //ovaj false znači da se enter ne pr ocesira dalje
+                }
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                    char c = (char) keyEvent.getUnicodeChar();
+                    barcodeText += c;
+                    Log.d(TAG, "onKey: key pressed =" + c);
+                    Log.d(TAG, "onKey: barcode=" + barcodeText);
+                }
+                return true;
+            }
+        });
 
         txtArtikl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -284,6 +322,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void ispisiPorukuNisteUnijeliPotrebnePodatke(View view) {
 

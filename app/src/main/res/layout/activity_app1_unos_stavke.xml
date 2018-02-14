@@ -7,6 +7,33 @@
     tools:context="com.example.marko.vips_artikli.App1UnosStavkeActivity">
 
     <TextView
+        android:id="@+id/tvBarcode_App1UnosStavke"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:textSize="@dimen/velicinaTeksta"
+        android:text="Barcode:"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/txtBarcode_App1UnosStavke"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:textIsSelectable="true"
+        android:windowSoftInputMode="stateAlwaysHidden"
+        android:inputType="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvBarcode_App1UnosStavke"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/tvArtikl_App1UnosStavke"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,7 +42,7 @@
         android:text="Artikl"
         android:textSize="@dimen/velicinaTeksta"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/txtBarcode_App1UnosStavke" />
 
     <TextView
         android:id="@+id/txtArtikal_App1UnosStavke"
@@ -24,12 +51,12 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:textAppearance="@style/mojTextStyleZaIzbor"
         android:text="@string/Izaberi"
+        android:textAppearance="@style/mojTextStyleZaIzbor"
         android:textSize="@dimen/velicinaTeksta"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvArtikl_App1UnosStavke"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/txtBarcode_App1UnosStavke" />
 
     <TextView
         android:id="@+id/tvJmj_App1UnosStavke"
@@ -164,7 +191,6 @@
             android:layout_weight="1"
             android:text="@string/OKtext" />
     </LinearLayout>
-
 
 
 </android.support.constraint.ConstraintLayout>
