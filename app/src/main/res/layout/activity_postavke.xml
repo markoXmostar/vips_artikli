@@ -65,7 +65,7 @@
         app:layout_constraintTop_toBottomOf="@+id/spinner3" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/txtDefoltnaKolicina_Postavke"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -87,10 +87,10 @@
         android:text="Brzi unos artikala"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/txtDefoltnaKolicina_Postavke" />
 
     <ToggleButton
-        android:id="@+id/toggleButton"
+        android:id="@+id/tbtnBrziUnosartikala_Postavke"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
