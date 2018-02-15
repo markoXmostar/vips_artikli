@@ -16,6 +16,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -32,11 +33,14 @@
         <activity android:name=".PretragaKomitenata_Tipova_Podtipova_PJKomitenata_Activity" />
         <activity
             android:name=".App1UnosStavkeActivity"
-            android:label="@string/NovaStavka" /> />
+            android:label="@string/NovaStavka" />
+        />
         <activity
             android:name=".App1StavkeActivity"
-            android:label="@string/NaslovApp1Stavke">
-        </activity>
+            android:label="@string/NaslovApp1Stavke"></activity>
+        <activity
+            android:name=".PostavkeActivity"
+            android:label="@string/PostavkeNaslov"></activity>
     </application>
 
 </manifest>

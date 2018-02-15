@@ -42,11 +42,11 @@ public class MainActivity extends AppCompatActivity
     public static int DJELATNIK = 2;
     public static String url = "http://vanima.net:8099/api/";
 
-    public static int vrstaPretrageArtikala = 0;
+    public static int vrstaPretrageArtikala;
     public static int vrstaAplikacije = 1;
 
-    public static final String PREFS_VRSTA_APLIKACIJE = "MyAppType";
-    public static final String PREFS_VRSTA_PRETRAGE_ARTIKALA = "MyArtSearch";
+    public static final String APP_POSTAVKE = "MyPostavke";
+
 
     public static int zadnjaSinkronizacijaID;
 
@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity
     View glavniView;
 
     Integer lastSyncID=0;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
@@ -80,7 +82,10 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         //prvo postavke
-
+        // Restore preferences
+        SharedPreferences settings = getSharedPreferences(APP_POSTAVKE, 0);
+        vrstaPretrageArtikala = settings.getInt("vrstaPretrageArtikala", 0);
+        vrstaAplikacije = settings.getInt("vrstaAplikacije", 1);
 
         txtLastSyncID=(TextView)findViewById(R.id.txtSyncID_main);
         txtLastSyncDate = (TextView) findViewById(R.id.txtDatumZadnjeSinkronizacije_main);
@@ -361,6 +366,8 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(MainActivity.this, PostavkeActivity.class);
+            startActivity(intent);
             return true;
         }
         if (id == R.id.action_download_podataka) {

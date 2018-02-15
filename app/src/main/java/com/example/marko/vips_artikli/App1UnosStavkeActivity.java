@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -31,7 +34,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
     TextView txtJmj;
     EditText txtKolicina;
     EditText txtNapomena;
-    EditText txtBarcode;
+    myEditTextNoKeyboard txtBarcode;
     TextView tvBarcode;
 
     Button btnOk, btnCancel;
@@ -64,6 +67,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                 txtRokTrajanja.setEnabled(true);
                 txtRokTrajanja.setVisibility(View.VISIBLE);
                 tvRokTrajanja.setVisibility(View.VISIBLE);
+                svirajUpozorenje();
             }
             else {
                 txtRokTrajanja.setEnabled(false);
@@ -74,6 +78,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             if (spisakJMJ.size() > 1) {
                 txtJmj.setEnabled(true);
                 txtJmj.setText(getString(R.string.Izaberi));
+                svirajUpozorenje();
             } else {
                 txtJmj.setEnabled(false);
                 ArtiklJmj jmj = (ArtiklJmj) spisakJMJ.get(0);
@@ -125,7 +130,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         txtKolicina=(EditText)findViewById(R.id.txtKolicina_App1UnosStavke);
         txtNapomena=(EditText) findViewById(R.id.etxtNapomena_App1UnosStavke);
 
-        txtBarcode = (EditText) findViewById(R.id.txtBarcode_App1UnosStavke);
+        txtBarcode = (myEditTextNoKeyboard) findViewById(R.id.txtBarcode_App1UnosStavke);
+
         tvBarcode = (TextView) findViewById(R.id.tvBarcode_App1UnosStavke);
 
 
@@ -133,47 +139,64 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         btnCancel =(Button)findViewById(R.id.btnCancel_App1UnosStavke);
 
 
-        varijantaPretrageArtikala=0;
+        varijantaPretrageArtikala = MainActivity.vrstaPretrageArtikala;
+        switch (varijantaPretrageArtikala) {
+            case 0:
+                //pretraga normalna
+                txtBarcode.setVisibility(View.GONE);
+                tvBarcode.setVisibility(View.GONE);
+                txtArtikl.setEnabled(true);
+                break;
+            case 1:
+                //pretraga po BARCODU
+                txtBarcode.setVisibility(View.VISIBLE);
+                tvBarcode.setVisibility(View.VISIBLE);
+                txtArtikl.setEnabled(false);
+        }
         setIzabraniArtikl(null);
 
         txtBarcode.setOnKeyListener(new View.OnKeyListener() {
-            String barcodeText = "";
 
             @Override
             public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
 
-                //txtBarcode.setText("");
                 if ((keyCode == KeyEvent.KEYCODE_ENTER) && (keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
-
-
-                    Artikl artikl = MainActivity.getArtiklByBarcode(App1UnosStavkeActivity.this, barcodeText);
-                    if (artikl != null) {
-                        setIzabraniArtikl(artikl);
-                        txtBarcode.setText(barcodeText);
+                    String barcodeStr = txtBarcode.getText().toString();
+                    Log.d(TAG, "onKey: BARCODE=" + barcodeStr);
+                    Artikl myArt = MainActivity.getArtiklByBarcode(App1UnosStavkeActivity.this, barcodeStr);
+                    if (myArt != null) {
+                        Log.d(TAG, "onKey: ARTIKL NAĐEN!!");
+                        txtBarcode.setOkBackgroundColor();
+                        setIzabraniArtikl(myArt);
+                        txtKolicina.setText("1.00");
+                        txtKolicina.requestFocus();
 
 
                     } else {
-                        setIzabraniArtikl(null);
-                        txtBarcode.setText(barcodeText);
-                        txtBarcode.requestFocus();
+                        Log.d(TAG, "onKey: ARTIKL NIJE NAĐEN!!");
+                        svirajUpozorenje();
+
+                        txtBarcode.setAlertBackgroundColor();
+
+                        //if (!barcodeStr.equals("")){
                         txtBarcode.selectAll();
+                        //}
                     }
-
-
-                    barcodeText = "";
-                    return false; //ovaj false znači da se enter ne pr ocesira dalje
+                    return true;
                 }
-                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    char c = (char) keyEvent.getUnicodeChar();
-                    if (Character.isDigit(c)) {
-                        barcodeText += c;
-                        Log.d(TAG, "onKey: key pressed =" + c);
-                        Log.d(TAG, "onKey: barcode=" + barcodeText);
-                    }
+
+                char c = (char) keyEvent.getUnicodeChar();
+                if (Character.isDigit(c)) {
+                    Log.d(TAG, "onKey: key pressed =" + c);
+                    return false;
+                } else {
+                    txtBarcode.selectAll();
+                    return true;
                 }
-                return false;
+
             }
         });
+
 
         txtArtikl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -331,6 +354,11 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void svirajUpozorenje() {
+        ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 90);
+        toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 500); // 200 is duration in ms
     }
 
 

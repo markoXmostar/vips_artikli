@@ -1,7 +1,9 @@
 package com.example.marko.vips_artikli;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -22,7 +24,9 @@ import java.lang.reflect.Method;
  * To use in XML, add a widget for <my.package.name>.KeyboardlessEditText
  * To use in Java, use one of the three constructors in this class
  */
-public class KeyboardlessEditText2 extends android.support.v7.widget.AppCompatEditText {
+public class myEditTextNoKeyboard extends android.support.v7.widget.AppCompatEditText {
+
+    private static String TAG = "myEditText";
 
     private static final Method mShowSoftInputOnFocus = getMethod(
             EditText.class, "setShowSoftInputOnFocus", boolean.class);
@@ -42,17 +46,17 @@ public class KeyboardlessEditText2 extends android.support.v7.widget.AppCompatEd
         }
     };
 
-    public KeyboardlessEditText2(Context context) {
+    public myEditTextNoKeyboard(Context context) {
         super(context);
         initialize();
     }
 
-    public KeyboardlessEditText2(Context context, AttributeSet attrs) {
+    public myEditTextNoKeyboard(Context context, AttributeSet attrs) {
         super(context, attrs);
         initialize();
     }
 
-    public KeyboardlessEditText2(Context context, AttributeSet attrs, int defStyle) {
+    public myEditTextNoKeyboard(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initialize();
     }
@@ -61,6 +65,7 @@ public class KeyboardlessEditText2 extends android.support.v7.widget.AppCompatEd
         synchronized (this) {
             setInputType(getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
             setFocusableInTouchMode(true);
+
         }
 
         // Needed to show cursor when user interacts with EditText so that the edit operations
@@ -78,8 +83,12 @@ public class KeyboardlessEditText2 extends android.support.v7.widget.AppCompatEd
 
     @Override
     protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
+
+
         hideKeyboard();
+        Log.d(TAG, "onKey: MIJENJAM FOCUS focused=" + focused + ": Direction=" + direction);
     }
 
     @Override
@@ -88,6 +97,16 @@ public class KeyboardlessEditText2 extends android.support.v7.widget.AppCompatEd
         // Must be done after super.onTouchEvent()
         hideKeyboard();
         return ret;
+    }
+
+    public void setAlertBackgroundColor() {
+        int color = ContextCompat.getColor(getContext(), R.color.myCrvena);
+        super.setBackgroundColor(color);
+    }
+
+    public void setOkBackgroundColor() {
+        int color = ContextCompat.getColor(getContext(), R.color.myZelena);
+        super.setBackgroundColor(color);
     }
 
     private void hideKeyboard() {

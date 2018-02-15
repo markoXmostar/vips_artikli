@@ -7,8 +7,8 @@
     <color name="colorAccent">#6b7967</color>
     <color name="defoltnaFABboja">#FF4081</color>
     <color name="prozirno">@android:color/transparent</color>
-    <color name="myCrvena">#f40307</color>
-    <color name="myZelena">#2ece1c</color>
+    <color name="myCrvena">#e68d8e</color>
+    <color name="myZelena">#b4e4af</color>
     <color name="bojaZaIzborClick">#63a0f1</color>
     <color name="bojaDrugogReda">#dfe9d8</color>
 </resources>
