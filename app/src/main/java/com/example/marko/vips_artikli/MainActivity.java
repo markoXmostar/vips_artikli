@@ -1049,6 +1049,113 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
         return listaDokumenta;
     }
 
+    public static List<TipDokumenta> getListaTipovaDokumenta(Activity a, String filter) {
+        List<TipDokumenta> spisak = new ArrayList<TipDokumenta>();
+        String myTabela = "tip_dokumenta";
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
+        Cursor c;
+        if (filter.equals("")) {
+            c = myDB.rawQuery("SELECT * FROM " + myTabela, null);
+        } else {
+            c = myDB.rawQuery("SELECT * FROM " + myTabela + " where naziv like '%" + filter + "%'", null);
+        }
+
+        int IdIndex = c.getColumnIndex("_id");
+        int NazivIndex = c.getColumnIndex("naziv");
+
+        c.moveToFirst();
+        int brojac = 0;
+        for (int j = 0; j < c.getCount(); j++) {
+            long id;
+            String naziv;
+
+            id = c.getLong(IdIndex);
+            naziv = c.getString(NazivIndex);
+
+
+            TipDokumenta tipProvider = new TipDokumenta(id, naziv);
+            spisak.add(tipProvider);
+            brojac++;
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        myDB.close();
+        return spisak;
+    }
+
+    public static List<PodtipDokumenta> getListaPodtipova(Activity a, String filter) {
+        List<PodtipDokumenta> spisak = new ArrayList<PodtipDokumenta>();
+        String myTabela = "podtip_dokumenta";
+
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
+        Cursor c;
+        if (filter.equals("")) {
+            c = myDB.rawQuery("SELECT * FROM " + myTabela, null);
+        } else {
+            c = myDB.rawQuery("SELECT * FROM " + myTabela + " where naziv like '%" + filter + "%'", null);
+        }
+
+        int IdIndex = c.getColumnIndex("_id");
+        int NazivIndex = c.getColumnIndex("naziv");
+        int RidIndex = c.getColumnIndex("rid");
+
+        c.moveToFirst();
+        int brojac = 0;
+        for (int j = 0; j < c.getCount(); j++) {
+            long id;
+            String naziv;
+            long rid;
+
+            id = c.getLong(IdIndex);
+            naziv = c.getString(NazivIndex);
+            rid = c.getLong(RidIndex);
+
+            PodtipDokumenta podtipProvider = new PodtipDokumenta(id, naziv, rid);
+            spisak.add(podtipProvider);
+            brojac++;
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        myDB.close();
+        return spisak;
+    }
+
+    public static List<NacinPlacanja> getListaNacinaPlacanja(Activity a, String filter) {
+        List<NacinPlacanja> spisak = new ArrayList<NacinPlacanja>();
+        String myTabela = "nacin_placanja";
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
+        Cursor c;
+        if (filter.equals("")) {
+            c = myDB.rawQuery("SELECT * FROM " + myTabela, null);
+        } else {
+            c = myDB.rawQuery("SELECT * FROM " + myTabela + " where naziv like '%" + filter + "%'", null);
+        }
+        int IdIndex = c.getColumnIndex("_id");
+        int NazivIndex = c.getColumnIndex("naziv");
+        c.moveToFirst();
+        int brojac = 0;
+        for (int j = 0; j < c.getCount(); j++) {
+            long id;
+            String naziv;
+            id = c.getLong(IdIndex);
+            naziv = c.getString(NazivIndex);
+            NacinPlacanja nacinPlacanjaProvider = new NacinPlacanja(id, naziv);
+            spisak.add(nacinPlacanjaProvider);
+            brojac++;
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        myDB.close();
+        Log.d(TAG, " Tabela " + myTabela + " učitana!");
+        return spisak;
+    }
+
     public static void updateZaglavljaPoslijeSinkronizacije(Activity a, List<App1Dokumenti> spisakSyncDokumenta) {
 
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);

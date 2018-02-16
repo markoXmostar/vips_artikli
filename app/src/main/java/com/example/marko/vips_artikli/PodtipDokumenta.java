@@ -38,4 +38,9 @@ public class PodtipDokumenta {
     public void setRid(long rid) {
         this.rid = rid;
     }
+
+    @Override
+    public String toString() {
+        return naziv;
+    }
 }

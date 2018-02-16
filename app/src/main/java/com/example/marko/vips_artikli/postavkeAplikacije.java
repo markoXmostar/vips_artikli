@@ -9,8 +9,10 @@ import android.content.SharedPreferences;
 
 public final class postavkeAplikacije {
 
-    private int vrstaPretrageArtikala, vrstaAplikacije, brojDecimala;
+    private int vrstaPretrageArtikala, vrstaAplikacije, brojDecimala, tipDokumenta, podtipDokumenta;
     private float defoltnaKolicina;
+
+
     private boolean brziUnosArtikala;
 
     private Activity activity;
@@ -48,5 +50,13 @@ public final class postavkeAplikacije {
 
     public boolean isBrziUnosArtikala() {
         return brziUnosArtikala;
+    }
+
+    public int getTipDokumenta() {
+        return tipDokumenta;
+    }
+
+    public int getPodtipDokumenta() {
+        return podtipDokumenta;
     }
 }

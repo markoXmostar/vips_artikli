@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RegistriActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -235,46 +236,17 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
         Log.d(TAG, " Tabela "+ myTabela +" učitana!");
     }
     private void UcitajNacinPlacanjaIzBaze(String filter) {
+        ListaNacinplacanjaAdapter listaNacinaPlacanjaAdapter = new ListaNacinplacanjaAdapter(this, R.layout.row_jmj);
+        mojListView.setAdapter(listaNacinaPlacanjaAdapter);
         String myTabela="nacin_placanja";
         if (!PostaviVidljivostElemenata(myTabela)){
             return;
         }
-        ListaNacinplacanjaAdapter listaNacinaPlacanjaAdapter = new ListaNacinplacanjaAdapter(this, R.layout.row_jmj);
-        mojListView.setAdapter(listaNacinaPlacanjaAdapter);
-        Log.d(TAG, " ucitavam tabelu " + myTabela + " dokumenata!");
 
-        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
-        Cursor c;
-        if (filter.equals("")) {
-            c = myDB.rawQuery("SELECT * FROM " +myTabela, null);
-        } else {
-            c = myDB.rawQuery("SELECT * FROM " + myTabela +" where naziv like '%" + filter + "%'", null);
+        for (NacinPlacanja nacin : MainActivity.getListaNacinaPlacanja(RegistriActivity.this, filter)) {
+            listaNacinaPlacanjaAdapter.add(nacin);
         }
 
-        int IdIndex = c.getColumnIndex("_id");
-        int NazivIndex = c.getColumnIndex("naziv");
-
-
-        c.moveToFirst();
-        int brojac = 0;
-        for (int j = 0; j < c.getCount(); j++) {
-            long id;
-            String naziv;
-
-
-            id = c.getLong(IdIndex);
-            naziv = c.getString(NazivIndex);
-
-
-            NacinPlacanja nacinPlacanjaProvider = new NacinPlacanja(id, naziv);
-            listaNacinaPlacanjaAdapter.add(nacinPlacanjaProvider);
-            brojac++;
-            if (j != c.getCount()) {
-                c.moveToNext();
-            }
-        }
-        c.close();
-        Log.d(TAG, " Tabela "+ myTabela +" učitana!");
     }
     private void UcitajListuPodtipovaDokumenataIzBaze(String filter) {
         String myTabela="podtip_dokumenta";
@@ -283,40 +255,9 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
         }
         ListaPodtipDokumentaAdapter listaPodtipDokumentaAdapter = new ListaPodtipDokumentaAdapter(this, R.layout.row_grupa);
         mojListView.setAdapter(listaPodtipDokumentaAdapter);
-        Log.d(TAG, " ucitavam tabelu " + myTabela + " dokumenata!");
-
-        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
-        Cursor c;
-        if (filter.equals("")) {
-            c = myDB.rawQuery("SELECT * FROM " +myTabela, null);
-        } else {
-            c = myDB.rawQuery("SELECT * FROM " + myTabela +" where naziv like '%" + filter + "%'", null);
+        for (PodtipDokumenta podtip : MainActivity.getListaPodtipova(RegistriActivity.this, filter)) {
+            listaPodtipDokumentaAdapter.add(podtip);
         }
-
-        int IdIndex = c.getColumnIndex("_id");
-        int NazivIndex = c.getColumnIndex("naziv");
-        int RidIndex=c.getColumnIndex("rid");
-
-        c.moveToFirst();
-        int brojac = 0;
-        for (int j = 0; j < c.getCount(); j++) {
-            long id;
-            String naziv;
-            long rid;
-
-            id = c.getLong(IdIndex);
-            naziv = c.getString(NazivIndex);
-            rid=c.getLong(RidIndex);
-
-            PodtipDokumenta podtipProvider = new PodtipDokumenta(id, naziv,rid);
-            listaPodtipDokumentaAdapter.add(podtipProvider);
-            brojac++;
-            if (j != c.getCount()) {
-                c.moveToNext();
-            }
-        }
-        c.close();
-        Log.d(TAG, " Tabela "+ myTabela +" učitana!");
     }
     private void UcitajListuTipovaDokumenataIzBaze(String filter) {
         String myTabela="tip_dokumenta";
@@ -325,38 +266,10 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
         }
         ListaTipDokumentaAdapter listaTipAdapter = new ListaTipDokumentaAdapter(this, R.layout.row_grupa);
         mojListView.setAdapter(listaTipAdapter);
-        Log.d(TAG, " ucitavam tabelu tipova dokumenata!");
-
-        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
-        Cursor c;
-        if (filter.equals("")) {
-            c = myDB.rawQuery("SELECT * FROM " + myTabela, null);
-        } else {
-            c = myDB.rawQuery("SELECT * FROM " + myTabela + " where naziv like '%" + filter + "%'", null);
+        for (TipDokumenta tip : MainActivity.getListaTipovaDokumenta(RegistriActivity.this, filter)) {
+            listaTipAdapter.add(tip);
         }
 
-        int IdIndex = c.getColumnIndex("_id");
-        int NazivIndex = c.getColumnIndex("naziv");
-
-        c.moveToFirst();
-        int brojac = 0;
-        for (int j = 0; j < c.getCount(); j++) {
-            long id;
-            String naziv;
-
-            id = c.getLong(IdIndex);
-            naziv = c.getString(NazivIndex);
-
-
-            TipDokumenta tipProvider = new TipDokumenta(id, naziv);
-            listaTipAdapter.add(tipProvider);
-            brojac++;
-            if (j != c.getCount()) {
-                c.moveToNext();
-            }
-        }
-        c.close();
-        Log.d(TAG, " Tabela tip_dokumenta učitana!");
     }
     private void UcitajListuJMJIzBaze(String filter) {
 
