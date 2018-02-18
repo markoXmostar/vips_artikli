@@ -255,7 +255,7 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
         }
         ListaPodtipDokumentaAdapter listaPodtipDokumentaAdapter = new ListaPodtipDokumentaAdapter(this, R.layout.row_grupa);
         mojListView.setAdapter(listaPodtipDokumentaAdapter);
-        for (PodtipDokumenta podtip : MainActivity.getListaPodtipova(RegistriActivity.this, filter)) {
+        for (PodtipDokumenta podtip : MainActivity.getListaPodtipova(RegistriActivity.this, filter, 0, false, "")) {
             listaPodtipDokumentaAdapter.add(podtip);
         }
     }

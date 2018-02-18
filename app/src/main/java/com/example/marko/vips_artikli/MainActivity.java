@@ -1085,16 +1085,25 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
         return spisak;
     }
 
-    public static List<PodtipDokumenta> getListaPodtipova(Activity a, String filter) {
+    public static List<PodtipDokumenta> getListaPodtipova(Activity a, String filter, long idTipDokumenta_filter, boolean prazanRed, String labelPrazanRed) {
         List<PodtipDokumenta> spisak = new ArrayList<PodtipDokumenta>();
         String myTabela = "podtip_dokumenta";
 
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
         Cursor c;
+
         if (filter.equals("")) {
-            c = myDB.rawQuery("SELECT * FROM " + myTabela, null);
+            if (idTipDokumenta_filter > 0) {
+                c = myDB.rawQuery("SELECT * FROM " + myTabela + " WHERE rid = " + idTipDokumenta_filter + ";", null);
+            } else {
+                c = myDB.rawQuery("SELECT * FROM " + myTabela + ";", null);
+            }
         } else {
-            c = myDB.rawQuery("SELECT * FROM " + myTabela + " where naziv like '%" + filter + "%'", null);
+            if (idTipDokumenta_filter > 0) {
+                c = myDB.rawQuery("SELECT * FROM " + myTabela + " WHERE rid = " + idTipDokumenta_filter + " AND naziv like '%" + filter + "%'", null);
+            } else {
+                c = myDB.rawQuery("SELECT * FROM " + myTabela + " WHERE naziv like '%" + filter + "%'", null);
+            }
         }
 
         int IdIndex = c.getColumnIndex("_id");
@@ -1121,6 +1130,10 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
         }
         c.close();
         myDB.close();
+        if (prazanRed) {
+            PodtipDokumenta prazanRED = new PodtipDokumenta(0, labelPrazanRed, 0);
+            spisak.add(0, prazanRED);
+        }
         return spisak;
     }
 
