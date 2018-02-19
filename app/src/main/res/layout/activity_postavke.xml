@@ -62,26 +62,22 @@
 
         <TextView
             android:id="@+id/textView8"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:text="Defoltna količina artikla pri unosu"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="Defoltna količina artikla pri unosu:"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spinner3" />
 
-        <EditText
-            android:id="@+id/txtDefoltnaKolicina_Postavke"
+        <SeekBar
+            android:id="@+id/sbarDefoltnaKolicina_Postavke"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:ems="10"
-            android:selectAllOnFocus="true"
-            android:inputType="numberDecimal"
+            android:layout_marginTop="2dp"
+            android:max="100"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView8" />
@@ -90,25 +86,25 @@
             android:id="@+id/textView9"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:text="Brzi unos artikala"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtDefoltnaKolicina_Postavke" />
-
-        <ToggleButton
-            android:id="@+id/tbtnBrziUnosartikala_Postavke"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="ToggleButton"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="Brzi unos artikala"
+            app:layout_constraintBottom_toBottomOf="@+id/tbtnBrziUnosartikala_Postavke"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView9" />
+            app:layout_constraintTop_toTopOf="@+id/tbtnBrziUnosartikala_Postavke" />
+
+        <Switch
+            android:id="@+id/tbtnBrziUnosartikala_Postavke"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:text=""
+            android:textOff="NE"
+            android:textOn="DA"
+            app:layout_constraintStart_toEndOf="@+id/textView9"
+            app:layout_constraintTop_toBottomOf="@+id/sbarDefoltnaKolicina_Postavke" />
 
         <TextView
             android:id="@+id/lblTipDokumenta"
@@ -117,7 +113,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:text="Zadani tip dokumenta"
+            android:text="Zadani/dopušteni tip dokumenta"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tbtnBrziUnosartikala_Postavke" />
@@ -140,7 +136,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:text="Zadani podtip dokumenta"
+            android:text="Zadani/dopušteni podtip dokumenta"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spinTipDokumenta_Postavke" />
@@ -158,27 +154,57 @@
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:text="Broj decimala"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="Broj decimala:"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spinPodtipDokumenta_Postavke" />
 
-        <EditText
-            android:id="@+id/txtBrojDecimala_Postavke"
+
+        <SeekBar
+            android:id="@+id/sbarBrojDecimala_Postavke"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:ems="10"
-            android:inputType="number"
+            android:layout_marginTop="2dp"
+            android:max="5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
-</android.support.constraint.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/lblDefoltnaKolicina_Posavke"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toEndOf="@+id/textView8"
+            app:layout_constraintTop_toBottomOf="@+id/spinner3"
+            tools:text="1.50" />
+
+        <TextView
+            android:id="@+id/lblBrojDecimala_Postavke"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/spinPodtipDokumenta_Postavke"
+            tools:text="2" />
+
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="Dopuštena izmjena tipa dokumenta"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sbarBrojDecimala_Postavke" />
+
+
+    </android.support.constraint.ConstraintLayout>
 </ScrollView>

@@ -266,7 +266,7 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
         }
         ListaTipDokumentaAdapter listaTipAdapter = new ListaTipDokumentaAdapter(this, R.layout.row_grupa);
         mojListView.setAdapter(listaTipAdapter);
-        for (TipDokumenta tip : MainActivity.getListaTipovaDokumenta(RegistriActivity.this, filter)) {
+        for (TipDokumenta tip : MainActivity.getListaTipovaDokumenta(RegistriActivity.this, filter, false, "")) {
             listaTipAdapter.add(tip);
         }
 

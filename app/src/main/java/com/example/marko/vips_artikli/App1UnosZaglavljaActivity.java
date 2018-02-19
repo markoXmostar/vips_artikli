@@ -114,6 +114,9 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
 
     private PodtipDokumenta izabranPodtip;
 
+    postavkeAplikacije myPostavke;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,7 +134,17 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
         etxtNapomena=(EditText)findViewById(R.id.etxtNapomena_App1ZaglavljeDokumenta);
 
         setIzabraniKomitent(null);
-        setIzabraniTiP(null);
+
+        myPostavke = new postavkeAplikacije(this);
+        long zadaniTipDokumenta = myPostavke.getTipDokumenta();
+        TipDokumenta tipDok = MainActivity.getTipDokumentaByID(this, zadaniTipDokumenta);
+
+        setIzabraniTiP(tipDok);
+
+        if (myPostavke.getPodtipDokumenta() > 0) {
+            PodtipDokumenta podtipDokumenta = MainActivity.getPodtipDokumentaByID(this, myPostavke.getPodtipDokumenta());
+            setIzabranPodtip(podtipDokumenta);
+        }
 
         kalendar=Calendar.getInstance();
 

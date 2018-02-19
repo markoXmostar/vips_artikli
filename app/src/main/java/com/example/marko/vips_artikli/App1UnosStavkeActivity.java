@@ -16,6 +16,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -138,8 +139,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         btnOk=(Button)findViewById(R.id.btnOK_App1UnosStavke);
         btnCancel =(Button)findViewById(R.id.btnCancel_App1UnosStavke);
 
-
-        varijantaPretrageArtikala = MainActivity.vrstaPretrageArtikala;
+        postavkeAplikacije myPostavke = new postavkeAplikacije(App1UnosStavkeActivity.this);
+        varijantaPretrageArtikala = myPostavke.getVrstaPretrageArtikala();
         switch (varijantaPretrageArtikala) {
             case 0:
                 //pretraga normalna
@@ -152,6 +153,11 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                 txtBarcode.setVisibility(View.VISIBLE);
                 tvBarcode.setVisibility(View.VISIBLE);
                 txtArtikl.setEnabled(false);
+                break;
+            case 2:
+                //ZA KAMERU NAMIJENJENO
+                Toast.makeText(App1UnosStavkeActivity.this, "NIJE IMPLEMENTIRANO!", Toast.LENGTH_LONG).show();
+                break;
         }
         setIzabraniArtikl(null);
 

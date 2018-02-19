@@ -1,6 +1,7 @@
 package com.example.marko.vips_artikli;
 
-import android.content.SharedPreferences;
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -11,11 +12,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.ToggleButton;
-
-import javax.xml.datatype.Duration;
 
 
 public class PostavkeActivity extends AppCompatActivity {
@@ -30,22 +31,56 @@ public class PostavkeActivity extends AppCompatActivity {
     Spinner spinnerVrstaAplikacije;
     Spinner sppinerVrstaPretrage;
 
-    ToggleButton toggleButton;
-    EditText txtKolicina;
-    EditText txtBrojDecimala;
 
+    Switch dugme;
+
+    SeekBar sbarKolicina;
+    SeekBar sbarBrojDecimala;
+
+    TextView lblDefKolicina;
+    TextView lblBrojDec;
+
+    static int progressKolicina;
+
+    public void setDefKolicina(float defKolicina) {
+        this.defKolicina = defKolicina;
+        lblDefKolicina.setText(String.valueOf(defKolicina));
+    }
+
+    float defKolicina;
+
+    int progresBrojDec;
+    int defBrojDec;
+
+    public void setDefBrojDec(int defBrojDec) {
+        this.defBrojDec = defBrojDec;
+        lblBrojDec.setText(String.valueOf(defBrojDec));
+    }
+
+    /*
+        @Override
+        protected void onStop(){
+            Log.d(TAG, "onStop: XXXXX");
+            super.onStop();
+            Intent returnIntent= new Intent();
+            setResult(Activity.RESULT_OK,returnIntent);
+            finish();
+        }
+    */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_postavke);
 
-        toggleButton = (ToggleButton) findViewById(R.id.tbtnBrziUnosartikala_Postavke);
-        txtKolicina = (EditText) findViewById(R.id.txtDefoltnaKolicina_Postavke);
+        dugme = (Switch) findViewById(R.id.tbtnBrziUnosartikala_Postavke);
+        sbarKolicina = (SeekBar) findViewById(R.id.sbarDefoltnaKolicina_Postavke);
         spinTipDokumenta = (Spinner) findViewById(R.id.spinTipDokumenta_Postavke);
         spinPodtipDokumenta = (Spinner) findViewById(R.id.spinPodtipDokumenta_Postavke);
         spinnerVrstaAplikacije = (Spinner) findViewById(R.id.spinner2);
         sppinerVrstaPretrage = (Spinner) findViewById(R.id.spinner3);
-        txtBrojDecimala = (EditText) findViewById(R.id.txtBrojDecimala_Postavke);
+        sbarBrojDecimala = (SeekBar) findViewById(R.id.sbarBrojDecimala_Postavke);
+        lblDefKolicina = (TextView) findViewById(R.id.lblDefoltnaKolicina_Posavke);
+        lblBrojDec = (TextView) findViewById(R.id.lblBrojDecimala_Postavke);
 
         final postavkeAplikacije myPostavke = new postavkeAplikacije(PostavkeActivity.this);
 
@@ -53,7 +88,7 @@ public class PostavkeActivity extends AppCompatActivity {
         sppinerVrstaPretrage.setAdapter(new ArrayAdapter<VrstaPretrageArtikala>(this, android.R.layout.simple_spinner_item, VrstaPretrageArtikala.values()));
 
         ArrayAdapter<TipDokumenta> tipAdapter = new ArrayAdapter<TipDokumenta>(this, android.R.layout.simple_spinner_item);
-        for (TipDokumenta tipDok : MainActivity.getListaTipovaDokumenta(PostavkeActivity.this, "")) {
+        for (TipDokumenta tipDok : MainActivity.getListaTipovaDokumenta(PostavkeActivity.this, "", true, "SVI TIPOVI DOKUMENATA")) {
             tipAdapter.add(tipDok);
         }
         spinTipDokumenta.setAdapter(tipAdapter);
@@ -142,57 +177,62 @@ public class PostavkeActivity extends AppCompatActivity {
             }
         });
 
-        txtKolicina.setText(String.valueOf(myPostavke.getDefoltnaKolicina()));
-        txtKolicina.addTextChangedListener(new TextWatcher() {
+
+        sbarKolicina.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
             @Override
-            public void afterTextChanged(Editable s) {
-                String str = txtKolicina.getText().toString();
-                float defoltnaKol = 0;
-                if (!str.equals("")) {
-                    defoltnaKol = Float.valueOf(str);
-                }
-                myPostavke.snimiDefoltnuKolicinu(defoltnaKol);
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                progressKolicina = i;
+                setDefKolicina(progressKolicina / 10);
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                myPostavke.snimiDefoltnuKolicinu(defKolicina);
+
             }
         });
+        sbarKolicina.setProgress(Math.round(myPostavke.getDefoltnaKolicina() * 10));
 
-        txtBrojDecimala.setText(String.valueOf(myPostavke.getBrojDecimala()));
-        txtBrojDecimala.addTextChangedListener(new TextWatcher() {
+        sbarBrojDecimala.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
             @Override
-            public void afterTextChanged(Editable s) {
-                String str = txtBrojDecimala.getText().toString();
-                int defoltniBrojDecimala = 1;
-                if (!str.equals("")) {
-                    defoltniBrojDecimala = Integer.valueOf(str);
-                }
-                if (defoltniBrojDecimala < 1) {
-                    defoltniBrojDecimala = 1;
-                }
-                myPostavke.snimiBrojDecimala(defoltniBrojDecimala);
+            public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
+                Log.d(TAG, "onProgressChanged: i=" + value);
+                setDefBrojDec(value);
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Log.d(TAG, "onStopTrackingTouch: SNIMAM BROJ DECIMALA");
+                myPostavke.snimiBrojDecimala(defBrojDec);
+
             }
         });
-        toggleButton.setChecked(myPostavke.isBrziUnosArtikala());
-        toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        if (myPostavke.getBrojDecimala() >= 0 && myPostavke.getBrojDecimala() <= 5) {
+            sbarBrojDecimala.setProgress(myPostavke.getBrojDecimala());
+        } else {
+            sbarBrojDecimala.setProgress(2);
+        }
+
+        dugme.setChecked(myPostavke.isBrziUnosArtikala());
+        dugme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                myPostavke.snimiBrziUnos(toggleButton.isChecked());
+                myPostavke.snimiBrziUnos(dugme.isChecked());
             }
         });
+
 
     }
     //snimi postavke

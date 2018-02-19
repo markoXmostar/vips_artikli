@@ -42,11 +42,12 @@ public class MainActivity extends AppCompatActivity
     public static int DJELATNIK = 2;
     public static String url = "http://vanima.net:8099/api/";
 
-    public static int vrstaPretrageArtikala;
-    public static int vrstaAplikacije = 1;
+
+    boolean lastPotrebnaSyncVisible;
+    boolean lastVidljiveTxtKontrole;
 
     public static final String APP_POSTAVKE = "MyPostavke";
-
+    postavkeAplikacije myPostavke;
 
     public static int zadnjaSinkronizacijaID;
 
@@ -81,12 +82,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //prvo postavke
-        // Restore preferences
-        SharedPreferences settings = getSharedPreferences(APP_POSTAVKE, 0);
-        vrstaPretrageArtikala = settings.getInt("vrstaPretrageArtikala", 0);
-        vrstaAplikacije = settings.getInt("vrstaAplikacije", 1);
-
         txtLastSyncID=(TextView)findViewById(R.id.txtSyncID_main);
         txtLastSyncDate = (TextView) findViewById(R.id.txtDatumZadnjeSinkronizacije_main);
 
@@ -97,6 +92,8 @@ public class MainActivity extends AppCompatActivity
         fabApp2 = (FloatingActionButton) findViewById(R.id.fabApp2);
         fabApp3 = (FloatingActionButton) findViewById(R.id.fabApp3);
         spisakSyncTabela = new ArrayList<UrlTabele>();
+
+        procitajPostavke();
 
         postaviTabeleZaSync();
         getLOG();
@@ -136,7 +133,11 @@ public class MainActivity extends AppCompatActivity
 
         //new JSON_task(this).execute("http://vanima.net:8099/api/artikli?d=2");
     }
-private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vidljiveTxtKontrole){
+
+
+    private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vidljiveTxtKontrole){
+        lastPotrebnaSyncVisible = potrebnaSyncVisible;
+        lastVidljiveTxtKontrole = vidljiveTxtKontrole;
         if (potrebnaSyncVisible){
             Log.d(TAG, "postaviVidljivostFabKontrola: Vidljivost" + !potrebnaSyncVisible);
             fabUpdatePodataka.setVisibility(View.VISIBLE);
@@ -159,9 +160,33 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
             Log.d(TAG, "postaviVidljivostFabKontrola: Vidljivost" + potrebnaSyncVisible);
             fabUpdatePodataka.setVisibility(View.INVISIBLE);
             txtPotrebnaSinkronizacija.setVisibility(View.INVISIBLE);
-            fabApp1.setVisibility(View.VISIBLE);
-            fabApp2.setVisibility(View.VISIBLE);
-            fabApp3.setVisibility(View.VISIBLE);
+            switch (myPostavke.getVrstaAplikacije()) {
+                case 0:
+                    //sve vidljive
+                    fabApp1.setVisibility(View.VISIBLE);
+                    fabApp2.setVisibility(View.VISIBLE);
+                    fabApp3.setVisibility(View.VISIBLE);
+                    break;
+                case 1:
+                    //vidljiva 1
+                    fabApp1.setVisibility(View.VISIBLE);
+                    fabApp2.setVisibility(View.GONE);
+                    fabApp3.setVisibility(View.GONE);
+                    break;
+                case 2:
+                    //vidljiva 2
+                    fabApp1.setVisibility(View.GONE);
+                    fabApp2.setVisibility(View.VISIBLE);
+                    fabApp3.setVisibility(View.GONE);
+                    break;
+                case 3:
+                    //vidljiva 3
+                    fabApp1.setVisibility(View.GONE);
+                    fabApp2.setVisibility(View.GONE);
+                    fabApp3.setVisibility(View.VISIBLE);
+                    break;
+            }
+
 
 
         }
@@ -367,7 +392,7 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent intent = new Intent(MainActivity.this, PostavkeActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, 1);
             return true;
         }
         if (id == R.id.action_download_podataka) {
@@ -375,6 +400,27 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                Log.d(TAG, "onActivityResult: ZATVARAM POSTAVKE---OK");
+                procitajPostavke();
+            } else {
+                Log.d(TAG, "onActivityResult: ZATVARAM POSTAVKE---CANCEL");
+                procitajPostavke();
+            }
+
+        }
+    }
+
+    private void procitajPostavke() {
+        myPostavke = new postavkeAplikacije(MainActivity.this);
+        postaviVidljivostFabKontrola(lastPotrebnaSyncVisible, lastVidljiveTxtKontrole);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -1049,7 +1095,42 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
         return listaDokumenta;
     }
 
-    public static List<TipDokumenta> getListaTipovaDokumenta(Activity a, String filter) {
+    public static TipDokumenta getTipDokumentaByID(Activity a, long idDokumenta) {
+        TipDokumenta tip = null;
+        String myTabela = "tip_dokumenta";
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
+        Cursor c;
+        c = myDB.rawQuery("SELECT * FROM " + myTabela + " WHERE _id=" + idDokumenta + ";", null);
+
+        int IdIndex = c.getColumnIndex("_id");
+        int NazivIndex = c.getColumnIndex("naziv");
+
+        if (c.getCount() == 0) {
+            return null;
+        } else {
+            c.moveToFirst();
+            for (int j = 0; j < c.getCount(); j++) {
+                long id;
+                String naziv;
+
+                id = c.getLong(IdIndex);
+                naziv = c.getString(NazivIndex);
+
+                tip = new TipDokumenta(id, naziv);
+
+                if (j != c.getCount()) {
+                    c.moveToNext();
+                }
+            }
+            c.close();
+            myDB.close();
+
+            return tip;
+        }
+
+    }
+
+    public static List<TipDokumenta> getListaTipovaDokumenta(Activity a, String filter, boolean prazanRed, String labelPrazanRed) {
         List<TipDokumenta> spisak = new ArrayList<TipDokumenta>();
         String myTabela = "tip_dokumenta";
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
@@ -1082,13 +1163,55 @@ private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vi
         }
         c.close();
         myDB.close();
+        if (prazanRed) {
+            TipDokumenta prazanRED = new TipDokumenta(0, labelPrazanRed);
+            spisak.add(0, prazanRED);
+        }
         return spisak;
     }
 
+    public static PodtipDokumenta getPodtipDokumentaByID(Activity a, long idPodtipa) {
+        PodtipDokumenta podtipDokumenta = null;
+        String myTabela = "podtip_dokumenta";
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
+        Cursor c;
+        c = myDB.rawQuery("SELECT * FROM " + myTabela + " WHERE _id = " + idPodtipa + ";", null);
+        if (c.getCount() == 0) {
+            return null;
+        } else {
+            int IdIndex = c.getColumnIndex("_id");
+            int NazivIndex = c.getColumnIndex("naziv");
+            int RidIndex = c.getColumnIndex("rid");
+
+            c.moveToFirst();
+            for (int j = 0; j < c.getCount(); j++) {
+                long id;
+                String naziv;
+                long rid;
+
+                id = c.getLong(IdIndex);
+                naziv = c.getString(NazivIndex);
+                rid = c.getLong(RidIndex);
+
+                podtipDokumenta = new PodtipDokumenta(id, naziv, rid);
+
+                if (j != c.getCount()) {
+                    c.moveToNext();
+                }
+            }
+            c.close();
+            myDB.close();
+            return podtipDokumenta;
+        }
+    }
     public static List<PodtipDokumenta> getListaPodtipova(Activity a, String filter, long idTipDokumenta_filter, boolean prazanRed, String labelPrazanRed) {
         List<PodtipDokumenta> spisak = new ArrayList<PodtipDokumenta>();
         String myTabela = "podtip_dokumenta";
 
+        if (idTipDokumenta_filter == 0) {
+            prazanRed = true;
+            labelPrazanRed = "SVI";
+        }
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
         Cursor c;
 
