@@ -1,11 +1,14 @@
 package com.example.marko.vips_artikli;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
+import android.print.PrintManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -119,9 +122,9 @@ public class App1DokumentiActivity extends AppCompatActivity {
                 final App1Dokumenti selektiranDok=(App1Dokumenti) adapterView.getItemAtPosition(i);
                 final CharSequence akcije[];
                 if (selektiranDok.getDatumSinkronizacije() == null) {
-                    akcije = new CharSequence[]{"Izbriši", "Sinkroniziraj", "Prikaži detalje"};
+                    akcije = new CharSequence[]{"Izbriši", "Sinkroniziraj", "Prikaži detalje", "Printaj"};
                 } else {
-                    akcije = new CharSequence[]{"Izbriši", "Prikaži detalje"};
+                    akcije = new CharSequence[]{"Izbriši", "Prikaži detalje", "Printaj"};
                 }
                 //final CharSequence akcije[] = new CharSequence[] {"Izbriši", "Sinkroniziraj", "Prikaži detalje"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(App1DokumentiActivity.this);
@@ -167,6 +170,10 @@ public class App1DokumentiActivity extends AppCompatActivity {
                                 //Detalji
                                 Toast.makeText(App1DokumentiActivity.this,akcije[which].toString(),Toast.LENGTH_LONG).show();
                                 break;
+
+                            case 3:
+                                //printaj
+                                doPrint();
                         }
                     }
                 });
@@ -176,6 +183,43 @@ public class App1DokumentiActivity extends AppCompatActivity {
         });
     }
 
+    public void printDocument() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            //print radi samo ako je andrid veći od API19
+            Context c = this.getApplicationContext();
+            PrintManager printManager = (PrintManager) this.getSystemService(c.PRINT_SERVICE);
+            String jobName = this.getString(R.string.app_name) + " Document";
+            printManager.print(jobName, new MyPrintDocumentAdapter(c), null);
+        } else {
+            Toast.makeText(App1DokumentiActivity.this, "Nije podržano na ovome sistemu!!! (Android APIlevel > 19 - KitKat)", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void doPrint() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            /*
+            // Get a PrintManager instance
+            PrintManager printManager = (PrintManager) App1DokumentiActivity.this.getSystemService(App1DokumentiActivity.this.PRINT_SERVICE);
+            // Set job name, which will be displayed in the print queue
+            String jobName = this.getString(R.string.app_name) + " Document";
+            // Start a print job, passing in a PrintDocumentAdapter implementation
+            // to handle the generation of a print document
+            printManager.print(jobName, new MyPrintDocumentAdapter(App1DokumentiActivity.this   ),null); //
+            */
+            PrintManager printManager = (PrintManager) this.getSystemService(Context.PRINT_SERVICE);
+
+// Set job name, which will be displayed in the print queue
+            String jobName = "DocumentName.pdf";
+
+// Start a print job, passing in a PrintDocumentAdapter implementation
+// to handle the generation of a print document
+            printManager.print(jobName, new MyPrintDocumentAdapter(this),
+                    null); //
+        } else {
+            Toast.makeText(App1DokumentiActivity.this, "Nije podržano na ovome sistemu!!! (Android APIlevel > 19 - KitKat)", Toast.LENGTH_LONG).show();
+        }
+
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){

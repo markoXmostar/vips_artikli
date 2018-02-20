@@ -140,6 +140,9 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
         TipDokumenta tipDok = MainActivity.getTipDokumentaByID(this, zadaniTipDokumenta);
 
         setIzabraniTiP(tipDok);
+        // dopuštenje za izmjenu tipa dokumenta!
+        txtTipDokumenta.setEnabled(myPostavke.isDopustenaIzmjenaTipaDokumenta());
+
 
         if (myPostavke.getPodtipDokumenta() > 0) {
             PodtipDokumenta podtipDokumenta = MainActivity.getPodtipDokumentaByID(this, myPostavke.getPodtipDokumenta());

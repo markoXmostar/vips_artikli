@@ -120,6 +120,8 @@ public class App1StavkeActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
                 App1Stavke rezultat = (App1Stavke) data.getSerializableExtra("stavka");
+                MainActivity.snimiStavku(App1StavkeActivity.this, IdDokumenta, rezultat);
+                /*
                 SQLiteDatabase myDB = null;
                 myDB = openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
                 if (rezultat.isImaAtribut()){
@@ -136,15 +138,12 @@ public class App1StavkeActivity extends AppCompatActivity {
                             IdDokumenta + "," + rezultat.getArtiklId() + ",'" + rezultat.getArtiklNaziv() + "'," + rezultat.getKolicina() + ", '" + rezultat.isImaAtribut() + "',null,null" +
                               ",null," + rezultat.getJmjId() + ",'" + rezultat.getJmjNaziv() + "','" + rezultat.getNapomena() + "');");
                 }
-
-
                 myDB.close();
-
+                */
                 ucitajStavke();
-
             }
             if (resultCode == Activity.RESULT_CANCELED) {
-
+                ucitajStavke();
             }
         }
     }

@@ -16,7 +16,7 @@ public final class postavkeAplikacije {
     private long tipDokumenta, podtipDokumenta;
 
 
-    private boolean brziUnosArtikala;
+    private boolean brziUnosArtikala, dopustenaIzmjenaTipaDokumenta;
 
     private Activity activity;
 
@@ -34,6 +34,7 @@ public final class postavkeAplikacije {
         brziUnosArtikala = settings.getBoolean("brziUnosArtikala", false);
         tipDokumenta = settings.getLong("tipDokumenta", 0);
         podtipDokumenta = settings.getLong("podtipDokumenta", 0);
+        dopustenaIzmjenaTipaDokumenta = settings.getBoolean("dopustenaIzmjenaTipaDokumenta", true);
         Log.d(TAG, "procitajPostavke: vrstaPretrage=" + vrstaPretrageArtikala);
         Log.d(TAG, "procitajPostavke: vrstaAplikacije=" + vrstaAplikacije);
         Log.d(TAG, "procitajPostavke: defoltnaKolicina=" + defoltnaKolicina);
@@ -41,9 +42,13 @@ public final class postavkeAplikacije {
         Log.d(TAG, "procitajPostavke: brziUnosArtikala=" + brziUnosArtikala);
         Log.d(TAG, "procitajPostavke: tipDokumenta=" + tipDokumenta);
         Log.d(TAG, "procitajPostavke: podtipDokumenta=" + podtipDokumenta);
+        Log.d(TAG, "procitajPostavke: dopustenaIzmjenaTipaDokumenta=" + dopustenaIzmjenaTipaDokumenta);
 
     }
 
+    public boolean isDopustenaIzmjenaTipaDokumenta() {
+        return dopustenaIzmjenaTipaDokumenta;
+    }
 
     public int getVrstaPretrageArtikala() {
         return vrstaPretrageArtikala;
@@ -120,6 +125,13 @@ public final class postavkeAplikacije {
         SharedPreferences settings = activity.getSharedPreferences(MainActivity.APP_POSTAVKE, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt("brojDecimala", value);
+        editor.commit();
+    }
+
+    public void snimiDopustenaIzmjenaTipaDokumenta(boolean value) {
+        SharedPreferences settings = activity.getSharedPreferences(MainActivity.APP_POSTAVKE, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("dopustenaIzmjenaTipaDokumenta", value);
         editor.commit();
     }
 }

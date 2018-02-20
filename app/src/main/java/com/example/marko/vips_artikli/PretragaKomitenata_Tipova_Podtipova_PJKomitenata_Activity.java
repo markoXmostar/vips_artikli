@@ -51,21 +51,25 @@ public class PretragaKomitenata_Tipova_Podtipova_PJKomitenata_Activity extends A
 
         switch (varijantaPretrage){
             case "komitenti":
+                this.setTitle("Pretraga: komitenti");
                 listaObjekata =(ListView)findViewById(R.id.listKomitenti_PretragaKomitenata);
                 ucitajKomitente("");
                 break;
             case "pjkomitenti":
+                this.setTitle("Pretraga: PJ komitenata");
                 Log.d(TAG, "onCreate: VARIJANTA=pjkomitenti " );
                 Log.d(TAG, "onCreate: IDkomitenta=" + nadredeniKomitentID);
                 listaObjekata =(ListView)findViewById(R.id.listKomitenti_PretragaKomitenata);
                 ucitajPjKomitenta("");
                 break;
             case "tipDokumenta":
+                this.setTitle("Pretraga: tipovi dokumenata");
                 Log.d(TAG, "onCreate: VARIJANTA=tipDokumenta " );
                 listaObjekata =(ListView)findViewById(R.id.listKomitenti_PretragaKomitenata);
                 ucitajTipDokumenta("");
                 break;
             case "podtipDokumenta":
+                this.setTitle("Pretraga: podtipovi dokumenata");
                 Log.d(TAG, "onCreate: VARIJANTA=podtipDokumenta " );
                 Log.d(TAG, "onCreate: IDtipa=" + nadredeniTipID);
                 listaObjekata =(ListView)findViewById(R.id.listKomitenti_PretragaKomitenata);

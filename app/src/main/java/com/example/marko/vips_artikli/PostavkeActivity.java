@@ -1,22 +1,16 @@
 package com.example.marko.vips_artikli;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 
 public class PostavkeActivity extends AppCompatActivity {
@@ -32,7 +26,7 @@ public class PostavkeActivity extends AppCompatActivity {
     Spinner sppinerVrstaPretrage;
 
 
-    Switch dugme;
+    Switch btnBrziUnosArtikla, btnDopustenaIzmjenaTipaDokumenta;
 
     SeekBar sbarKolicina;
     SeekBar sbarBrojDecimala;
@@ -72,7 +66,8 @@ public class PostavkeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_postavke);
 
-        dugme = (Switch) findViewById(R.id.tbtnBrziUnosartikala_Postavke);
+        btnBrziUnosArtikla = (Switch) findViewById(R.id.tbtnBrziUnosartikala_Postavke);
+        btnDopustenaIzmjenaTipaDokumenta = (Switch) findViewById(R.id.btnDopustenaIZmjenaTipa_Postavke);
         sbarKolicina = (SeekBar) findViewById(R.id.sbarDefoltnaKolicina_Postavke);
         spinTipDokumenta = (Spinner) findViewById(R.id.spinTipDokumenta_Postavke);
         spinPodtipDokumenta = (Spinner) findViewById(R.id.spinPodtipDokumenta_Postavke);
@@ -225,14 +220,21 @@ public class PostavkeActivity extends AppCompatActivity {
             sbarBrojDecimala.setProgress(2);
         }
 
-        dugme.setChecked(myPostavke.isBrziUnosArtikala());
-        dugme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        btnBrziUnosArtikla.setChecked(myPostavke.isBrziUnosArtikala());
+        btnBrziUnosArtikla.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                myPostavke.snimiBrziUnos(dugme.isChecked());
+                myPostavke.snimiBrziUnos(btnBrziUnosArtikla.isChecked());
             }
         });
 
+        btnDopustenaIzmjenaTipaDokumenta.setChecked(myPostavke.isDopustenaIzmjenaTipaDokumenta());
+        btnDopustenaIzmjenaTipaDokumenta.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                myPostavke.snimiDopustenaIzmjenaTipaDokumenta(btnDopustenaIzmjenaTipaDokumenta.isChecked());
+            }
+        });
 
     }
     //snimi postavke

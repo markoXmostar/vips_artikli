@@ -1383,4 +1383,27 @@ public class MainActivity extends AppCompatActivity
         myDB.close();
 
     }
+
+    public static void snimiStavku(Activity a, long IdDokumenta, App1Stavke stavka) {
+        App1Stavke rezultat = stavka;
+        String tabelaApp1 = "stavke1";
+        SQLiteDatabase myDB = null;
+        myDB = a.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+        if (rezultat.isImaAtribut()) {
+            Log.d(TAG, "onActivityResult: UPISUJEM ARTIKL SA ATRIBUTOM!");
+            myDB.execSQL("INSERT INTO " + tabelaApp1 + " (idDokumenta, idArtikla, nazivArtikla, kolicina, imaAtribut, idAtributa, vrijednostAtributa, nazivAtributa, " +
+                    "idJmj, nazivJmj,napomena ) VALUES (" +
+                    IdDokumenta + "," + rezultat.getArtiklId() + ",'" + rezultat.getArtiklNaziv() + "'," + rezultat.getKolicina() + ", '" + rezultat.isImaAtribut() + "'," + rezultat.getAtributId() + ", '" +
+                    rezultat.getAtributVrijednost() + "','" + rezultat.getAtributNaziv() + "'," + rezultat.getJmjId() + ",'" + rezultat.getJmjNaziv() + "','" + rezultat.getNapomena() + "');");
+        } else {
+            Log.d(TAG, "onActivityResult: UPISUJEM ARTIKL BEZ ATRIBUTA!");
+            myDB.execSQL("INSERT INTO " + tabelaApp1 + " (idDokumenta, idArtikla, nazivArtikla, kolicina, imaAtribut, idAtributa, vrijednostAtributa, nazivAtributa, " +
+                    "idJmj, nazivJmj,napomena ) VALUES (" +
+                    IdDokumenta + "," + rezultat.getArtiklId() + ",'" + rezultat.getArtiklNaziv() + "'," + rezultat.getKolicina() + ", '" + rezultat.isImaAtribut() + "',null,null" +
+                    ",null," + rezultat.getJmjId() + ",'" + rezultat.getJmjNaziv() + "','" + rezultat.getNapomena() + "');");
+        }
+
+
+        myDB.close();
+    }
 }

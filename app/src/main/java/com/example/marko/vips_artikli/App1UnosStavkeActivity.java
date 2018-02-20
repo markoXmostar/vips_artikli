@@ -123,12 +123,16 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         Bundle b=getIntent().getExtras();
         idDokumenta=b.getLong("idDokumenta");
 
+        final postavkeAplikacije myPostavke = new postavkeAplikacije(App1UnosStavkeActivity.this);
 
         txtArtikl=(TextView)findViewById(R.id.txtArtikal_App1UnosStavke);
         txtRokTrajanja =(TextView)findViewById(R.id.txtRokTrajanja_App1UnosStavke);
         tvRokTrajanja = (TextView) findViewById(R.id.tvRokTrajanja_App1UnosStavke);
         txtJmj=(TextView)findViewById(R.id.txtJmj_App1UnosStavke);
         txtKolicina=(EditText)findViewById(R.id.txtKolicina_App1UnosStavke);
+        if (myPostavke.getDefoltnaKolicina() > 0) {
+            txtKolicina.setText(Float.toString(myPostavke.getDefoltnaKolicina()));
+        }
         txtNapomena=(EditText) findViewById(R.id.etxtNapomena_App1UnosStavke);
 
         txtBarcode = (myEditTextNoKeyboard) findViewById(R.id.txtBarcode_App1UnosStavke);
@@ -139,7 +143,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         btnOk=(Button)findViewById(R.id.btnOK_App1UnosStavke);
         btnCancel =(Button)findViewById(R.id.btnCancel_App1UnosStavke);
 
-        postavkeAplikacije myPostavke = new postavkeAplikacije(App1UnosStavkeActivity.this);
+
         varijantaPretrageArtikala = myPostavke.getVrstaPretrageArtikala();
         switch (varijantaPretrageArtikala) {
             case 0:
@@ -344,10 +348,17 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                             txtNapomena.getText().toString());
                 }
 
+                if (myPostavke.isBrziUnosArtikala()) {
+                    MainActivity.snimiStavku(App1UnosStavkeActivity.this, idDokumenta, newStavka);
+                    svirajOK();
+                    recreate();
 
-                returnIntent.putExtra("stavka",newStavka);
-                setResult(Activity.RESULT_OK,returnIntent);
-                finish();
+                } else {
+                    returnIntent.putExtra("stavka", newStavka);
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    finish();
+                }
+
             }
         });
 
@@ -365,6 +376,11 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
     private void svirajUpozorenje() {
         ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 90);
         toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 500); // 200 is duration in ms
+    }
+
+    private void svirajOK() {
+        ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 90);
+        toneG.startTone(ToneGenerator.TONE_CDMA_CONFIRM, 500); // 200 is duration in ms
     }
 
 
