@@ -16,7 +16,7 @@ public final class postavkeAplikacije {
     private long tipDokumenta, podtipDokumenta;
 
 
-    private boolean brziUnosArtikala, dopustenaIzmjenaTipaDokumenta;
+    private boolean brziUnosArtikala, dopustenaIzmjenaTipaDokumenta, svirajUpozorenja;
 
     private Activity activity;
 
@@ -35,6 +35,7 @@ public final class postavkeAplikacije {
         tipDokumenta = settings.getLong("tipDokumenta", 0);
         podtipDokumenta = settings.getLong("podtipDokumenta", 0);
         dopustenaIzmjenaTipaDokumenta = settings.getBoolean("dopustenaIzmjenaTipaDokumenta", true);
+        svirajUpozorenja = settings.getBoolean("svirajUpozorenja", true);
         Log.d(TAG, "procitajPostavke: vrstaPretrage=" + vrstaPretrageArtikala);
         Log.d(TAG, "procitajPostavke: vrstaAplikacije=" + vrstaAplikacije);
         Log.d(TAG, "procitajPostavke: defoltnaKolicina=" + defoltnaKolicina);
@@ -43,6 +44,7 @@ public final class postavkeAplikacije {
         Log.d(TAG, "procitajPostavke: tipDokumenta=" + tipDokumenta);
         Log.d(TAG, "procitajPostavke: podtipDokumenta=" + podtipDokumenta);
         Log.d(TAG, "procitajPostavke: dopustenaIzmjenaTipaDokumenta=" + dopustenaIzmjenaTipaDokumenta);
+        Log.d(TAG, "procitajPostavke: svirajUpozorenja=" + svirajUpozorenja);
 
     }
 
@@ -68,6 +70,10 @@ public final class postavkeAplikacije {
 
     public boolean isBrziUnosArtikala() {
         return brziUnosArtikala;
+    }
+
+    public boolean isSvirajUpozorenja() {
+        return svirajUpozorenja;
     }
 
     public long getTipDokumenta() {
@@ -132,6 +138,13 @@ public final class postavkeAplikacije {
         SharedPreferences settings = activity.getSharedPreferences(MainActivity.APP_POSTAVKE, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("dopustenaIzmjenaTipaDokumenta", value);
+        editor.commit();
+    }
+
+    public void snimiSvirajUpozorenja(boolean value) {
+        SharedPreferences settings = activity.getSharedPreferences(MainActivity.APP_POSTAVKE, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("svirajUpozorenja", value);
         editor.commit();
     }
 }

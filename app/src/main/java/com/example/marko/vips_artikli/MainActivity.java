@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -1405,5 +1407,20 @@ public class MainActivity extends AppCompatActivity
 
 
         myDB.close();
+    }
+
+    public static void svirajUpozorenje(postavkeAplikacije myPostavke) {
+        if (myPostavke.isSvirajUpozorenja()) {
+            ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 90);
+            toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 500);
+        }
+
+    }
+
+    public static void svirajOK(postavkeAplikacije myPostavke) {
+        if (myPostavke.isSvirajUpozorenja()) {
+            ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 90);
+            toneG.startTone(ToneGenerator.TONE_CDMA_CONFIRM, 500);
+        }
     }
 }

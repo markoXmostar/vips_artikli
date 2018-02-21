@@ -68,7 +68,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                 txtRokTrajanja.setEnabled(true);
                 txtRokTrajanja.setVisibility(View.VISIBLE);
                 tvRokTrajanja.setVisibility(View.VISIBLE);
-                svirajUpozorenje();
+                MainActivity.svirajUpozorenje(myPostavke);
             }
             else {
                 txtRokTrajanja.setEnabled(false);
@@ -79,7 +79,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             if (spisakJMJ.size() > 1) {
                 txtJmj.setEnabled(true);
                 txtJmj.setText(getString(R.string.Izaberi));
-                svirajUpozorenje();
+                MainActivity.svirajUpozorenje(myPostavke);
             } else {
                 txtJmj.setEnabled(false);
                 ArtiklJmj jmj = (ArtiklJmj) spisakJMJ.get(0);
@@ -115,6 +115,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
     private ArtiklJmj izabranaJMJ;
     private long idDokumenta;
 
+    private postavkeAplikacije myPostavke;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,7 +124,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         Bundle b=getIntent().getExtras();
         idDokumenta=b.getLong("idDokumenta");
 
-        final postavkeAplikacije myPostavke = new postavkeAplikacije(App1UnosStavkeActivity.this);
+        myPostavke = new postavkeAplikacije(App1UnosStavkeActivity.this);
 
         txtArtikl=(TextView)findViewById(R.id.txtArtikal_App1UnosStavke);
         txtRokTrajanja =(TextView)findViewById(R.id.txtRokTrajanja_App1UnosStavke);
@@ -184,7 +185,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
 
                     } else {
                         Log.d(TAG, "onKey: ARTIKL NIJE NAĐEN!!");
-                        svirajUpozorenje();
+                        MainActivity.svirajUpozorenje(myPostavke);
 
                         txtBarcode.setAlertBackgroundColor();
 
@@ -350,8 +351,10 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
 
                 if (myPostavke.isBrziUnosArtikala()) {
                     MainActivity.snimiStavku(App1UnosStavkeActivity.this, idDokumenta, newStavka);
-                    svirajOK();
+                    MainActivity.svirajOK(myPostavke);
                     recreate();
+                    txtBarcode.setText("");
+                    txtBarcode.requestFocus();
 
                 } else {
                     returnIntent.putExtra("stavka", newStavka);
@@ -373,17 +376,23 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         });
     }
 
-    private void svirajUpozorenje() {
-        ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 90);
-        toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 500); // 200 is duration in ms
-    }
+    /*
+        private void svirajUpozorenje() {
+            if(myPostavke.isSvirajUpozorenja()){
+                ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 90);
+                toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 500);
+            }
 
-    private void svirajOK() {
-        ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 90);
-        toneG.startTone(ToneGenerator.TONE_CDMA_CONFIRM, 500); // 200 is duration in ms
-    }
+        }
 
+        private void svirajOK() {
+            if(myPostavke.isSvirajUpozorenja()) {
+                ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 90);
+                toneG.startTone(ToneGenerator.TONE_CDMA_CONFIRM, 500);
+            }
+        }
 
+    */
     private void ispisiPorukuNisteUnijeliPotrebnePodatke(View view) {
 
         String poruka = getResources().getString(R.string.NepotpunUnos);

@@ -26,7 +26,7 @@ public class PostavkeActivity extends AppCompatActivity {
     Spinner sppinerVrstaPretrage;
 
 
-    Switch btnBrziUnosArtikla, btnDopustenaIzmjenaTipaDokumenta;
+    Switch btnBrziUnosArtikla, btnDopustenaIzmjenaTipaDokumenta, btnSvirajUpozorenja;
 
     SeekBar sbarKolicina;
     SeekBar sbarBrojDecimala;
@@ -76,6 +76,7 @@ public class PostavkeActivity extends AppCompatActivity {
         sbarBrojDecimala = (SeekBar) findViewById(R.id.sbarBrojDecimala_Postavke);
         lblDefKolicina = (TextView) findViewById(R.id.lblDefoltnaKolicina_Posavke);
         lblBrojDec = (TextView) findViewById(R.id.lblBrojDecimala_Postavke);
+        btnSvirajUpozorenja = (Switch) findViewById(R.id.btnZvukoviObavijesti_Postavke);
 
         final postavkeAplikacije myPostavke = new postavkeAplikacije(PostavkeActivity.this);
 
@@ -233,6 +234,14 @@ public class PostavkeActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 myPostavke.snimiDopustenaIzmjenaTipaDokumenta(btnDopustenaIzmjenaTipaDokumenta.isChecked());
+            }
+        });
+
+        btnSvirajUpozorenja.setChecked(myPostavke.isSvirajUpozorenja());
+        btnSvirajUpozorenja.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                myPostavke.snimiSvirajUpozorenja(btnSvirajUpozorenja.isChecked());
             }
         });
 

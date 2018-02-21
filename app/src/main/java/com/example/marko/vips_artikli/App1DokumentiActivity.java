@@ -141,13 +141,8 @@ public class App1DokumentiActivity extends AppCompatActivity {
                                 break;
                             case 1:
                                 //Sinkronizraj
-                                List<App1Dokumenti> spisakDokZaSync=new ArrayList<App1Dokumenti>();
-                                spisakDokZaSync.add(selektiranDok);
-                                selektiranDok.izbrisiSveStavke();
-                                List<App1Stavke> mojeStavke=MainActivity.getListaStavki(selektiranDok.getId(),App1DokumentiActivity.this);
-                                for (App1Stavke stv:mojeStavke) {
-                                    selektiranDok.doadajStavku(stv);
-                                }
+
+                                List<App1Dokumenti> spisakDokZaSync = getDokumentZaSyncIliPrintanje(selektiranDok);
 
                                 try {
                                     String rezultat=new JSON_send(App1DokumentiActivity.this,spisakDokZaSync).execute().get();
@@ -173,7 +168,9 @@ public class App1DokumentiActivity extends AppCompatActivity {
 
                             case 3:
                                 //printaj
-                                doPrint();
+
+                                List<App1Dokumenti> spisakDokZaPrint = getDokumentZaSyncIliPrintanje(selektiranDok);
+                                doPrint(spisakDokZaPrint.get(0));
                         }
                     }
                 });
@@ -183,43 +180,28 @@ public class App1DokumentiActivity extends AppCompatActivity {
         });
     }
 
-    public void printDocument() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            //print radi samo ako je andrid veći od API19
-            Context c = this.getApplicationContext();
-            PrintManager printManager = (PrintManager) this.getSystemService(c.PRINT_SERVICE);
-            String jobName = this.getString(R.string.app_name) + " Document";
-            printManager.print(jobName, new MyPrintDocumentAdapter(c), null);
-        } else {
-            Toast.makeText(App1DokumentiActivity.this, "Nije podržano na ovome sistemu!!! (Android APIlevel > 19 - KitKat)", Toast.LENGTH_LONG).show();
+    private List<App1Dokumenti> getDokumentZaSyncIliPrintanje(App1Dokumenti selektiranDok) {
+        List<App1Dokumenti> spisakDokZaSync = new ArrayList<App1Dokumenti>();
+        spisakDokZaSync.add(selektiranDok);
+        selektiranDok.izbrisiSveStavke();
+        List<App1Stavke> mojeStavke = MainActivity.getListaStavki(selektiranDok.getId(), App1DokumentiActivity.this);
+        for (App1Stavke stv : mojeStavke) {
+            selektiranDok.doadajStavku(stv);
         }
+        return spisakDokZaSync;
     }
 
-    private void doPrint() {
+    private void doPrint(App1Dokumenti dokumentZaPrint) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            /*
-            // Get a PrintManager instance
-            PrintManager printManager = (PrintManager) App1DokumentiActivity.this.getSystemService(App1DokumentiActivity.this.PRINT_SERVICE);
-            // Set job name, which will be displayed in the print queue
-            String jobName = this.getString(R.string.app_name) + " Document";
-            // Start a print job, passing in a PrintDocumentAdapter implementation
-            // to handle the generation of a print document
-            printManager.print(jobName, new MyPrintDocumentAdapter(App1DokumentiActivity.this   ),null); //
-            */
-            PrintManager printManager = (PrintManager) this.getSystemService(Context.PRINT_SERVICE);
-
-// Set job name, which will be displayed in the print queue
+            PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
             String jobName = "DocumentName.pdf";
-
-// Start a print job, passing in a PrintDocumentAdapter implementation
-// to handle the generation of a print document
-            printManager.print(jobName, new MyPrintDocumentAdapter(this),
-                    null); //
+            printManager.print(jobName, new MyPrintDocumentAdapter(this, dokumentZaPrint), null);
         } else {
             Toast.makeText(App1DokumentiActivity.this, "Nije podržano na ovome sistemu!!! (Android APIlevel > 19 - KitKat)", Toast.LENGTH_LONG).show();
         }
 
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){

@@ -82,28 +82,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
-        <TextView
-            android:id="@+id/textView9"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="Brzi unos artikala"
-            app:layout_constraintBottom_toBottomOf="@+id/tbtnBrziUnosartikala_Postavke"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tbtnBrziUnosartikala_Postavke" />
-
         <Switch
             android:id="@+id/tbtnBrziUnosartikala_Postavke"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:text=""
-            android:textOff="NE"
-            android:textOn="DA"
-            app:layout_constraintStart_toEndOf="@+id/textView9"
+            android:switchPadding="20dp"
+            android:text="Brzi unos artikla"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sbarDefoltnaKolicina_Postavke" />
 
         <TextView
@@ -201,9 +188,22 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
+            android:switchPadding="20dp"
             android:text="Dopuštena izmjena tipa dokumenta"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sbarBrojDecimala_Postavke" />
+
+        <Switch
+            android:id="@+id/btnZvukoviObavijesti_Postavke"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:splitTrack="false"
+            android:switchPadding="20dp"
+            android:text="Zvukovi obavijesti i upozorenja"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnDopustenaIZmjenaTipa_Postavke" />
 
 
     </android.support.constraint.ConstraintLayout>
