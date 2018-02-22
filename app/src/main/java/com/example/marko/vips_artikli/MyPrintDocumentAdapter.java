@@ -1,11 +1,12 @@
 package com.example.marko.vips_artikli;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Rect;
 import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
 import android.os.CancellationSignal;
-import android.os.ParcelFileDescriptor;
 import android.print.PageRange;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
@@ -27,6 +28,8 @@ import android.util.Log;
 @TargetApi(19)
 public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
 
+    private String TAG = "REPORT";
+
     private Paint mPaint = new Paint();
     private Context mContext;
 
@@ -37,6 +40,19 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
     private int brojStranica;
     private int visina;
     private int sirina;
+
+    private int zadnjiY = 0;
+    private int leftMargin = 20;
+    private int rightMargin = 20;
+    private int topMargin = 72;
+    private int bottomMargin = 20;
+    private int sirinaMeduprostora = 0;
+    private int margineUkupno;
+    private int sirinaIspisa;
+    private int proredStavki = 20;
+
+    private int brojDecimala = 1;
+    private String formatString;
 
     public MyPrintDocumentAdapter(Context context, App1Dokumenti dokumentZaPrintanje) {
         mContext = context;
@@ -60,25 +76,32 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
                          LayoutResultCallback callback, Bundle extras) {
 
         mPdfDocument = new PrintedPdfDocument(mContext, newAttributes);
+        Activity activity = (Activity) mContext;
+        postavkeAplikacije myPostavke = new postavkeAplikacije(activity);
+        brojDecimala = myPostavke.getBrojDecimala();
+        formatString = "%." + brojDecimala + "f";
+
 
         if (cancellationSignal.isCanceled()) {
             callback.onLayoutCancelled();
             return;
         }
-        brojStranica = getBrojStranica(); //po broju artikala bi trebalo izračunati broj stranica zasad 1
+        //po broju artikala bi trebalo izračunati broj stranica zasad 1
         // newAttributes.getColorMode();
-        visina = newAttributes.getMediaSize().getHeightMils();
-        sirina = newAttributes.getMediaSize().getWidthMils();
+        visina = newAttributes.getMediaSize().getHeightMils() / 1000 * 72;
+        sirina = newAttributes.getMediaSize().getWidthMils() / 1000 * 72;
 
+        margineUkupno = leftMargin + rightMargin;
+        sirinaIspisa = sirina - margineUkupno;
+        zadnjiY = topMargin;
+        brojStranica = getUkupanBrojStranica();
         PrintDocumentInfo info = new PrintDocumentInfo.Builder("androids.pdf")
                 .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
                 .setPageCount(brojStranica).build();
         callback.onLayoutFinished(info, true);
     }
 
-    private int getBrojStranica() {
-        return 1;
-    }
+
 
     @Override
     public void onWrite(android.print.PageRange[] pages,
@@ -89,10 +112,22 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
             return;
         }
         for (int i = 0; i < brojStranica; i++) {
-            //if (containsPage(pageRanges, i)) {
+            if (pageInRange(pages, i)) {
+                PdfDocument.PageInfo newPage = new PdfDocument.PageInfo.Builder(sirina, visina, i).create();
 
-            //}
+                PdfDocument.Page page = mPdfDocument.startPage(newPage);
+
+                if (cancellationSignal.isCanceled()) {
+                    callback.onWriteCancelled();
+                    mPdfDocument.close();
+                    mPdfDocument = null;
+                    return;
+                }
+                drawPage(page.getCanvas(), i);
+                mPdfDocument.finishPage(page);
+            }
         }
+        /*
         PdfDocument.Page page = mPdfDocument.startPage(0);
         if (cancellationSignal.isCanceled()) {
             callback.onWriteCancelled();
@@ -102,7 +137,7 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
         }
         onDraw(page.getCanvas());
         mPdfDocument.finishPage(page);
-
+        */
         try {
             mPdfDocument.writeTo(new FileOutputStream(destination
                     .getFileDescriptor()));
@@ -116,8 +151,17 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
         callback.onWriteFinished(pages);
     }
 
-    ;
+    private void drawPage(Canvas canvas, int stranicaBroj) {
 
+    }
+
+    private boolean pageInRange(PageRange[] pageRanges, int page) {
+        for (int i = 0; i < pageRanges.length; i++) {
+            if ((page >= pageRanges[i].getStart()) && (page <= pageRanges[i].getEnd()))
+                return true;
+        }
+        return false;
+    }
     public void onDraw1(Canvas canvas) {
         mPaint.setTextSize(12);
         mPaint.setColor(Color.GRAY);
@@ -163,41 +207,169 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
 
     }
 
-    private void onDraw(Canvas canvas) {
-
-
-        // units are in points (1/72 of an inch)
-        int titleBaseLine = 72;
-        int leftMargin = 54;
-
-        Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(36);
-        canvas.drawText(dokument.getTipDokumentaNaziv(), leftMargin, titleBaseLine, paint);
-
-        titleBaseLine += 72;
-        List<App1Stavke> spisakStavki = dokument.getSpisakStavki();
-        paint.setTextSize(11);
-        for (int i = 0; i < dokument.getSpisakStavki().size(); i++) {
-            canvas.drawText(Integer.toString(i + 1), leftMargin, titleBaseLine + (i + 1) * 15, paint);
-            canvas.drawText(spisakStavki.get(i).getArtiklNaziv(), leftMargin + 15, titleBaseLine + (i + 1) * 15, paint);
-
-        }
-
-
+    private int ukupnaVisinaReporta() {
+        int ukupnaVisina = ukupnaVisinaTextaZaglavlja() + ukupnaVisinaTextaStavki() + ukupnaVisinaZaglavljaStavki() + topMargin + bottomMargin;
+        return ukupnaVisina;
     }
 
-    private void printTextCenterX(Canvas canvas, int offsetY, String text,
-                                  Paint paint) {
-        float[] widths = new float[text.length()];
-        paint.getTextWidths(text, widths);
-        int width = 0;
-        for (float w : widths) {
-            width += w;
+    private int ukupnaVisinaTextaStavki() {
+        List<App1Stavke> spisakStavki = dokument.getSpisakStavki();
+        int visinaStavki = 0;
+        for (int i = 0; i < dokument.getSpisakStavki().size(); i++) {
+            visinaStavki += proredStavki;
         }
-        int offsetX = canvas.getWidth() / 2 - width / 2;
-        canvas.drawText(text, offsetX, offsetY - paint.getFontMetrics().top,
-                paint);
+        return visinaStavki;
+    }
+
+    private int ukupnaVisinaZaglavljaStavki() {
+        return proredStavki;
+    }
+
+    private int ukupnaVisinaTextaZaglavlja() {
+        return 80;
+    }
+
+    private int getUkupanBrojStranica() {
+        int n = 0;
+        n = Math.round((ukupnaVisinaTextaZaglavlja() + ukupnaVisinaTextaStavki()) / (visina - topMargin - bottomMargin - ukupnaVisinaZaglavljaStavki()));
+        return n;
+        /*
+        int brojStr=1;//ovo je minimalno
+        int ostatak=ukupnaVisinaReporta();
+        boolean radi=true;
+
+        while (radi){
+            if (brojStr==1){
+                ostatak=ostatak-ukupnaVisinaTextaZaglavlja();
+            }
+            ostatak=ostatak-ukupnaVisinaZaglavljaStavki(); //za zaglvalje stavki
+            ostatak=ostatak-topMargin-bottomMargin;
+            if (ostatak>visina){
+                brojStr+=1;
+            }else{
+                radi=false;
+            }
+        }
+
+        return brojStr;
+        */
+    }
+
+    private void onDraw(Canvas canvas) {
+        // units are in points (1/72 of an inch)
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(18);
+        canvas.drawText(dokument.getTipDokumentaNaziv(), leftMargin, zadnjiY, paint);
+
+        zadnjiY += 20;
+        paint.setTextSize(16);
+        canvas.drawText("Datum dokumenta: " + dokument.getDatumDokumentaString(), leftMargin, zadnjiY, paint);
+        zadnjiY += 20;
+        canvas.drawText("Komitent: " + dokument.getKomitentNaziv(), leftMargin, zadnjiY, paint);
+        zadnjiY += 20;
+        canvas.drawText("PJ Komitenta: " + dokument.getPjKomitentNaziv(), leftMargin, zadnjiY, paint);
+        zadnjiY += 20;
+
+        List<App1Stavke> spisakStavki = dokument.getSpisakStavki();
+        //prvo treba nacrtati HEADER STAVKI
+        iscrtajZaglavljeStavki(canvas);
+        //SADA IDU STAVKE
+        for (int i = 0; i < dokument.getSpisakStavki().size(); i++) {
+            int lijevo = leftMargin; //početak
+            int sirinaTexta = sirinaIspisa * 5 / 100;
+            Rect rectRbr = new Rect(lijevo, zadnjiY, lijevo + sirinaTexta, zadnjiY + 20);
+            drawRectText(String.valueOf(i + 1), canvas, rectRbr);
+
+            lijevo = lijevo + sirinaTexta;
+            lijevo = lijevo + sirinaMeduprostora;
+            sirinaTexta = sirinaIspisa * 60 / 100;
+            Rect rectNaziv = new Rect(lijevo, zadnjiY, lijevo + sirinaTexta, zadnjiY + 20);
+            drawRectText(spisakStavki.get(i).getArtiklNaziv(), canvas, rectNaziv);
+
+            lijevo = lijevo + sirinaTexta;
+            lijevo = lijevo + sirinaMeduprostora;
+            sirinaTexta = sirinaIspisa * 15 / 100;
+            Rect rectAtribut = new Rect(lijevo, zadnjiY, lijevo + sirinaTexta, zadnjiY + 20);
+            drawRectText(spisakStavki.get(i).getAtributVrijednost(), canvas, rectAtribut);
+
+            lijevo = lijevo + sirinaTexta;
+            lijevo = lijevo + sirinaMeduprostora;
+            sirinaTexta = sirinaIspisa * 10 / 100;
+            Rect rectJmj = new Rect(lijevo, zadnjiY, lijevo + sirinaTexta, zadnjiY + 20);
+            drawRectText(spisakStavki.get(i).getJmjNaziv(), canvas, rectJmj);
+
+            lijevo = lijevo + sirinaTexta;
+            lijevo = lijevo + sirinaMeduprostora;
+            sirinaTexta = sirinaIspisa * 10 / 100;
+            Rect rectKol = new Rect(lijevo, zadnjiY, lijevo + sirinaTexta, zadnjiY + 20);
+            drawRectText(String.format(formatString, spisakStavki.get(i).getKolicina()), canvas, rectKol);
+
+            zadnjiY = zadnjiY + proredStavki;
+        }
+    }
+
+    private void iscrtajZaglavljeStavki(Canvas canvas) {
+
+        int lijevo = leftMargin; //početak
+        int sirinaTexta = sirinaIspisa * 5 / 100;
+        Rect rectRbr = new Rect(lijevo, zadnjiY, lijevo + sirinaTexta, zadnjiY + proredStavki);
+        drawRectText("RBR", canvas, rectRbr);
+
+        lijevo = lijevo + sirinaTexta;
+        lijevo = lijevo + sirinaMeduprostora;
+        sirinaTexta = sirinaIspisa * 60 / 100;
+        Rect rectNaziv = new Rect(lijevo, zadnjiY, lijevo + sirinaTexta, zadnjiY + proredStavki);
+        drawRectText("Naziv artikla", canvas, rectNaziv);
+
+        lijevo = lijevo + sirinaTexta;
+        lijevo = lijevo + sirinaMeduprostora;
+        sirinaTexta = sirinaIspisa * 15 / 100;
+        Rect rectAtribut = new Rect(lijevo, zadnjiY, lijevo + sirinaTexta, zadnjiY + proredStavki);
+        drawRectText("Rok trajanja", canvas, rectAtribut);
+
+        lijevo = lijevo + sirinaTexta;
+        lijevo = lijevo + sirinaMeduprostora;
+        sirinaTexta = sirinaIspisa * 10 / 100;
+        Rect rectJmj = new Rect(lijevo, zadnjiY, lijevo + sirinaTexta, zadnjiY + proredStavki);
+        drawRectText("JMJ", canvas, rectJmj);
+
+        lijevo = lijevo + sirinaTexta;
+        lijevo = lijevo + sirinaMeduprostora;
+        sirinaTexta = sirinaIspisa * 10 / 100;
+        Rect rectKol = new Rect(lijevo, zadnjiY, lijevo + sirinaTexta, zadnjiY + proredStavki);
+        drawRectText("Količina", canvas, rectKol);
+
+
+        zadnjiY = zadnjiY + proredStavki;
+    }
+
+    private void drawRectText(String text, Canvas canvas, Rect r) {
+        /*
+        Paint pn=new Paint();
+        pn.setColor(Color.BLACK);
+        pn.setStyle(Paint.Style.STROKE);
+        canvas.drawRect(r,pn);
+        */
+        int textPadding = 2;
+
+        if (text == null) {
+            return;
+        }
+        if (text.equals("")) {
+            return;
+        }
+        Paint p = new Paint();
+        p.setTextSize(10);
+        p.setTextAlign(Paint.Align.LEFT);
+        int width = r.width();
+
+        int numOfChars = p.breakText(text, true, width, null);
+        int start = (text.length() - numOfChars) / 2;
+        //canvas.drawText(text,start,start+numOfChars,r.exactCenterX(),r.exactCenterY(),p);
+        canvas.drawText(text, start, start + numOfChars, r.left + textPadding, r.bottom - textPadding, p);
+
+
     }
 
     private int printWrapText(Canvas canvas, String text, int paddingX,
@@ -232,5 +404,16 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
             }
         }
         return startY;
+    }
+
+    private void printTextCenterX(Canvas canvas, int offsetY, String text, Paint paint) {
+        float[] widths = new float[text.length()];
+        paint.getTextWidths(text, widths);
+        int width = 0;
+        for (float w : widths) {
+            width += w;
+        }
+        int offsetX = canvas.getWidth() / 2 - width / 2;
+        canvas.drawText(text, offsetX, offsetY - paint.getFontMetrics().top, paint);
     }
 }
