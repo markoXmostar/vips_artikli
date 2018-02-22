@@ -54,6 +54,8 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
     private int brojDecimala = 1;
     private String formatString;
 
+    private int spisakStavkiPoStranicama[];
+
     public MyPrintDocumentAdapter(Context context, App1Dokumenti dokumentZaPrintanje) {
         mContext = context;
         dokument = dokumentZaPrintanje;
@@ -95,7 +97,17 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
         sirinaIspisa = sirina - margineUkupno;
         zadnjiY = topMargin;
         brojStranica = getUkupanBrojStranica();
-        PrintDocumentInfo info = new PrintDocumentInfo.Builder("androids.pdf")
+        spisakStavkiPoStranicama = new int[brojStranica + 1];
+        Log.d(TAG, "onLayout: RESETIRAM SPISAK!!!");
+        for (int i = 0; i <= brojStranica; i++) {
+            Log.d(TAG, "onLayout: spisakStavkiPoStranicama[" + i + "]=" + spisakStavkiPoStranicama[i]);
+        }
+        odrediStavkePoStranicama();
+        Log.d(TAG, "onLayout: Ponovo formiran SPISAK izgleda");
+        for (int i = 0; i <= brojStranica; i++) {
+            Log.d(TAG, "onLayout: spisakStavkiPoStranicama[" + i + "]=" + spisakStavkiPoStranicama[i]);
+        }
+        PrintDocumentInfo info = new PrintDocumentInfo.Builder(dokument.getTipDokumentaNaziv() + "_" + dokument.getDatumDokumentaString())
                 .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
                 .setPageCount(brojStranica).build();
         callback.onLayoutFinished(info, true);
@@ -112,7 +124,9 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
             return;
         }
         for (int i = 0; i < brojStranica; i++) {
-            if (pageInRange(pages, i)) {
+            Log.d(TAG, "onWrite: ZA SVAKU STRANICU POZIVAM CRTANJE i=" + i);
+            //if (pageInRange(pages, i)) {
+            Log.d(TAG, "onWrite: pageInRange OK->" + i);
                 PdfDocument.PageInfo newPage = new PdfDocument.PageInfo.Builder(sirina, visina, i).create();
 
                 PdfDocument.Page page = mPdfDocument.startPage(newPage);
@@ -123,9 +137,9 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
                     mPdfDocument = null;
                     return;
                 }
-                drawPage(page.getCanvas(), i);
+            onDraw(page.getCanvas(), i);
                 mPdfDocument.finishPage(page);
-            }
+            //}
         }
         /*
         PdfDocument.Page page = mPdfDocument.startPage(0);
@@ -139,22 +153,43 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
         mPdfDocument.finishPage(page);
         */
         try {
-            mPdfDocument.writeTo(new FileOutputStream(destination
-                    .getFileDescriptor()));
+            Log.d(TAG, "onWrite: POKUŠAVAM SNIMITI PDF->" + destination.toString());
+            mPdfDocument.writeTo(new FileOutputStream(destination.getFileDescriptor()));
         } catch (IOException e) {
+            Log.d(TAG, "onWrite: NIJE USPJELO SNIMANJE FILA->>" + e.toString());
             callback.onWriteFailed(e.toString());
             return;
         } finally {
+            Log.d(TAG, "onWrite: ISPRAZNI PDF IZA OVOGA IDE GREŠKA!!!!");
             mPdfDocument.close();
             mPdfDocument = null;
         }
+        Log.d(TAG, "onWrite: POZIVAM OnWriteFinished");
         callback.onWriteFinished(pages);
-    }
 
-    private void drawPage(Canvas canvas, int stranicaBroj) {
 
     }
 
+
+    private void odrediStavkePoStranicama() {
+        //za prvu stranicu
+        spisakStavkiPoStranicama[0] = 0;
+
+        if (brojStranica == 1) {
+            spisakStavkiPoStranicama[1] = dokument.getSpisakStavki().size();
+            return;
+        }
+        int brojStavkiNaPrvojStrani = (visina - topMargin - bottomMargin - ukupnaVisinaTextaZaglavlja() - ukupnaVisinaZaglavljaStavki()) / proredStavki;
+        spisakStavkiPoStranicama[1] = brojStavkiNaPrvojStrani;
+        //za ostale stranice
+        for (int i = 2; i <= brojStranica; i++) {
+            int brojStavkiPoOstalimStranicama = (visina - topMargin - bottomMargin - ukupnaVisinaZaglavljaStavki()) / proredStavki;
+            spisakStavkiPoStranicama[i] = brojStavkiPoOstalimStranicama + spisakStavkiPoStranicama[i - 1];
+            if (i == brojStranica) {//za zadnju stranicu
+                spisakStavkiPoStranicama[i] = dokument.getSpisakStavki().size();
+            }
+        }
+    }
     private boolean pageInRange(PageRange[] pageRanges, int page) {
         for (int i = 0; i < pageRanges.length; i++) {
             if ((page >= pageRanges[i].getStart()) && (page <= pageRanges[i].getEnd()))
@@ -213,11 +248,7 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
     }
 
     private int ukupnaVisinaTextaStavki() {
-        List<App1Stavke> spisakStavki = dokument.getSpisakStavki();
-        int visinaStavki = 0;
-        for (int i = 0; i < dokument.getSpisakStavki().size(); i++) {
-            visinaStavki += proredStavki;
-        }
+        int visinaStavki = dokument.getSpisakStavki().size() * proredStavki;
         return visinaStavki;
     }
 
@@ -226,85 +257,80 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
     }
 
     private int ukupnaVisinaTextaZaglavlja() {
-        return 80;
+        return 100;
     }
 
     private int getUkupanBrojStranica() {
         int n = 0;
-        n = Math.round((ukupnaVisinaTextaZaglavlja() + ukupnaVisinaTextaStavki()) / (visina - topMargin - bottomMargin - ukupnaVisinaZaglavljaStavki()));
+        n = (int) Math.ceil((double) (ukupnaVisinaTextaZaglavlja() + ukupnaVisinaTextaStavki()) / (double) (visina - topMargin - bottomMargin - ukupnaVisinaZaglavljaStavki()));
+        Log.d(TAG, "getUkupanBrojStranica: UKUPAN BROJ STRANICA JE IZRAČUNAT I IZNOSI ->" + n);
         return n;
-        /*
-        int brojStr=1;//ovo je minimalno
-        int ostatak=ukupnaVisinaReporta();
-        boolean radi=true;
-
-        while (radi){
-            if (brojStr==1){
-                ostatak=ostatak-ukupnaVisinaTextaZaglavlja();
-            }
-            ostatak=ostatak-ukupnaVisinaZaglavljaStavki(); //za zaglvalje stavki
-            ostatak=ostatak-topMargin-bottomMargin;
-            if (ostatak>visina){
-                brojStr+=1;
-            }else{
-                radi=false;
-            }
-        }
-
-        return brojStr;
-        */
     }
 
-    private void onDraw(Canvas canvas) {
+    private void onDraw(Canvas canvas, int stranica) {
         // units are in points (1/72 of an inch)
-        Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(18);
-        canvas.drawText(dokument.getTipDokumentaNaziv(), leftMargin, zadnjiY, paint);
 
-        zadnjiY += 20;
-        paint.setTextSize(16);
-        canvas.drawText("Datum dokumenta: " + dokument.getDatumDokumentaString(), leftMargin, zadnjiY, paint);
-        zadnjiY += 20;
-        canvas.drawText("Komitent: " + dokument.getKomitentNaziv(), leftMargin, zadnjiY, paint);
-        zadnjiY += 20;
-        canvas.drawText("PJ Komitenta: " + dokument.getPjKomitentNaziv(), leftMargin, zadnjiY, paint);
-        zadnjiY += 20;
+        zadnjiY = topMargin;
+
+        if (stranica == 0) {
+            Paint paint = new Paint();
+            paint.setColor(Color.BLACK);
+            paint.setTextSize(18);
+            canvas.drawText(dokument.getTipDokumentaNaziv(), leftMargin, zadnjiY, paint);
+            zadnjiY += 20;
+            paint.setTextSize(16);
+            canvas.drawText("Datum dokumenta: " + dokument.getDatumDokumentaString(), leftMargin, zadnjiY, paint);
+            zadnjiY += 20;
+            if (dokument.getDatumSinkronizacije() == null) {
+                canvas.drawText("Datum sinkronizacije: NIJE SINKRONIZIRAN!!!", leftMargin, zadnjiY, paint);
+            } else {
+                canvas.drawText("Datum sinkronizacije: " + dokument.getDatumSinkronizacije(), leftMargin, zadnjiY, paint);
+            }
+            zadnjiY += 20;
+            canvas.drawText("Komitent: " + dokument.getKomitentNaziv(), leftMargin, zadnjiY, paint);
+            zadnjiY += 20;
+            canvas.drawText("PJ Komitenta: " + dokument.getPjKomitentNaziv(), leftMargin, zadnjiY, paint);
+            zadnjiY += 20;
+        }
+
 
         List<App1Stavke> spisakStavki = dokument.getSpisakStavki();
         //prvo treba nacrtati HEADER STAVKI
         iscrtajZaglavljeStavki(canvas);
         //SADA IDU STAVKE
-        for (int i = 0; i < dokument.getSpisakStavki().size(); i++) {
+        Log.d(TAG, "onDraw: CRTAM STRANICU =" + stranica);
+        Log.d(TAG, "onDraw: Stavke idu od broja RBR=" + spisakStavkiPoStranicama[stranica]);
+        Log.d(TAG, "onDraw: Stavke idu do broja RBR=" + spisakStavkiPoStranicama[stranica + 1]);
+        for (int i = spisakStavkiPoStranicama[stranica]; i < spisakStavkiPoStranicama[stranica + 1]; i++) {
             int lijevo = leftMargin; //početak
             int sirinaTexta = sirinaIspisa * 5 / 100;
             Rect rectRbr = new Rect(lijevo, zadnjiY, lijevo + sirinaTexta, zadnjiY + 20);
             drawRectText(String.valueOf(i + 1), canvas, rectRbr);
-
+            Log.d(TAG, "onDraw: 1 OK");
             lijevo = lijevo + sirinaTexta;
             lijevo = lijevo + sirinaMeduprostora;
             sirinaTexta = sirinaIspisa * 60 / 100;
             Rect rectNaziv = new Rect(lijevo, zadnjiY, lijevo + sirinaTexta, zadnjiY + 20);
             drawRectText(spisakStavki.get(i).getArtiklNaziv(), canvas, rectNaziv);
-
+            Log.d(TAG, "onDraw: 2 OK");
             lijevo = lijevo + sirinaTexta;
             lijevo = lijevo + sirinaMeduprostora;
             sirinaTexta = sirinaIspisa * 15 / 100;
             Rect rectAtribut = new Rect(lijevo, zadnjiY, lijevo + sirinaTexta, zadnjiY + 20);
             drawRectText(spisakStavki.get(i).getAtributVrijednost(), canvas, rectAtribut);
-
+            Log.d(TAG, "onDraw: 3 OK");
             lijevo = lijevo + sirinaTexta;
             lijevo = lijevo + sirinaMeduprostora;
             sirinaTexta = sirinaIspisa * 10 / 100;
             Rect rectJmj = new Rect(lijevo, zadnjiY, lijevo + sirinaTexta, zadnjiY + 20);
             drawRectText(spisakStavki.get(i).getJmjNaziv(), canvas, rectJmj);
-
+            Log.d(TAG, "onDraw: 4 OK");
             lijevo = lijevo + sirinaTexta;
             lijevo = lijevo + sirinaMeduprostora;
             sirinaTexta = sirinaIspisa * 10 / 100;
             Rect rectKol = new Rect(lijevo, zadnjiY, lijevo + sirinaTexta, zadnjiY + 20);
             drawRectText(String.format(formatString, spisakStavki.get(i).getKolicina()), canvas, rectKol);
-
+            Log.d(TAG, "onDraw: 5 OK");
             zadnjiY = zadnjiY + proredStavki;
         }
     }
@@ -339,6 +365,11 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
         sirinaTexta = sirinaIspisa * 10 / 100;
         Rect rectKol = new Rect(lijevo, zadnjiY, lijevo + sirinaTexta, zadnjiY + proredStavki);
         drawRectText("Količina", canvas, rectKol);
+
+        Paint p = new Paint();
+        p.setColor(Color.BLACK);
+        canvas.drawLine(leftMargin, zadnjiY, sirina - rightMargin, zadnjiY, p);
+        canvas.drawLine(leftMargin, zadnjiY + proredStavki, sirina - rightMargin, zadnjiY + proredStavki, p);
 
 
         zadnjiY = zadnjiY + proredStavki;

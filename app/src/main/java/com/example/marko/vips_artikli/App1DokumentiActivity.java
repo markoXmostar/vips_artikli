@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
+import android.print.PrintAttributes;
 import android.print.PrintManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -122,9 +123,9 @@ public class App1DokumentiActivity extends AppCompatActivity {
                 final App1Dokumenti selektiranDok=(App1Dokumenti) adapterView.getItemAtPosition(i);
                 final CharSequence akcije[];
                 if (selektiranDok.getDatumSinkronizacije() == null) {
-                    akcije = new CharSequence[]{"Izbriši", "Sinkroniziraj", "Prikaži detalje", "Printaj"};
+                    akcije = new CharSequence[]{"Izbriši dokument!", "Sinkroniziraj", "Ispis / detalji dokumenta"};
                 } else {
-                    akcije = new CharSequence[]{"Izbriši", "Prikaži detalje", "Printaj"};
+                    akcije = new CharSequence[]{"Izbriši dokument!", "Ispis / detalji dokumenta"};
                 }
                 //final CharSequence akcije[] = new CharSequence[] {"Izbriši", "Sinkroniziraj", "Prikaži detalje"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(App1DokumentiActivity.this);
@@ -161,12 +162,9 @@ public class App1DokumentiActivity extends AppCompatActivity {
                                 ucitajDokumente();
                                 //Toast.makeText(App1DokumentiActivity.this,akcije[which].toString(),Toast.LENGTH_LONG).show();
                                 break;
-                            case 2:
-                                //Detalji
-                                Toast.makeText(App1DokumentiActivity.this,akcije[which].toString(),Toast.LENGTH_LONG).show();
-                                break;
 
-                            case 3:
+
+                            case 2:
                                 //printaj
 
                                 List<App1Dokumenti> spisakDokZaPrint = getDokumentZaSyncIliPrintanje(selektiranDok);
@@ -195,7 +193,13 @@ public class App1DokumentiActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
             String jobName = "DocumentName.pdf";
-            printManager.print(jobName, new MyPrintDocumentAdapter(this, dokumentZaPrint), null);
+            PrintAttributes printAttrs = new PrintAttributes.Builder().
+                    setColorMode(PrintAttributes.COLOR_MODE_MONOCHROME).
+                    setMediaSize(PrintAttributes.MediaSize.ISO_A4.asPortrait()).
+                    setMinMargins(PrintAttributes.Margins.NO_MARGINS).
+                    build();
+
+            printManager.print(jobName, new MyPrintDocumentAdapter(this, dokumentZaPrint), printAttrs);
         } else {
             Toast.makeText(App1DokumentiActivity.this, "Nije podržano na ovome sistemu!!! (Android APIlevel > 19 - KitKat)", Toast.LENGTH_LONG).show();
         }

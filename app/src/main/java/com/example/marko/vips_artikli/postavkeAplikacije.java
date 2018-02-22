@@ -28,10 +28,10 @@ public final class postavkeAplikacije {
     private void procitajPostavke() {
         SharedPreferences settings = activity.getSharedPreferences(MainActivity.APP_POSTAVKE, 0);
         vrstaPretrageArtikala = settings.getInt("vrstaPretrageArtikala", 0);
-        vrstaAplikacije = settings.getInt("vrstaAplikacije", 1);
-        defoltnaKolicina = settings.getFloat("defoltnaKolicina", (float) 0.0);
+        vrstaAplikacije = settings.getInt("vrstaAplikacije", 0);
+        defoltnaKolicina = settings.getFloat("defoltnaKolicina", (float) 1.0);
         brojDecimala = settings.getInt("brojDecimala", 2);
-        brziUnosArtikala = settings.getBoolean("brziUnosArtikala", false);
+        brziUnosArtikala = settings.getBoolean("brziUnosArtikala", true);
         tipDokumenta = settings.getLong("tipDokumenta", 0);
         podtipDokumenta = settings.getLong("podtipDokumenta", 0);
         dopustenaIzmjenaTipaDokumenta = settings.getBoolean("dopustenaIzmjenaTipaDokumenta", true);
