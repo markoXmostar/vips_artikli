@@ -134,6 +134,13 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //new JSON_task(this).execute("http://vanima.net:8099/api/artikli?d=2");
+        //provjeriti da li je upisan DLT_ID ako nije upaliti login screen i preuzeti sa servera podatke
+        if (myPostavke.getDlt_id() == 0) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivityForResult(intent, 999);
+        } else {
+            DJELATNIK = myPostavke.getDlt_id();
+        }
     }
 
 
@@ -418,6 +425,19 @@ public class MainActivity extends AppCompatActivity
             }
 
         }
+        if (requestCode == 999) {
+            //LOGIN
+            if (resultCode == RESULT_OK) {
+                Log.d(TAG, "onActivityResult: ZATVARAM LOGIN---OK");
+                int result = data.getIntExtra("dlt_id", 0);
+                this.DJELATNIK = result;
+
+            } else {
+                Log.d(TAG, "onActivityResult: ZATVARAM LOGIN---CANCEL");
+                this.DJELATNIK = 0;
+
+            }
+        }
     }
 
     private void procitajPostavke() {
@@ -453,7 +473,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public class UrlTabele {
+    public static class UrlTabele {
         public String NazivTabele;
         public String urlTabele;
         public boolean ZavrsenaSyncronizacija;
@@ -538,7 +558,12 @@ public class MainActivity extends AppCompatActivity
             tbl.ZavrsenaSyncronizacija = false;
 
             brojac += 1;
-            new JSON_recive(this, tbl, "").execute(tbl.urlTabele, tbl.Akcija);
+            new JSON_recive(this, tbl, "") {
+                @Override
+                public void onResponseReceived(int result) {
+
+                }
+            }.execute(tbl.urlTabele, tbl.Akcija);
             /*
             try {
 

@@ -11,7 +11,7 @@ import android.util.Log;
 public final class postavkeAplikacije {
     private static String TAG = "postavke";
 
-    private int vrstaPretrageArtikala, vrstaAplikacije, brojDecimala;
+    private int vrstaPretrageArtikala, vrstaAplikacije, brojDecimala, dlt_id;
     private float defoltnaKolicina;
     private long tipDokumenta, podtipDokumenta;
 
@@ -36,6 +36,7 @@ public final class postavkeAplikacije {
         podtipDokumenta = settings.getLong("podtipDokumenta", 0);
         dopustenaIzmjenaTipaDokumenta = settings.getBoolean("dopustenaIzmjenaTipaDokumenta", true);
         svirajUpozorenja = settings.getBoolean("svirajUpozorenja", true);
+        dlt_id = settings.getInt("dlt_id", 0);
         Log.d(TAG, "procitajPostavke: vrstaPretrage=" + vrstaPretrageArtikala);
         Log.d(TAG, "procitajPostavke: vrstaAplikacije=" + vrstaAplikacije);
         Log.d(TAG, "procitajPostavke: defoltnaKolicina=" + defoltnaKolicina);
@@ -45,7 +46,12 @@ public final class postavkeAplikacije {
         Log.d(TAG, "procitajPostavke: podtipDokumenta=" + podtipDokumenta);
         Log.d(TAG, "procitajPostavke: dopustenaIzmjenaTipaDokumenta=" + dopustenaIzmjenaTipaDokumenta);
         Log.d(TAG, "procitajPostavke: svirajUpozorenja=" + svirajUpozorenja);
+        Log.d(TAG, "procitajPostavke: dlt_id=" + dlt_id);
 
+    }
+
+    public int getDlt_id() {
+        return dlt_id;
     }
 
     public boolean isDopustenaIzmjenaTipaDokumenta() {
@@ -84,6 +90,12 @@ public final class postavkeAplikacije {
         return podtipDokumenta;
     }
 
+    public void snimiDLT_ID(int value) {
+        SharedPreferences settings = activity.getSharedPreferences(MainActivity.APP_POSTAVKE, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt("dlt_id", value);
+        editor.commit();
+    }
 
     public void snimiTipDokumenta(long value) {
         SharedPreferences settings = activity.getSharedPreferences(MainActivity.APP_POSTAVKE, 0);
@@ -145,6 +157,24 @@ public final class postavkeAplikacije {
         SharedPreferences settings = activity.getSharedPreferences(MainActivity.APP_POSTAVKE, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("svirajUpozorenja", value);
+        editor.commit();
+    }
+
+    public void snimiSvePostavke(int dlt_id, long tipDokumenta, long podtipDokumenta, int vrstaAplikacije, int vrstaPretrageArtikala, boolean brziUnosArtikala, float defoltnaKolicina,
+                                 int brojDecimala, boolean dopustenaIzmjenaTipaDokumenta, boolean svirajUpozorenja) {
+        SharedPreferences settings = activity.getSharedPreferences(MainActivity.APP_POSTAVKE, 0);
+        SharedPreferences.Editor editor = settings.edit();
+
+        editor.putInt("dlt_id", dlt_id);
+        editor.putLong("tipDokumenta", tipDokumenta);
+        editor.putLong("podtipDokumenta", podtipDokumenta);
+        editor.putInt("vrstaAplikacije", vrstaAplikacije);
+        editor.putInt("vrstaPretrageArtikala", vrstaPretrageArtikala);
+        editor.putBoolean("brziUnosArtikala", brziUnosArtikala);
+        editor.putFloat("defoltnaKolicina", defoltnaKolicina);
+        editor.putInt("brojDecimala", brojDecimala);
+        editor.putBoolean("dopustenaIzmjenaTipaDokumenta", dopustenaIzmjenaTipaDokumenta);
+        editor.putBoolean("svirajUpozorenja", svirajUpozorenja);
         editor.commit();
     }
 }

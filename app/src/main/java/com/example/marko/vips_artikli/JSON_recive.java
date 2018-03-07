@@ -1,5 +1,6 @@
 package com.example.marko.vips_artikli;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -24,11 +25,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.example.marko.vips_artikli.MainActivity.myDATABASE;
 import static com.example.marko.vips_artikli.MainActivity.zadnjaSinkronizacijaID;
 
-/**
- * Created by marko on 1.11.2017.
- */
-
-public class JSON_recive extends AsyncTask<String, String, String> {
+public abstract class JSON_recive extends AsyncTask<String, String, String> implements ClientIF {
 
     public static final String TAG = "JSON_task";
 
@@ -39,11 +36,11 @@ public class JSON_recive extends AsyncTask<String, String, String> {
     private String porukaNaEkranu = null;
 
         private ProgressDialog progressDialog;
-        private MainActivity myMainActivity;
+    private Activity myMainActivity;
 
         Date vrijeme1,vrijeme2;
 
-    public JSON_recive(MainActivity activity, MainActivity.UrlTabele _myTbl, String poruka) {
+    public JSON_recive(Activity activity, MainActivity.UrlTabele _myTbl, String poruka) {
             myMainActivity=activity;
             progressDialog = new ProgressDialog(activity);
             myTbl = _myTbl;
@@ -110,7 +107,7 @@ public class JSON_recive extends AsyncTask<String, String, String> {
             super.onPostExecute(result);
 
             JSONObject jObject = null;
-
+            int rezultat = 0;
             switch (tipPodataka) {
                 case "artikli":
                     result = "{\"Artikli\":" + result + ",\"ResponseStatus\":{}}";
@@ -441,6 +438,48 @@ public class JSON_recive extends AsyncTask<String, String, String> {
                         e.printStackTrace();
                     }
                     break;
+
+                case "prijavaKorisnika":
+                    //result = "{\"prijavaKorisnika\":" + result + ",\"ResponseStatus\":{}}";
+
+                    Log.d(TAG, "onPostExecuteXXX: " + result);
+                    jObject = null;
+                    try {
+                        jObject = new JSONObject(result);
+                        //String _prijavaKorisnika = jObject.getString("prijavaKorisnika");
+                        //JSONArray arr = new JSONArray(_prijavaKorisnika);
+                        //Log.d(TAG, "onPostExecute: BROJ ZAPISA PRIJAVE JE: " +arr.length());
+                        JSONObject myPostavke = jObject;
+                        int dlt_id = myPostavke.optInt("id", 0);
+                        int vrstaAplikacije = myPostavke.optInt("", 0);
+                        int vrstaPretrage = myPostavke.optInt("", 0);
+                        boolean dopustenaIzmjenaTipaDokumenta = myPostavke.optBoolean("dopustenaIzmjenaTipaDokumenta", false);
+                        long zadaniTipDokumenta = myPostavke.optLong("zadaniTipDokumenta", 0);
+                        long zadaniPodtipDokumenta = myPostavke.optLong("zadaniPodtipDokumenta", 0);
+                        boolean brziUnosPodataka = myPostavke.optBoolean("brziUnosPodataka", true);
+                        double zadanaKolicinaArtikala = myPostavke.optDouble("zadanaKolicinaArtikala", 1);
+                        boolean zvukoviUpozorenja = myPostavke.optBoolean("zvukoviUpozorenja", true);
+                        int brojDecimala = myPostavke.optInt("brojDecimala", 2);
+
+                        if (dlt_id > 0) {
+
+                            postavkeAplikacije postavke = new postavkeAplikacije(myMainActivity);
+                            postavke.snimiDLT_ID(dlt_id);
+                            //postavke.snimiSvePostavke(dlt_id,zadaniTipDokumenta,zadaniPodtipDokumenta,vrstaAplikacije,vrstaPretrage,brziUnosPodataka,
+                            //        (float)zadanaKolicinaArtikala,brojDecimala,dopustenaIzmjenaTipaDokumenta,zvukoviUpozorenja);
+                            Log.d(TAG, "onPostExecute: URL PRIJAVE: " + myTbl.urlTabele);
+                            Log.d(TAG, "onPostExecute: SNIMAM DLT_ID: " + dlt_id);
+                            rezultat = dlt_id;
+                        }
+
+                        vrijeme2 = new Date(System.currentTimeMillis());
+                        long different = vrijeme2.getTime() - vrijeme1.getTime();
+                        Log.d(TAG, "onPostExecute: VRIJEME UČITAVANJA S INTERNETA I UPISA U BAZU JE :" + different + "ms");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 default:
 
             }
@@ -450,10 +489,18 @@ public class JSON_recive extends AsyncTask<String, String, String> {
             myTbl.ZavrsenaSyncronizacija = true;
             Log.d(TAG, "onPostExecute: ZOVEM UPDATE PODATKA ZAVRŠENO je promjenjeno u ->" + myTbl.ZavrsenaSyncronizacija);
             //myMainActivity.updateSyncTabele(tipPodataka,true);
-            myMainActivity.getLOG();
             progressDialog.dismiss();
+            if (!tipPodataka.equals("prijavaKorisnika")) {
+                MainActivity mainActivity = (MainActivity) myMainActivity;
+                mainActivity.getLOG();
+            } else {
+                onResponseReceived(rezultat);
+            }
+
 
         }
+
+    public abstract void onResponseReceived(int result);
 
     private void UpisiArtikleUBazu(ArrayList<Artikl> Lista) {
 //prvo otvori ili kreiraj bazu komitenata
