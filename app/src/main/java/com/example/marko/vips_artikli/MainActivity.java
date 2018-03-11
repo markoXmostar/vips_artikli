@@ -1,6 +1,7 @@
 package com.example.marko.vips_artikli;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -20,7 +21,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -96,6 +99,10 @@ public class MainActivity extends AppCompatActivity
         spisakSyncTabela = new ArrayList<UrlTabele>();
 
         procitajPostavke();
+        if (!myPostavke.getPin().equals("")) {
+            Intent intent = new Intent(this, PinActivity.class);
+            startActivityForResult(intent, 998);
+        }
 
         postaviTabeleZaSync();
         getLOG();
@@ -110,7 +117,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 napraviSinkronizacijuDownload(view);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
             }
         });
@@ -438,6 +447,18 @@ public class MainActivity extends AppCompatActivity
 
             }
         }
+        if (requestCode == 998) {
+            //LOGIN
+            if (resultCode == RESULT_OK) {
+                Log.d(TAG, "onActivityResult: ZATVARAM PIN ACTIVITY---OK");
+
+            } else {
+                Log.d(TAG, "onActivityResult: ZATVARAM PIN ACTIVITY---CANCEL");
+                finish();
+                android.os.Process.killProcess(android.os.Process.myPid());
+
+            }
+        }
     }
 
     private void procitajPostavke() {
@@ -462,15 +483,60 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, RegistriActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_send) {
-
+            sendAllDokuments(this);
         } else if (id== R.id.nav_recive){
-
             fabUpdatePodataka.callOnClick();
-
+        } else if (id == R.id.nav_odjava) {
+            myPostavke.snimiDLT_ID(0);
+            brisiSvePodatke();
+            recreate();
+        } else if (id == R.id.nav_setings) {
+            Intent intent = new Intent(this, PostavkeActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_security) {
+            Intent intent = new Intent(this, PinActivity.class);
+            startActivityForResult(intent, 998);
         }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void recreate() {
+        if (android.os.Build.VERSION.SDK_INT >= 11) {
+            super.recreate();
+        } else {
+            startActivity(getIntent());
+            finish();
+        }
+    }
+
+    public void brisiSvePodatke() {
+        //
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Brišem podatke sa uređaja. Molim pričekajte!");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        deleteAllTable(this, "jmj");
+        deleteAllTable(this, "tip_dokumenta");
+        deleteAllTable(this, "podtip_dokumenta");
+        deleteAllTable(this, "nacin_placanja");
+        deleteAllTable(this, "grupa_artikala");
+        deleteAllTable(this, "podgrupa_artikala");
+        deleteAllTable(this, "artikli");
+        deleteAllTable(this, "artiklbarcode");
+        deleteAllTable(this, "artikljmj");
+        deleteAllTable(this, "artiklatribut");
+        deleteAllTable(this, "komitenti");
+        deleteAllTable(this, "PjKomitenta");
+        deleteAllTable(this, "dokumenti1");
+        deleteAllTable(this, "stavke1");
+        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
+        rekreirajLogTabelu(myDB);
+        progressDialog.dismiss();
+
     }
 
     public static class UrlTabele {
@@ -550,7 +616,7 @@ public class MainActivity extends AppCompatActivity
         Snackbar.make(view, "Radim download podataka molim pričekajte", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
 
-        Log.d(TAG, "napraviSinkronizacijuDownload: BROJ ABEA ZA SYNC=" + spisakSyncTabela.size());
+        Log.d(TAG, "napraviSinkronizacijuDownload: BROJ TABELA ZA SYNC=" + spisakSyncTabela.size());
         int brojac = 0;
         int ukupnoZaSync = spisakSyncTabela.size();
         for (UrlTabele tbl : spisakSyncTabela) {
@@ -1330,6 +1396,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     public static boolean sendAllDokuments(Activity a) {
+        ProgressDialog pd = new ProgressDialog(a);
+        pd.setMessage("Šaljem podatke, molim pričekajte!");
+        pd.setCancelable(false);
+        pd.show();
+
         boolean odgovor = false;
         List<App1Dokumenti> spisakSvihDokumenta = MainActivity.getListaDokumenta(a);
         List<App1Dokumenti> spisakDokumentaZaSync = new ArrayList<App1Dokumenti>();
@@ -1359,6 +1430,8 @@ public class MainActivity extends AppCompatActivity
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+
+        pd.dismiss();
         return odgovor;
     }
 

@@ -53,4 +53,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="odjavi_i_izbrisi_podatke">Odjavi i izbriši podatke</string>
+    <string name="sigurnost_aplikacije">Sigurnost aplikacije</string>
+    <string name="postavke_aplikacije">Postavke aplikacije</string>
 </resources>

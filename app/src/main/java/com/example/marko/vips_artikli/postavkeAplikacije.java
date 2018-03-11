@@ -14,6 +14,7 @@ public final class postavkeAplikacije {
     private int vrstaPretrageArtikala, vrstaAplikacije, brojDecimala, dlt_id;
     private float defoltnaKolicina;
     private long tipDokumenta, podtipDokumenta;
+    private String pin;
 
 
     private boolean brziUnosArtikala, dopustenaIzmjenaTipaDokumenta, svirajUpozorenja;
@@ -37,6 +38,8 @@ public final class postavkeAplikacije {
         dopustenaIzmjenaTipaDokumenta = settings.getBoolean("dopustenaIzmjenaTipaDokumenta", true);
         svirajUpozorenja = settings.getBoolean("svirajUpozorenja", true);
         dlt_id = settings.getInt("dlt_id", 0);
+        pin = settings.getString("pin", "1234");
+
         Log.d(TAG, "procitajPostavke: vrstaPretrage=" + vrstaPretrageArtikala);
         Log.d(TAG, "procitajPostavke: vrstaAplikacije=" + vrstaAplikacije);
         Log.d(TAG, "procitajPostavke: defoltnaKolicina=" + defoltnaKolicina);
@@ -47,7 +50,11 @@ public final class postavkeAplikacije {
         Log.d(TAG, "procitajPostavke: dopustenaIzmjenaTipaDokumenta=" + dopustenaIzmjenaTipaDokumenta);
         Log.d(TAG, "procitajPostavke: svirajUpozorenja=" + svirajUpozorenja);
         Log.d(TAG, "procitajPostavke: dlt_id=" + dlt_id);
+        Log.d(TAG, "procitajPostavke: pin=" + pin);
+    }
 
+    public String getPin() {
+        return pin;
     }
 
     public int getDlt_id() {
