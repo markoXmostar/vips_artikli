@@ -23,7 +23,8 @@ android {
 dependencies {
     //noinspection GradleCompatible //ovo se samo dodalo poslije greške da nešto nije kompatibilno
     implementation 'com.android.support:support-v4:26.0.2'
-    implementation 'info.androidhive:barcode-reader:1.1.5' //ovo sam naknadno dodao
+    implementation 'info.androidhive:barcode-reader:1.1.5' //ovo sam naknadno dodao za barcode reader
+    implementation 'com.google.android.gms:play-services-vision:11.0.2' //ovo sam naknadno dodao za barcode reader
     implementation 'com.android.support:support-annotations:26.1.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {

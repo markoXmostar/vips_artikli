@@ -160,11 +160,15 @@ public class PostavkeActivity extends AppCompatActivity {
         sppinerVrstaPretrage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 VrstaPretrageArtikala vrstaPretrageArtikala = VrstaPretrageArtikala.values()[position];
+
                 int value = vrstaPretrageArtikala.ordinal();
                 if (value != myPostavke.getVrstaPretrageArtikala()) {
                     myPostavke.snimiVrstuPretrageArtikala(value);
                     Log.d(TAG, "onItemSelected: SNIMI VrstaPretrageArtikala=" + value);
                 }
+
+                //myPostavke.snimiVrstuPretrageArtikala(position);
+                Log.d(TAG, "onItemSelected: SNIMI VrstaPretrageArtikala=" + position);
                 //Toast.makeText(PostavkeActivity.this, value.toString(), Toast.LENGTH_LONG).show();
             } // to close the onItemSelected
 
@@ -173,6 +177,7 @@ public class PostavkeActivity extends AppCompatActivity {
             }
         });
 
+        sppinerVrstaPretrage.setSelection(getIndex_VrstaPretrageArtikla(myPostavke.getVrstaPretrageArtikala()));
 
         sbarKolicina.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 

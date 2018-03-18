@@ -145,24 +145,23 @@
         app:layout_constraintStart_toEndOf="@+id/tvRokTrajanja_App1UnosStavke"
         app:layout_constraintTop_toBottomOf="@+id/txtArtikal_App1UnosStavke" />
 
-    <EditText
-        android:id="@+id/etxtNapomena_App1UnosStavke"
+    <fragment
+        android:id="@+id/barcode_fragment"
+        android:name="info.androidhive.barcode.BarcodeReader"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:ems="10"
         android:gravity="left|top"
-        android:hint="@string/Napomena"
-        android:inputType="text"
-        android:minHeight="100dp"
-        android:singleLine="false"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtKolicina_App1UnosStavke" />
+        app:layout_constraintTop_toBottomOf="@+id/txtKolicina_App1UnosStavke"
+        app:auto_focus="true"
+        app:use_flash="false" />
+
 
     <LinearLayout
         android:id="@+id/linearLayout"

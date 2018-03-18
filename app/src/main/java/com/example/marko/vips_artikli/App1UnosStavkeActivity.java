@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -18,9 +19,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.vision.barcode.*;
+import com.google.android.gms.vision.barcode.Barcode;
+
 import java.util.List;
 
-public class App1UnosStavkeActivity extends AppCompatActivity {
+import info.androidhive.barcode.BarcodeReader;
+
+public class App1UnosStavkeActivity extends AppCompatActivity implements BarcodeReader.BarcodeReaderListener {
     static final String TAG = "UNOS STAVKE";
     private int varijantaPretrageArtikala;
     /*
@@ -28,13 +34,14 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
     1-Pretraga po barcodu, BEZ TIPKOVNICE
     2-Kamera, čitanje barcoda
      */
+    private BarcodeReader barcodeReader;
 
     TextView txtArtikl;
     TextView txtRokTrajanja;
     TextView tvRokTrajanja;
     TextView txtJmj;
     EditText txtKolicina;
-    EditText txtNapomena;
+    //EditText txtNapomena;
     myEditTextNoKeyboard txtBarcode;
     TextView tvBarcode;
 
@@ -44,6 +51,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
 
     List<ArtiklJmj> spisakJMJ = null;
 
+
     private void setIzabraniArtikl(Artikl _izabraniArtikl) {
         izabraniArtikl = _izabraniArtikl;
         izabraniAtribut = null;
@@ -51,7 +59,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
 
         if (izabraniArtikl==null){
             txtKolicina.setEnabled(false);
-            txtNapomena.setEnabled(false);
+            //txtNapomena.setEnabled(false);
             txtRokTrajanja.setEnabled(false);
             txtJmj.setEnabled(false);
             txtRokTrajanja.setVisibility(View.GONE);
@@ -62,7 +70,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             txtArtikl.setText(izabraniArtikl.getNaziv());
             Log.d(TAG, "setIzabraniArtikl: greška1" + izabraniArtikl.getNaziv() + "/ ima atribut =" + izabraniArtikl.isImaRokTrajanja());
             txtKolicina.setEnabled(true);
-            txtNapomena.setEnabled(true);
+            //txtNapomena.setEnabled(true);
 
             if(izabraniArtikl.isImaRokTrajanja()){
                 txtRokTrajanja.setEnabled(true);
@@ -134,7 +142,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         if (myPostavke.getDefoltnaKolicina() > 0) {
             txtKolicina.setText(Float.toString(myPostavke.getDefoltnaKolicina()));
         }
-        txtNapomena=(EditText) findViewById(R.id.etxtNapomena_App1UnosStavke);
+        //txtNapomena=(EditText) findViewById(R.id.etxtNapomena_App1UnosStavke);
+        barcodeReader = (BarcodeReader) getSupportFragmentManager().findFragmentById(R.id.barcode_fragment);
 
         txtBarcode = (myEditTextNoKeyboard) findViewById(R.id.txtBarcode_App1UnosStavke);
 
@@ -151,6 +160,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                 //pretraga normalna
                 txtBarcode.setVisibility(View.GONE);
                 tvBarcode.setVisibility(View.GONE);
+                barcodeReader.getView().setVisibility(View.INVISIBLE);
                 txtArtikl.setEnabled(true);
                 break;
             case 1:
@@ -158,10 +168,15 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                 txtBarcode.setVisibility(View.VISIBLE);
                 tvBarcode.setVisibility(View.VISIBLE);
                 txtArtikl.setEnabled(false);
+                barcodeReader.getView().setVisibility(View.INVISIBLE);
                 break;
             case 2:
                 //ZA KAMERU NAMIJENJENO
-                Toast.makeText(App1UnosStavkeActivity.this, "NIJE IMPLEMENTIRANO!", Toast.LENGTH_LONG).show();
+                barcodeReader.getView().setVisibility(View.VISIBLE);
+                txtBarcode.setVisibility(View.GONE);
+                tvBarcode.setVisibility(View.GONE);
+                txtArtikl.setEnabled(false);
+                //Toast.makeText(App1UnosStavkeActivity.this, "NIJE IMPLEMENTIRANO!", Toast.LENGTH_LONG).show();
                 break;
         }
         setIzabraniArtikl(null);
@@ -333,7 +348,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                             izabraniAtribut.getAtributNaziv1(),
                             izabraniAtribut.getAtributVrijednost1(),
                             myKolicina,
-                            txtNapomena.getText().toString());
+                            //txtNapomena.getText().toString());
+                            "");
                 }else{
                     Log.d(TAG, "onClick: IMA ROK TRAJANJA FALSE");
                     newStavka = new App1Stavke(-1, idDokumenta,
@@ -346,7 +362,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                             null,
                             null,
                             myKolicina,
-                            txtNapomena.getText().toString());
+                            //txtNapomena.getText().toString());
+                            "");
                 }
 
                 if (myPostavke.isBrziUnosArtikala()) {
@@ -375,6 +392,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             }
         });
     }
+
 
     /*
         private void svirajUpozorenje() {
@@ -411,5 +429,65 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+    @Override
+    public void onScanned(final Barcode barcode) {
+        Log.e(TAG, "onScanned: " + barcode.displayValue);
+        barcodeReader.playBeep();
+        barcodeReader.pauseScanning();
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //Toast.makeText(getApplicationContext(), "Barcode: " + barcode.displayValue, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        String barcodeStr = barcode.displayValue;
+        Log.d(TAG, "onKey: BARCODE=" + barcodeStr);
+        Artikl myArt = MainActivity.getArtiklByBarcode(App1UnosStavkeActivity.this, barcodeStr);
+        if (myArt != null) {
+            Log.d(TAG, "onKey: ARTIKL NAĐEN!!");
+            setIzabraniArtikl(myArt);
+            txtKolicina.setText("1.00");
+            txtKolicina.requestFocus();
+
+
+        } else {
+            Log.d(TAG, "onKey: ARTIKL NIJE NAĐEN!!");
+            MainActivity.svirajUpozorenje(myPostavke);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("GREŠKA!");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Whatever...
+                    barcodeReader.resumeScanning();
+                }
+            }).show();
+
+            //}
+        }
+    }
+
+    @Override
+    public void onScannedMultiple(List<Barcode> barcodes) {
+
+    }
+
+    @Override
+    public void onBitmapScanned(SparseArray<Barcode> sparseArray) {
+
+    }
+
+    @Override
+    public void onScanError(String errorMessage) {
+
+    }
+
+    @Override
+    public void onCameraPermissionDenied() {
+        Toast.makeText(getApplicationContext(), "Camera permission denied!", Toast.LENGTH_LONG).show();
     }
 }
