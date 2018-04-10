@@ -38,6 +38,9 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String TAG="Glavni MainActivity";
+
+    public static final int UREDJAJ = 1; //ovo poslije treba doraditi
+
     public static final String myDATABASE="VIPS.db";
     public static final String SqlLiteDateFormat="yyyy-MM-dd HH:mm:ss";
     public static String DatumVrijemeFormat = "dd.MM.yyyy HH:mm:ss";
@@ -607,6 +610,16 @@ public class MainActivity extends AppCompatActivity
         akcija = "komitentpj";
         urlString = url + "idnazivrid" + "?d=" + DJELATNIK + "&t=" + akcija;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "PjKomitenta"));
+
+        if (myPostavke.getVrstaAplikacije() == 0 || myPostavke.getVrstaAplikacije() == 2) {
+            akcija = "dokumentizaglavlja";
+            urlString = url + akcija + "?d=" + DJELATNIK + "&u=" + UREDJAJ + "&p=" + myPostavke.getPodtipDokumenta();
+            spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "dokumenti2"));
+
+            akcija = "dokumentistavke";
+            urlString = url + akcija + "?d=" + DJELATNIK + "&u=" + UREDJAJ + "&p=" + myPostavke.getPodtipDokumenta();
+            spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "stavke2"));
+        }
 
     }
 

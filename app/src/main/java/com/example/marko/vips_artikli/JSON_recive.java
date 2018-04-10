@@ -79,7 +79,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setConnectTimeout(5000); //5 sekundi
-                connection.setReadTimeout(30000); //5 sekundi
+                connection.setReadTimeout(30000); //30 sekundi
                 connection.connect();
 
                 int statusCode = connection.getResponseCode();
@@ -466,6 +466,39 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    break;
+
+                case "dokumentizaglavlja":
+                    result = "{\"dokumentizaglavlja\":" + result + ",\"ResponseStatus\":{}}";
+
+                    Log.d(TAG, "onPostExecute: " + result);
+                    jObject = null;
+                    try {
+                        jObject = new JSONObject(result);
+                        String _dokumenti2 = jObject.getString("dokumentizaglavlja");
+                        JSONArray arr = new JSONArray(_dokumenti2);
+                        ArrayList<App2Dokumenti> ListaDokumenti2 = new ArrayList<App2Dokumenti>();
+                        for (int i = 0; i < arr.length(); i++) {
+                            JSONObject myDok2 = arr.getJSONObject(i);
+                            //{"id":null,"kasaId":null,"podtipId":51,"pjFrmId":1,"pjKmtId":15595,"datumDokumenta":"2018-04-05T00:00:00","komercijalistId":null,"nacinPlacanjaId":1,"opaska":"","vipsId":501923}
+                            App2Dokumenti _dok2 = new App2Dokumenti(myDok2.optLong("id", 0),
+                                    myDok2.optLong("kasaId", 0), myDok2.optLong("podtipId", 0), myDok2.optLong("pjFrmId", 0), myDok2.optLong("pjKmtId", 0),
+                                    myDok2.optString("datumDokumenta", "1.1.1990"), myDok2.optLong("komercijalistId", 0), myDok2.optLong("nacinPlacanjaId", 0),
+                                    myDok2.optString("opaska", ""), myDok2.optLong("vipsId", 0));
+                            ListaDokumenti2.add(_dok2);
+                        }
+                        Log.d(TAG, "onPostExecute: BROJ Dokumenata2 =" + ListaDokumenti2.size());
+                        UpisiDokumente2UBazu(ListaDokumenti2);
+                        vrijeme2 = new Date(System.currentTimeMillis());
+                        long different = vrijeme2.getTime() - vrijeme1.getTime();
+                        Log.d(TAG, "onPostExecute: VRIJEME UČITAVANJA S INTERNETA I UPISA U BAZU JE :" + different + "ms");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case "dokumentistavke":
+
                     break;
 
                 case "prijavaKorisnika":
@@ -940,6 +973,64 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
         }
     }
 
+    private void UpisiDokumente2UBazu(ArrayList<App2Dokumenti> Lista) {
+        boolean greska = false;
+        String greskaStr = "";
+        String myTabela = myTbl.NazivTabele;
+        try {
+            Log.d(TAG, "Otvaram bazu" + myTabela);
+            SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+            Log.d(TAG, "UpisiUBazu: brišem tabelu " + myTabela + " ukoliko postoji");
+            myDB.execSQL("DROP TABLE IF EXISTS " + myTabela + ";");
+            Log.d(TAG, "Kreiram tabelu");
+            //{"id":null,"kasaId":null,"podtipId":51,"pjFrmId":1,"pjKmtId":15595,"datumDokumenta":"2018-04-05T00:00:00","komercijalistId":null,"nacinPlacanjaId":1,"opaska":"","vipsId":501923}
+            myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
+                    "_id long, " +
+                    "kasaId long, " +
+                    "podtipId long, " +
+                    "pjFrmId long, " +
+                    "pjKmtId long, " +
+                    "datumDokumenta datetime, " +
+                    "datumSinkronizacije datetime, " +
+                    "komercijalistaId long," +
+                    "nacinPlacanjaId long," +
+                    "vipsId long, " +
+                    "opaska VARCHAR);");
+
+            Log.d(TAG, "Brišem sve iz tabele " + myTabela);
+            myDB.execSQL("DELETE FROM " + myTabela + ";");
+            for (int i = 0; i < Lista.size(); i++) {
+                App2Dokumenti myDok2 = Lista.get(i);
+                myDB.execSQL("INSERT INTO " + myTabela + " (_id, kasaId, podtipId, pjFrmId, pjKmtId, datumDokumenta, komercijalistaId, nacinPlacanjaId, vipsId, opaska) VALUES (" +
+                        myDok2.getId() + "," +
+                        myDok2.getKasaId() + "," +
+                        myDok2.getPodtipId() + "," +
+                        myDok2.getPjFrmId() + "," +
+                        myDok2.getPjKmtId() + "," +
+                        myDok2.getDatumDokumenta() + "," +
+                        myDok2.getKomercijalistaId() + "," +
+                        myDok2.getNacinPlacanjaId() + "," +
+                        myDok2.getVipsId() + ",'" +
+                        myDok2.getOpaska() + "');");
+
+            }
+            Log.d(TAG, "Gotovo " + myTabela);
+            myDB.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            greskaStr = e.getMessage();
+            greska = true;
+        } finally {
+            if (greska) {
+                Log.d(TAG, "UpisiUBazu: " + greskaStr + "/" + myTabela);
+                UpisiLOG(1, greskaStr, myTabela, 0, -1);
+            } else {
+                greskaStr = "Uspješno upisano :" + Integer.toString(Lista.size()) + " podataka";
+                Log.d(TAG, "UpisiUBazu: " + greskaStr + "/" + myTabela);
+                UpisiLOG(0, greskaStr, myTabela, 0, Lista.size());
+            }
+        }
+    }
     private void UpisiNacinPlacanjaUBazu(ArrayList<NacinPlacanja> Lista) {
         boolean greska=false;
         String greskaStr="";

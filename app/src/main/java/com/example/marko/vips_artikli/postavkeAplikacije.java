@@ -54,6 +54,7 @@ public final class postavkeAplikacije {
     }
 
     public String getPin() {
+        //pin=password
         return pin;
     }
 
