@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity
     public static final String SqlLiteDateFormat="yyyy-MM-dd HH:mm:ss";
     public static String DatumVrijemeFormat = "dd.MM.yyyy HH:mm:ss";
     public static String DatumFormat="dd.MM.yyyy";
-    public static String BorisovFormatDatuma="yyyy-MM-ddTHH:mm:ss";
+    public static String BorisovFormatDatuma = "yyyy-MM-dd'T'HH:mm:ss";
 
     public static int DJELATNIK = 2;
     public static String url = "http://vanima.net:8099/api/";

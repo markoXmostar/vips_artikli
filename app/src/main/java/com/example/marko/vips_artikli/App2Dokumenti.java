@@ -1,5 +1,7 @@
 package com.example.marko.vips_artikli;
 
+import android.util.Log;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,15 +12,18 @@ import java.util.List;
  */
 
 public class App2Dokumenti {
-    //{"id":null,"kasaId":null,"podtipId":51,"pjFrmId":1,"pjKmtId":15595,"datumDokumenta":"2018-04-05T00:00:00","komercijalistId":null,"nacinPlacanjaId":1,"opaska":"","vipsId":501923}
+    private static final String TAG = "dokumenti2";
+    //{"id":null,"kasaId":null,"podtipId":51,"podtip":"Narudžbenica kupca - Pocket PC","pjFrmId":1,"pjFrm":"VP Čitluk","pjKmtId":15595,"pjKmt":"Sjedište","kmt":"Vanima d.o.o. - Mostar",
+    // "datumDokumenta":"2018-04-05T00:00:00","komercijalistId":null,"komercijalist":"","nacinPlacanjaId":1,"nacinPlacanja":"Virman","opaska":"","vipsId":501923}
     private long id, podtipId, kasaId, pjFrmId, pjKmtId, komercijalistaId, nacinPlacanjaId, vipsId;
     private Date datumDokumenta;
     private Date datumSinkronizacije;
-    private String opaska;
+    private String opaska, podtipNaziv, pjFrmNaziv, pjKmtNaziv, KmtNaziv, komercijalistNaziv, nacinPlacanjaNaziv;
 
     private List<App2Stavke> spisakStavki;
 
-    public App2Dokumenti(long id, long kasaId, long podtipId, long pjFrmId, long pjKmtId, String datumDokumenta, long komercijalistaId, long nacinPlacanjaId, String opaska, long vipsId) {
+    public App2Dokumenti(long id, long kasaId, long podtipId, String podtipNaziv, long pjFrmId, String pjFrmNaziv, long pjKmtId, String pjKmtNaziv, String kmtNaziv, String datumDokumenta,
+                         long komercijalistaId, String komercijalistNaziv, long nacinPlacanjaId, String nacinPlacanjaNaziv, String opaska, long vipsId) {
         this.id = id;
         this.podtipId = podtipId;
         this.kasaId = kasaId;
@@ -27,6 +32,13 @@ public class App2Dokumenti {
         this.komercijalistaId = komercijalistaId;
         this.nacinPlacanjaId = nacinPlacanjaId;
         this.vipsId = vipsId;
+        this.podtipNaziv = podtipNaziv;
+        this.pjFrmNaziv = pjFrmNaziv;
+        this.pjKmtNaziv = pjKmtNaziv;
+        this.KmtNaziv = kmtNaziv;
+        this.komercijalistNaziv = komercijalistNaziv;
+        this.nacinPlacanjaNaziv = nacinPlacanjaNaziv;
+        Log.d(TAG, "App2Dokumenti: StringDatum=" + datumDokumenta);
         SimpleDateFormat format = new SimpleDateFormat(MainActivity.BorisovFormatDatuma);
         Date date = null;
         try {
@@ -38,6 +50,54 @@ public class App2Dokumenti {
         this.datumSinkronizacije = datumSinkronizacije;
         this.opaska = opaska;
         this.spisakStavki = spisakStavki;
+    }
+
+    public String getPodtipNaziv() {
+        return podtipNaziv;
+    }
+
+    public void setPodtipNaziv(String podtipNaziv) {
+        this.podtipNaziv = podtipNaziv;
+    }
+
+    public String getPjFrmNaziv() {
+        return pjFrmNaziv;
+    }
+
+    public void setPjFrmNaziv(String pjFrmNaziv) {
+        this.pjFrmNaziv = pjFrmNaziv;
+    }
+
+    public String getPjKmtNaziv() {
+        return pjKmtNaziv;
+    }
+
+    public void setPjKmtNaziv(String pjKmtNaziv) {
+        this.pjKmtNaziv = pjKmtNaziv;
+    }
+
+    public String getKmtNaziv() {
+        return KmtNaziv;
+    }
+
+    public void setKmtNaziv(String kmtNaziv) {
+        KmtNaziv = kmtNaziv;
+    }
+
+    public String getKomercijalistNaziv() {
+        return komercijalistNaziv;
+    }
+
+    public void setKomercijalistNaziv(String komercijalistNaziv) {
+        this.komercijalistNaziv = komercijalistNaziv;
+    }
+
+    public String getNacinPlacanjaNaziv() {
+        return nacinPlacanjaNaziv;
+    }
+
+    public void setNacinPlacanjaNaziv(String nacinPlacanjaNaziv) {
+        this.nacinPlacanjaNaziv = nacinPlacanjaNaziv;
     }
 
     public List<App2Stavke> getSpisakStavki() {

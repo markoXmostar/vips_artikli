@@ -480,10 +480,19 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                         ArrayList<App2Dokumenti> ListaDokumenti2 = new ArrayList<App2Dokumenti>();
                         for (int i = 0; i < arr.length(); i++) {
                             JSONObject myDok2 = arr.getJSONObject(i);
-                            //{"id":null,"kasaId":null,"podtipId":51,"pjFrmId":1,"pjKmtId":15595,"datumDokumenta":"2018-04-05T00:00:00","komercijalistId":null,"nacinPlacanjaId":1,"opaska":"","vipsId":501923}
+                            //{"id":null,"kasaId":null,"podtipId":51,"podtip":"Narudžbenica kupca - Pocket PC","pjFrmId":1,"pjFrm":"VP Čitluk","pjKmtId":15595,"pjKmt":"Sjedište","kmt":"Vanima d.o.o. - Mostar",
+                            // "datumDokumenta":"2018-04-05T00:00:00","komercijalistId":null,"komercijalist":"","nacinPlacanjaId":1,"nacinPlacanja":"Virman","opaska":"","vipsId":501923}
+
+                            //App2Dokumenti(long id, long kasaId, long podtipId, String podtipNaziv, long pjFrmId, String pjFrmNaziv, long pjKmtId, String pjKmtNaziv,String kmtNaziv, String datumDokumenta,
+                            //  long komercijalistaId,String komercijalistNaziv, long nacinPlacanjaId, String nacinPlacanjaNaziv, String opaska, long vipsId)
                             App2Dokumenti _dok2 = new App2Dokumenti(myDok2.optLong("id", 0),
-                                    myDok2.optLong("kasaId", 0), myDok2.optLong("podtipId", 0), myDok2.optLong("pjFrmId", 0), myDok2.optLong("pjKmtId", 0),
-                                    myDok2.optString("datumDokumenta", "1.1.1990"), myDok2.optLong("komercijalistId", 0), myDok2.optLong("nacinPlacanjaId", 0),
+                                    myDok2.optLong("kasaId", 0),
+                                    myDok2.optLong("podtipId", 0), myDok2.optString("podtip", ""),
+                                    myDok2.optLong("pjFrmId", 0), myDok2.optString("pjFrm", ""),
+                                    myDok2.optLong("pjKmtId", 0), myDok2.optString("pjKmt", ""), myDok2.optString("kmt", ""),
+                                    myDok2.optString("datumDokumenta", "1.1.1990"),
+                                    myDok2.optLong("komercijalistId", 0), myDok2.optString("komercijalist", ""),
+                                    myDok2.optLong("nacinPlacanjaId", 0), myDok2.optString("nacinPlacanja", ""),
                                     myDok2.optString("opaska", ""), myDok2.optLong("vipsId", 0));
                             ListaDokumenti2.add(_dok2);
                         }
@@ -498,7 +507,48 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                     }
                     break;
                 case "dokumentistavke":
+                    result = "{\"dokumentistavke\":" + result + ",\"ResponseStatus\":{}}";
 
+                    Log.d(TAG, "onPostExecute: " + result);
+                    jObject = null;
+                    try {
+                        jObject = new JSONObject(result);
+                        String _stavke2 = jObject.getString("dokumentistavke");
+                        JSONArray arr = new JSONArray(_stavke2);
+                        ArrayList<App2Stavke> ListaStavke2 = new ArrayList<App2Stavke>();
+                        for (int i = 0; i < arr.length(); i++) {
+                            JSONObject myStv2 = arr.getJSONObject(i);
+                            //{"id":0,"zaglavljeId":501923,"rbr":1,"artiklId":170624,"artiklSifra":"03947","artikl":" BACVA 50L","jmjId":4,"jmj":"kom",
+                            // "vrijednostId1":0,"vrijednost":"","atribut":"","kolicina":1.00000,"opaska":null,"vipsId":5604939,"kolicinaZadana":1.00000}
+
+                            //App2Stavke(long id, long zaglavljeId, long artiklId, long jmjId, long vrijednostId1, long vipsId, int rbr, double kolicina, double kolicinaZadana, String opaska,
+                            // String artiklSifra, String artiklNaziv, String jmjNaziv, String vrijednostNaziv, String atributNaziv) {
+                            App2Stavke _stv2 = new App2Stavke(myStv2.optLong("id", 0),
+                                    myStv2.optLong("zaglavljeId", 0),
+                                    myStv2.optLong("artiklId", 0),
+                                    myStv2.optLong("jmjId", 0),
+                                    myStv2.optLong("vrijednostId1", 0),
+                                    myStv2.optLong("vipsId", 0),
+                                    myStv2.optInt("rbr", 0),
+                                    myStv2.optDouble("kolicina", 0),
+                                    myStv2.optDouble("kolicinaZadana", 0),
+                                    myStv2.optString("opaska", ""),
+                                    myStv2.optString("artiklSifra", ""),
+                                    myStv2.optString("artiklNaziv", ""),
+                                    myStv2.optString("jmjNaziv", ""),
+                                    myStv2.optString("vrijednostNaziv", ""),
+                                    myStv2.optString("atributNaziv", ""));
+                            ListaStavke2.add(_stv2);
+                        }
+                        Log.d(TAG, "onPostExecute: BROJ Dokumenata2 =" + ListaStavke2.size());
+                        UpisiStavke2UBazu(ListaStavke2);
+                        vrijeme2 = new Date(System.currentTimeMillis());
+                        long different = vrijeme2.getTime() - vrijeme1.getTime();
+                        Log.d(TAG, "onPostExecute: VRIJEME UČITAVANJA S INTERNETA I UPISA U BAZU JE :" + different + "ms");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     break;
 
                 case "prijavaKorisnika":
@@ -973,6 +1023,77 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
         }
     }
 
+    private void UpisiStavke2UBazu(ArrayList<App2Stavke> Lista) {
+        boolean greska = false;
+        String greskaStr = "";
+        String myTabela = myTbl.NazivTabele;
+        try {
+            Log.d(TAG, "Otvaram bazu" + myTabela);
+            SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+            Log.d(TAG, "UpisiUBazu: brišem tabelu " + myTabela + " ukoliko postoji");
+            myDB.execSQL("DROP TABLE IF EXISTS " + myTabela + ";");
+            Log.d(TAG, "Kreiram tabelu");
+            //{"id":0,"zaglavljeId":501923,"rbr":1,"artiklId":170624,"artiklSifra":"03947","artikl":" BACVA 50L",
+            // "jmjId":4,"jmj":"kom","vrijednostId1":0,"vrijednost":"","atribut":"","kolicina":1.00000,"opaska":null,"vipsId":5604939,"kolicinaZadana":1.00000}
+
+            myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
+                    "_id long, " +
+                    "zaglavljeId long, " +
+                    "rbr int, " +
+                    "artiklId long, " +
+                    "artiklSifra varchar, " +
+                    "artiklNaziv varchar, " +
+                    "jmjId long, " +
+                    "jmjNaziv varchar, " +
+                    "vrijednostId1 long, " +
+                    "vrijednostNaziv varchar, " +
+                    "atributNaziv varchar, " +
+                    "kolicina double, " +
+                    "opaska varchar, " +
+                    "vipsId long, " +
+                    "kolicinaZadana double);");
+
+            Log.d(TAG, "Brišem sve iz tabele " + myTabela);
+            myDB.execSQL("DELETE FROM " + myTabela + ";");
+            for (int i = 0; i < Lista.size(); i++) {
+                App2Stavke myStv2 = Lista.get(i);
+                myDB.execSQL("INSERT INTO " + myTabela + " (_id, zaglavljeId, rbr, artiklId, artiklSifra, artiklNaziv,  jmjId, jmjNaziv, vrijednostId1, vrijednostNaziv," +
+                        " atributNaziv, kolicina, opaska, vipsId, kolicinaZadana) VALUES (" +
+                        myStv2.getId() + "," +
+                        myStv2.getZaglavljeId() + "," +
+                        myStv2.getRbr() + "," +
+                        myStv2.getArtiklId() + ",'" +
+                        myStv2.getArtiklSifra() + "','" +
+                        myStv2.getArtiklNaziv() + "'," +
+                        myStv2.getJmjId() + ",'" +
+                        myStv2.getJmjNaziv() + "'," +
+                        myStv2.getVrijednostId1() + ",'" +
+                        myStv2.getVrijednostNaziv() + "','" +
+                        myStv2.getAtributNaziv() + "'," +
+                        myStv2.getKolicina() + ",'" +
+                        myStv2.getOpaska() + "'," +
+                        myStv2.getVipsId() + "," +
+                        myStv2.getKolicinaZadana() + ");");
+
+            }
+            Log.d(TAG, "Gotovo " + myTabela);
+            myDB.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            greskaStr = e.getMessage();
+            greska = true;
+        } finally {
+            if (greska) {
+                Log.d(TAG, "UpisiUBazu: " + greskaStr + "/" + myTabela);
+                UpisiLOG(1, greskaStr, myTabela, 0, -1);
+            } else {
+                greskaStr = "Uspješno upisano :" + Integer.toString(Lista.size()) + " podataka";
+                Log.d(TAG, "UpisiUBazu: " + greskaStr + "/" + myTabela);
+                UpisiLOG(0, greskaStr, myTabela, 0, Lista.size());
+            }
+        }
+    }
+
     private void UpisiDokumente2UBazu(ArrayList<App2Dokumenti> Lista) {
         boolean greska = false;
         String greskaStr = "";
@@ -983,17 +1104,25 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
             Log.d(TAG, "UpisiUBazu: brišem tabelu " + myTabela + " ukoliko postoji");
             myDB.execSQL("DROP TABLE IF EXISTS " + myTabela + ";");
             Log.d(TAG, "Kreiram tabelu");
-            //{"id":null,"kasaId":null,"podtipId":51,"pjFrmId":1,"pjKmtId":15595,"datumDokumenta":"2018-04-05T00:00:00","komercijalistId":null,"nacinPlacanjaId":1,"opaska":"","vipsId":501923}
+            //{"id":null,"kasaId":null,"podtipId":51,"podtip":"Narudžbenica kupca - Pocket PC","pjFrmId":1,"pjFrm":"VP Čitluk","pjKmtId":15595,"pjKmt":"Sjedište","kmt":"Vanima d.o.o. - Mostar",
+            // "datumDokumenta":"2018-04-05T00:00:00","komercijalistId":null,"komercijalist":"","nacinPlacanjaId":1,"nacinPlacanja":"Virman","opaska":"","vipsId":501923}
+
             myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
                     "_id long, " +
                     "kasaId long, " +
                     "podtipId long, " +
+                    "podtipNaziv varchar, " +
                     "pjFrmId long, " +
+                    "pjFrmNaziv varchar, " +
                     "pjKmtId long, " +
+                    "pjKmtNaziv varchar, " +
+                    "kmtNaziv varchar, " +
                     "datumDokumenta datetime, " +
                     "datumSinkronizacije datetime, " +
-                    "komercijalistaId long," +
-                    "nacinPlacanjaId long," +
+                    "komercijalistaId long, " +
+                    "komercijalistaNaziv varchar, " +
+                    "nacinPlacanjaId long, " +
+                    "nacinPlacanjaNaziv varchar, " +
                     "vipsId long, " +
                     "opaska VARCHAR);");
 
@@ -1001,15 +1130,22 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
             myDB.execSQL("DELETE FROM " + myTabela + ";");
             for (int i = 0; i < Lista.size(); i++) {
                 App2Dokumenti myDok2 = Lista.get(i);
-                myDB.execSQL("INSERT INTO " + myTabela + " (_id, kasaId, podtipId, pjFrmId, pjKmtId, datumDokumenta, komercijalistaId, nacinPlacanjaId, vipsId, opaska) VALUES (" +
+                myDB.execSQL("INSERT INTO " + myTabela + " (_id, kasaId, podtipId, podtipNaziv, pjFrmId,pjFrmNaziv,  pjKmtId,pjKmtNaziv,kmtNaziv, datumDokumenta," +
+                        " komercijalistaId,komercijalistaNaziv, nacinPlacanjaId,nacinPlacanjaNaziv, vipsId, opaska) VALUES (" +
                         myDok2.getId() + "," +
                         myDok2.getKasaId() + "," +
-                        myDok2.getPodtipId() + "," +
-                        myDok2.getPjFrmId() + "," +
-                        myDok2.getPjKmtId() + "," +
-                        myDok2.getDatumDokumenta() + "," +
-                        myDok2.getKomercijalistaId() + "," +
-                        myDok2.getNacinPlacanjaId() + "," +
+                        myDok2.getPodtipId() + ",'" +
+                        myDok2.getPodtipNaziv() + "'," +
+                        myDok2.getPjFrmId() + ",'" +
+                        myDok2.getPjFrmNaziv() + "'," +
+                        myDok2.getPjKmtId() + ",'" +
+                        myDok2.getPjKmtNaziv() + "','" +
+                        myDok2.getKmtNaziv() + "','" +
+                        myDok2.getDatumDokumenta() + "'," +
+                        myDok2.getKomercijalistaId() + ",'" +
+                        myDok2.getKomercijalistNaziv() + "'," +
+                        myDok2.getNacinPlacanjaId() + ",'" +
+                        myDok2.getNacinPlacanjaNaziv() + "'," +
                         myDok2.getVipsId() + ",'" +
                         myDok2.getOpaska() + "');");
 

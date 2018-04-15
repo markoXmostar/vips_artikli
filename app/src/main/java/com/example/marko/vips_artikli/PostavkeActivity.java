@@ -3,6 +3,7 @@ package com.example.marko.vips_artikli;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,11 +21,15 @@ public class PostavkeActivity extends AppCompatActivity {
     long idTipDokumenta = -1;
     long idPodtipDokumenta = -1;
 
+
+    postavkeAplikacije _myPostavke = null;
+
     Spinner spinTipDokumenta;
     Spinner spinPodtipDokumenta;
     Spinner spinnerVrstaAplikacije;
     Spinner sppinerVrstaPretrage;
 
+    private boolean spinnerTouched = false;
 
     Switch btnBrziUnosArtikla, btnDopustenaIzmjenaTipaDokumenta, btnSvirajUpozorenja;
 
@@ -66,6 +71,7 @@ public class PostavkeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_postavke);
 
+
         btnBrziUnosArtikla = (Switch) findViewById(R.id.tbtnBrziUnosartikala_Postavke);
         btnDopustenaIzmjenaTipaDokumenta = (Switch) findViewById(R.id.btnDopustenaIZmjenaTipa_Postavke);
         sbarKolicina = (SeekBar) findViewById(R.id.sbarDefoltnaKolicina_Postavke);
@@ -79,9 +85,22 @@ public class PostavkeActivity extends AppCompatActivity {
         btnSvirajUpozorenja = (Switch) findViewById(R.id.btnZvukoviObavijesti_Postavke);
 
         final postavkeAplikacije myPostavke = new postavkeAplikacije(PostavkeActivity.this);
+        _myPostavke = myPostavke;
 
         spinnerVrstaAplikacije.setAdapter(new ArrayAdapter<VrstaAplikacije>(this, android.R.layout.simple_spinner_item, VrstaAplikacije.values()));
         sppinerVrstaPretrage.setAdapter(new ArrayAdapter<VrstaPretrageArtikala>(this, android.R.layout.simple_spinner_item, VrstaPretrageArtikala.values()));
+
+
+        spinPodtipDokumenta.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    spinnerTouched = true; // User DID touched the spinner!
+                    Log.d(TAG, "onTouch: SNIMI:: onTouch=true");
+                }
+                return false;
+            }
+        });
 
         ArrayAdapter<TipDokumenta> tipAdapter = new ArrayAdapter<TipDokumenta>(this, android.R.layout.simple_spinner_item);
         for (TipDokumenta tipDok : MainActivity.getListaTipovaDokumenta(PostavkeActivity.this, "", true, "SVI TIPOVI DOKUMENATA")) {
@@ -92,6 +111,7 @@ public class PostavkeActivity extends AppCompatActivity {
         spinTipDokumenta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                spinnerTouched = false;
                 TipDokumenta tiDok = (TipDokumenta) adapterView.getItemAtPosition(i);
                 idTipDokumenta = tiDok.getId();
                 if (idTipDokumenta != myPostavke.getTipDokumenta()) {
@@ -103,40 +123,36 @@ public class PostavkeActivity extends AppCompatActivity {
                     podtipAdapter.add(podtip);
                 }
                 spinPodtipDokumenta.setAdapter(podtipAdapter);
+                spinPodtipDokumenta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        PodtipDokumenta podtipDok = (PodtipDokumenta) adapterView.getItemAtPosition(i);
+                        idPodtipDokumenta = podtipDok.getId();
+                        if (idPodtipDokumenta != myPostavke.getPodtipDokumenta()) {
+                            if (spinnerTouched) {
+                                myPostavke.snimiPodtipDokumenta(idPodtipDokumenta);
+                                Log.d(TAG, "onItemSelected: SNIMI idPodtipDokumenta=" + idPodtipDokumenta);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+                spinPodtipDokumenta.setSelection(getIndex_PodtipDokumenta(myPostavke.getPodtipDokumenta()));
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
 
-        ArrayAdapter<PodtipDokumenta> podtipAdapter = new ArrayAdapter<PodtipDokumenta>(this, android.R.layout.simple_spinner_item);
-        for (PodtipDokumenta podtip : MainActivity.getListaPodtipova(PostavkeActivity.this, "", idTipDokumenta, false, " ")) {
-            podtipAdapter.add(podtip);
-        }
-        spinPodtipDokumenta.setAdapter(podtipAdapter);
-
-
-        spinPodtipDokumenta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                PodtipDokumenta podtipDok = (PodtipDokumenta) adapterView.getItemAtPosition(i);
-                idPodtipDokumenta = podtipDok.getId();
-                if (idPodtipDokumenta != myPostavke.getPodtipDokumenta()) {
-                    myPostavke.snimiPodtipDokumenta(idPodtipDokumenta);
-                    Log.d(TAG, "onItemSelected: SNIMI idPodtipDokumenta=" + idPodtipDokumenta);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
+        //setRadi(true);
         spinTipDokumenta.setSelection(getIndex_TipDokumenta(myPostavke.getTipDokumenta()));
         spinPodtipDokumenta.setSelection(getIndex_PodtipDokumenta(myPostavke.getPodtipDokumenta()));
+
 
         spinnerVrstaAplikacije.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -250,7 +266,20 @@ public class PostavkeActivity extends AppCompatActivity {
             }
         });
 
+
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PodtipDokumenta podtipDok = (PodtipDokumenta) spinPodtipDokumenta.getSelectedItem();
+        idPodtipDokumenta = podtipDok.getId();
+        _myPostavke.snimiPodtipDokumenta(idPodtipDokumenta);
+        Log.d(TAG, "onDestroy: SNIMI::: ON_DESTROY = snimljen podtip=" + idPodtipDokumenta);
+    }
+
+
+
     //snimi postavke
     //https://stackoverflow.com/questions/8669435/storing-and-retrieving-values-from-sharedpreferences-on-activity-state-changes
 

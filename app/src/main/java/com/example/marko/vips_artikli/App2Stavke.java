@@ -6,13 +6,72 @@ package com.example.marko.vips_artikli;
 
 public class App2Stavke {
     //{"id":0,"zaglavljeId":501923,"rbr":1,"artiklId":170624,"jmjId":4,"vrijednostId1":0,"kolicina":1.00000,"opaska":null,"vipsId":5604939,"kolicinaZadana":1.00000}
+    //{"id":0,"zaglavljeId":501923,"rbr":1,"artiklId":170624,"artiklSifra":"03947","artikl":" BACVA 50L","jmjId":4,"jmj":"kom","vrijednostId1":0,"vrijednost":"","atribut":"","kolicina":1.00000,"opaska":null,"vipsId":5604939,"kolicinaZadana":1.00000}
     private long id, zaglavljeId, artiklId, jmjId, vrijednostId1, vipsId;
     private int rbr;
     private double kolicina, kolicinaZadana;
-    private String opaska;
+    private String opaska, artiklSifra, artiklNaziv, jmjNaziv, vrijednostNaziv, atributNaziv;
+
+    public App2Stavke(long id, long zaglavljeId, long artiklId, long jmjId, long vrijednostId1, long vipsId, int rbr, double kolicina, double kolicinaZadana, String opaska, String artiklSifra, String artiklNaziv, String jmjNaziv, String vrijednostNaziv, String atributNaziv) {
+        this.id = id;
+        this.zaglavljeId = zaglavljeId;
+        this.artiklId = artiklId;
+        this.jmjId = jmjId;
+        this.vrijednostId1 = vrijednostId1;
+        this.vipsId = vipsId;
+        this.rbr = rbr;
+        this.kolicina = kolicina;
+        this.kolicinaZadana = kolicinaZadana;
+        this.opaska = opaska;
+        this.artiklSifra = artiklSifra;
+        this.artiklNaziv = artiklNaziv;
+        this.jmjNaziv = jmjNaziv;
+        this.vrijednostNaziv = vrijednostNaziv;
+        this.atributNaziv = atributNaziv;
+    }
 
     public long getId() {
         return id;
+    }
+
+    public String getArtiklSifra() {
+        return artiklSifra;
+    }
+
+    public void setArtiklSifra(String artiklSifra) {
+        this.artiklSifra = artiklSifra;
+    }
+
+    public String getArtiklNaziv() {
+        return artiklNaziv;
+    }
+
+    public void setArtiklNaziv(String artiklNaziv) {
+        this.artiklNaziv = artiklNaziv;
+    }
+
+    public String getJmjNaziv() {
+        return jmjNaziv;
+    }
+
+    public void setJmjNaziv(String jmjNaziv) {
+        this.jmjNaziv = jmjNaziv;
+    }
+
+    public String getVrijednostNaziv() {
+        return vrijednostNaziv;
+    }
+
+    public void setVrijednostNaziv(String vrijednostNaziv) {
+        this.vrijednostNaziv = vrijednostNaziv;
+    }
+
+    public String getAtributNaziv() {
+        return atributNaziv;
+    }
+
+    public void setAtributNaziv(String atributNaziv) {
+        this.atributNaziv = atributNaziv;
     }
 
     public void setId(long id) {
