@@ -22,7 +22,7 @@ public class App2Dokumenti {
 
     private List<App2Stavke> spisakStavki;
 
-    public App2Dokumenti(long id, long kasaId, long podtipId, String podtipNaziv, long pjFrmId, String pjFrmNaziv, long pjKmtId, String pjKmtNaziv, String kmtNaziv, String datumDokumenta,
+    public App2Dokumenti(long id, long kasaId, long podtipId, String podtipNaziv, long pjFrmId, String pjFrmNaziv, long pjKmtId, String pjKmtNaziv, String kmtNaziv, String strDatumDokumenta,
                          long komercijalistaId, String komercijalistNaziv, long nacinPlacanjaId, String nacinPlacanjaNaziv, String opaska, long vipsId) {
         this.id = id;
         this.podtipId = podtipId;
@@ -38,18 +38,8 @@ public class App2Dokumenti {
         this.KmtNaziv = kmtNaziv;
         this.komercijalistNaziv = komercijalistNaziv;
         this.nacinPlacanjaNaziv = nacinPlacanjaNaziv;
-        Log.d(TAG, "App2Dokumenti: StringDatum=" + datumDokumenta);
-        SimpleDateFormat format = new SimpleDateFormat(MainActivity.BorisovFormatDatuma);
-        Date date = null;
-        try {
-            date = format.parse(datumDokumenta);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        this.datumDokumenta = date;
-        this.datumSinkronizacije = datumSinkronizacije;
+        this.datumDokumenta = MainActivity.getDateFromJSONFormat(strDatumDokumenta);
         this.opaska = opaska;
-        this.spisakStavki = spisakStavki;
     }
 
     public String getPodtipNaziv() {

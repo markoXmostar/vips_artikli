@@ -612,12 +612,19 @@ public class MainActivity extends AppCompatActivity
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "PjKomitenta"));
 
         if (myPostavke.getVrstaAplikacije() == 0 || myPostavke.getVrstaAplikacije() == 2) {
+
+            long podtipDokumenta = 0;
+            if (myPostavke.getPodtipDokumenta() == 0) {
+                podtipDokumenta = 51;
+            } else {
+                podtipDokumenta = myPostavke.getPodtipDokumenta();
+            }
             akcija = "dokumentizaglavlja";
-            urlString = url + akcija + "?d=" + DJELATNIK + "&u=" + UREDJAJ + "&p=" + myPostavke.getPodtipDokumenta();
+            urlString = url + akcija + "?d=" + DJELATNIK + "&u=" + UREDJAJ + "&p=" + podtipDokumenta;
             spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "dokumenti2"));
 
             akcija = "dokumentistavke";
-            urlString = url + akcija + "?d=" + DJELATNIK + "&u=" + UREDJAJ + "&p=" + myPostavke.getPodtipDokumenta();
+            urlString = url + akcija + "?d=" + DJELATNIK + "&u=" + UREDJAJ + "&p=" + podtipDokumenta;
             spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "stavke2"));
         }
 
@@ -759,6 +766,27 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public static Date getDateFromJSONFormat(String dateFromWEB_String) {
+        SimpleDateFormat dateformat2 = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
+        Date newdate = new Date();
+        ;
+        String strdate2 = "01-01-1990 00:00:00";
+        try {
+            newdate = dateformat2.parse(strdate2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Date date = new Date(); // ovo je da defoltni datum bude 1.1.1990 ako Boris ne vrati dobro!
+
+        date = newdate;
+        SimpleDateFormat simpleSqlDateFormat = new SimpleDateFormat(BorisovFormatDatuma);
+        try {
+            date = (Date) simpleSqlDateFormat.parse(dateFromWEB_String);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
     public static Artikl getArtiklByBarcode(Activity a, String barcode) {
         Artikl artikl = null;
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
