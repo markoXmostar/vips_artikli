@@ -134,7 +134,13 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
-
+        fabApp2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, App2DokumentiActivity.class);
+                startActivity(intent);
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -766,6 +772,14 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public static String parseDateFromSQLLiteDBFormatToJSONFormat(Date date) {
+
+        SimpleDateFormat mojDateFormat = new SimpleDateFormat(BorisovFormatDatuma);
+        String myDateString = mojDateFormat.format(date);
+        return myDateString;
+
+    }
+
     public static Date getDateFromJSONFormat(String dateFromWEB_String) {
         SimpleDateFormat dateformat2 = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
         Date newdate = new Date();
@@ -1215,6 +1229,106 @@ public class MainActivity extends AppCompatActivity
 
             Log.d(TAG, "getListaDokumenta: DOKUMENT: _id=" + id +"/ datumSinkronizacije=" + datumSinkronizacijeString);
             App1Dokumenti myObj = new App1Dokumenti(id, idTip, idPodtip, idKomitent, idPjKomitenta, datumDokumenta, datumSinkronizacije, napomena, komitentNaziv, komitentPjNaziv, tipNaziv, podtipNaziv);
+            listaDokumenta.add(myObj);
+
+            brojac++;
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        Log.d(TAG, "ucitajDokumente: U tabeli se nalazi " + brojac + " dokumenta!");
+        c.close();
+        myDB.close();
+
+        return listaDokumenta;
+    }
+
+    public static List<App2Dokumenti> getListaDokumenta2(Activity a, int filter) {
+
+
+        List<App2Dokumenti> listaDokumenta = new ArrayList<App2Dokumenti>();
+        String tabelaApp1 = "dokumenti2";
+
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
+        Cursor c;
+        c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " ORDER BY datumDokumenta DESC", null);
+
+        SimpleDateFormat SQLLite_dateFormat = new SimpleDateFormat(MainActivity.SqlLiteDateFormat);
+
+        long id;
+        long kasaId;
+        long podtipId;
+        String podtipNaziv;
+        long pjFrmId;
+        String pjFrmNaziv;
+        long pjKmtId;
+        String pjKmtNaziv;
+        String kmtNaziv;
+
+        long komercijalistaId;
+        String komercijalistaNaziv;
+        long nacinPlacanjaId;
+        String nacinPlacanjaNaziv;
+        long vipsId;
+        String opaska;
+        String datumDokumentaString;
+        String datumSinkronizacijeString;
+
+        int idIndex = c.getColumnIndex("_id");
+        int idkasaIdIndex = c.getColumnIndex("kasaId");
+        int idpodtipIdIndex = c.getColumnIndex("podtipId");
+        int idpodtipNazivIndex = c.getColumnIndex("podtipNaziv");
+        int idpjFrmIdIndex = c.getColumnIndex("pjFrmId");
+        int idpjFrmNazivIndex = c.getColumnIndex("pjFrmNaziv");
+        int idpjKmtIdIndex = c.getColumnIndex("pjKmtId");
+        int idpjKmtNazivIndex = c.getColumnIndex("pjKmtNaziv");
+        int idkmtNazivIndex = c.getColumnIndex("kmtNaziv");
+        int iddatumDokumentaIndex = c.getColumnIndex("datumDokumenta");
+        int iddatumSinkronizacijeIndex = c.getColumnIndex("datumSinkronizacije");
+        int idkomercijalistaIdIndex = c.getColumnIndex("komercijalistaId");
+        int idkomercijalistaNazivIndex = c.getColumnIndex("komercijalistaNaziv");
+        int idnacinPlacanjaIdIndex = c.getColumnIndex("nacinPlacanjaId");
+        int idnacinPlacanjaNazivIndex = c.getColumnIndex("nacinPlacanjaNaziv");
+        int idvipsIdIndex = c.getColumnIndex("vipsId");
+        int idopaskaIndex = c.getColumnIndex("opaska");
+
+        c.moveToFirst();
+        int brojac = 0;
+        for (int j = 0; j < c.getCount(); j++) {
+            id = c.getLong(idIndex);
+            kasaId = c.getLong(idkasaIdIndex);
+            podtipId = c.getLong(idpodtipIdIndex);
+            podtipNaziv = c.getString(idpodtipNazivIndex);
+            pjFrmId = c.getLong(idpjFrmIdIndex);
+            pjFrmNaziv = c.getString(idpjFrmNazivIndex);
+            pjKmtId = c.getLong(idpjKmtIdIndex);
+            pjKmtNaziv = c.getString(idpjKmtNazivIndex);
+            kmtNaziv = c.getString(idkmtNazivIndex);
+            komercijalistaId = c.getLong(idkomercijalistaIdIndex);
+            komercijalistaNaziv = c.getString(idkomercijalistaNazivIndex);
+            nacinPlacanjaId = c.getLong(idnacinPlacanjaIdIndex);
+            nacinPlacanjaNaziv = c.getString(idnacinPlacanjaNazivIndex);
+            vipsId = c.getLong(idvipsIdIndex);
+            opaska = c.getString(idopaskaIndex);
+
+            Log.d(TAG, "getListaDokumenta2: ČITAM DATUM");
+            datumDokumentaString = c.getString(iddatumDokumentaIndex);
+            Date myDate = new Date();
+            myDate = getDateFromSQLLiteDBFormat(datumDokumentaString);
+            String mojDatum = parseDateFromSQLLiteDBFormatToJSONFormat(myDate);
+
+            Log.d(TAG, "getListaDokumenta2: MOJ DATUM JE: " + mojDatum);
+
+            Log.d(TAG, "getListaDokumenta2: DATUM UPISAN U BAZU JE:" + datumDokumentaString);
+            datumSinkronizacijeString = c.getString(iddatumSinkronizacijeIndex);
+            Log.d(TAG, "getListaDokumenta2: DATUM SINKRONIZACIJE UPISAN U BAZU JE:" + datumSinkronizacijeString);
+
+
+            Log.d(TAG, "getListaDokumenta: DOKUMENT: _id=" + id + "/ datumSinkronizacije=" + datumSinkronizacijeString);
+            //(long id, long kasaId, long podtipId, String podtipNaziv, long pjFrmId, String pjFrmNaziv, long pjKmtId, String pjKmtNaziv, String kmtNaziv, String strDatumDokumenta,
+            //long komercijalistaId, String komercijalistNaziv, long nacinPlacanjaId, String nacinPlacanjaNaziv, String opaska, long vipsId)
+            App2Dokumenti myObj = new App2Dokumenti(id, kasaId, podtipId, podtipNaziv, pjFrmId, pjFrmNaziv, pjKmtId, pjKmtNaziv, kmtNaziv, mojDatum, datumSinkronizacijeString, komercijalistaId, komercijalistaNaziv,
+                    nacinPlacanjaId, nacinPlacanjaNaziv, opaska, vipsId);
             listaDokumenta.add(myObj);
 
             brojac++;

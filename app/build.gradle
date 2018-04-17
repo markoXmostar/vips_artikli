@@ -10,7 +10,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        multiDexEnabled true //ovo je radi neke greške u prevelikom korištenju memorije i broja procesa
+        multiDexEnabled true
+        //ovo je radi neke greške u prevelikom korištenju memorije i broja procesa
     }
     buildTypes {
         release {
@@ -23,8 +24,10 @@ android {
 dependencies {
     //noinspection GradleCompatible //ovo se samo dodalo poslije greške da nešto nije kompatibilno
     implementation 'com.android.support:support-v4:26.0.2'
-    implementation 'info.androidhive:barcode-reader:1.1.5' //ovo sam naknadno dodao za barcode reader
-    implementation 'com.google.android.gms:play-services-vision:11.0.2' //ovo sam naknadno dodao za barcode reader
+    implementation 'info.androidhive:barcode-reader:1.1.5'
+    //ovo sam naknadno dodao za barcode reader
+    implementation 'com.google.android.gms:play-services-vision:11.0.2'
+    //ovo sam naknadno dodao za barcode reader
     implementation 'com.android.support:support-annotations:26.1.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {

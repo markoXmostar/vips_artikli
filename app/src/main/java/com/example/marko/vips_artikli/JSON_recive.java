@@ -490,7 +490,8 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                                     myDok2.optLong("podtipId", 0), myDok2.optString("podtip", ""),
                                     myDok2.optLong("pjFrmId", 0), myDok2.optString("pjFrm", ""),
                                     myDok2.optLong("pjKmtId", 0), myDok2.optString("pjKmt", ""), myDok2.optString("kmt", ""),
-                                    myDok2.optString("datumDokumenta", "1.1.1990"),
+                                    myDok2.optString("datumDokumenta", ""),
+                                    "",
                                     myDok2.optLong("komercijalistId", 0), myDok2.optString("komercijalist", ""),
                                     myDok2.optLong("nacinPlacanjaId", 0), myDok2.optString("nacinPlacanja", ""),
                                     myDok2.optString("opaska", ""), myDok2.optLong("vipsId", 0));
@@ -1141,13 +1142,15 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                         myDok2.getPjKmtId() + ",'" +
                         myDok2.getPjKmtNaziv() + "','" +
                         myDok2.getKmtNaziv() + "','" +
-                        myDok2.getDatumDokumenta() + "'," +
+                        myDok2.getDatumDokumenta_String() + "'," +
                         myDok2.getKomercijalistaId() + ",'" +
                         myDok2.getKomercijalistNaziv() + "'," +
                         myDok2.getNacinPlacanjaId() + ",'" +
                         myDok2.getNacinPlacanjaNaziv() + "'," +
                         myDok2.getVipsId() + ",'" +
                         myDok2.getOpaska() + "');");
+
+                Log.d(TAG, "UpisiDokumente2UBazu: DATUM DOKUMENTA UPISAN U BAZU JE :::" + myDok2.getDatumDokumenta_String());
 
             }
             Log.d(TAG, "Gotovo " + myTabela);
