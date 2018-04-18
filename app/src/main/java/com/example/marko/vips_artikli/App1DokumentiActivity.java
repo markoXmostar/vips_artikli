@@ -218,6 +218,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
                 Long idPodtipDokumenta=data.getLongExtra("idPodtipDokumenta",-1);
                 String datumDokumenta=data.getStringExtra("datumDokumenta");
                 SimpleDateFormat dateFormat = new SimpleDateFormat(DatumFormat);
+
                 Date datumDok=new Date();
                 SimpleDateFormat dateSQLLiteFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 
@@ -230,6 +231,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
                     Toast.makeText(this, R.string.GreskaUnosDatuma,Toast.LENGTH_LONG).show();
                     return;
                 }
+
                 String nazivPjKomitenta=data.getStringExtra("nazivPjKomitenta");
                 String nazivKomitenta=data.getStringExtra("nazivKomitenta");
                 String nazivTipDokumenta=data.getStringExtra("nazivTipDokumenta");

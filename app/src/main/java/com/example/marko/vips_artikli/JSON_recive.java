@@ -482,7 +482,9 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                             JSONObject myDok2 = arr.getJSONObject(i);
                             //{"id":null,"kasaId":null,"podtipId":51,"podtip":"Narudžbenica kupca - Pocket PC","pjFrmId":1,"pjFrm":"VP Čitluk","pjKmtId":15595,"pjKmt":"Sjedište","kmt":"Vanima d.o.o. - Mostar",
                             // "datumDokumenta":"2018-04-05T00:00:00","komercijalistId":null,"komercijalist":"","nacinPlacanjaId":1,"nacinPlacanja":"Virman","opaska":"","vipsId":501923}
-
+                            String strDatumDok = myDok2.optString("datumDokumenta", "");
+                            Date datumDok = MainActivity.getDateFromJSONFormat(strDatumDok);
+                            Date datumSink = null;
                             //App2Dokumenti(long id, long kasaId, long podtipId, String podtipNaziv, long pjFrmId, String pjFrmNaziv, long pjKmtId, String pjKmtNaziv,String kmtNaziv, String datumDokumenta,
                             //  long komercijalistaId,String komercijalistNaziv, long nacinPlacanjaId, String nacinPlacanjaNaziv, String opaska, long vipsId)
                             App2Dokumenti _dok2 = new App2Dokumenti(myDok2.optLong("id", 0),
@@ -490,8 +492,8 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                                     myDok2.optLong("podtipId", 0), myDok2.optString("podtip", ""),
                                     myDok2.optLong("pjFrmId", 0), myDok2.optString("pjFrm", ""),
                                     myDok2.optLong("pjKmtId", 0), myDok2.optString("pjKmt", ""), myDok2.optString("kmt", ""),
-                                    myDok2.optString("datumDokumenta", ""),
-                                    "",
+                                    datumDok,
+                                    datumSink,
                                     myDok2.optLong("komercijalistId", 0), myDok2.optString("komercijalist", ""),
                                     myDok2.optLong("nacinPlacanjaId", 0), myDok2.optString("nacinPlacanja", ""),
                                     myDok2.optString("opaska", ""), myDok2.optLong("vipsId", 0));
@@ -1142,7 +1144,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                         myDok2.getPjKmtId() + ",'" +
                         myDok2.getPjKmtNaziv() + "','" +
                         myDok2.getKmtNaziv() + "','" +
-                        myDok2.getDatumDokumenta_String() + "'," +
+                        myDok2.getDatumDokumentaString() + "'," +
                         myDok2.getKomercijalistaId() + ",'" +
                         myDok2.getKomercijalistNaziv() + "'," +
                         myDok2.getNacinPlacanjaId() + ",'" +
@@ -1150,7 +1152,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                         myDok2.getVipsId() + ",'" +
                         myDok2.getOpaska() + "');");
 
-                Log.d(TAG, "UpisiDokumente2UBazu: DATUM DOKUMENTA UPISAN U BAZU JE :::" + myDok2.getDatumDokumenta_String());
+                Log.d(TAG, "UpisiDokumente2UBazu: DATUM DOKUMENTA UPISAN U BAZU JE :::" + myDok2.getDatumDokumentaString());
 
             }
             Log.d(TAG, "Gotovo " + myTabela);

@@ -11,6 +11,7 @@ import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -1253,7 +1254,7 @@ public class MainActivity extends AppCompatActivity
         Cursor c;
         c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " ORDER BY datumDokumenta DESC", null);
 
-        SimpleDateFormat SQLLite_dateFormat = new SimpleDateFormat(MainActivity.SqlLiteDateFormat);
+        SimpleDateFormat SQLLite_dateFormat = new SimpleDateFormat(MainActivity.DatumFormat);
 
         long id;
         long kasaId;
@@ -1312,23 +1313,36 @@ public class MainActivity extends AppCompatActivity
             opaska = c.getString(idopaskaIndex);
 
             Log.d(TAG, "getListaDokumenta2: ČITAM DATUM");
+
             datumDokumentaString = c.getString(iddatumDokumentaIndex);
-            Date myDate = new Date();
-            myDate = getDateFromSQLLiteDBFormat(datumDokumentaString);
-            String mojDatum = parseDateFromSQLLiteDBFormatToJSONFormat(myDate);
+            Date datumDokumenta = null;
+            if (!TextUtils.isEmpty(datumDokumentaString)) {
+                if (!datumDokumentaString.isEmpty()) {
+                    try {
+                        datumDokumenta = (Date) SQLLite_dateFormat.parse(datumDokumentaString);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
 
-            Log.d(TAG, "getListaDokumenta2: MOJ DATUM JE: " + mojDatum);
 
-            Log.d(TAG, "getListaDokumenta2: DATUM UPISAN U BAZU JE:" + datumDokumentaString);
             datumSinkronizacijeString = c.getString(iddatumSinkronizacijeIndex);
-            Log.d(TAG, "getListaDokumenta2: DATUM SINKRONIZACIJE UPISAN U BAZU JE:" + datumSinkronizacijeString);
+            Date datumSinkronizacijeDokumenta = null;
+            if (!TextUtils.isEmpty(datumSinkronizacijeString)) {
+                if (!datumSinkronizacijeString.isEmpty()) {
+                    try {
+                        datumSinkronizacijeDokumenta = (Date) SQLLite_dateFormat.parse(datumSinkronizacijeString);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
 
-
-            Log.d(TAG, "getListaDokumenta: DOKUMENT: _id=" + id + "/ datumSinkronizacije=" + datumSinkronizacijeString);
-            //(long id, long kasaId, long podtipId, String podtipNaziv, long pjFrmId, String pjFrmNaziv, long pjKmtId, String pjKmtNaziv, String kmtNaziv, String strDatumDokumenta,
-            //long komercijalistaId, String komercijalistNaziv, long nacinPlacanjaId, String nacinPlacanjaNaziv, String opaska, long vipsId)
-            App2Dokumenti myObj = new App2Dokumenti(id, kasaId, podtipId, podtipNaziv, pjFrmId, pjFrmNaziv, pjKmtId, pjKmtNaziv, kmtNaziv, mojDatum, datumSinkronizacijeString, komercijalistaId, komercijalistaNaziv,
+            App2Dokumenti myObj = new App2Dokumenti(id, kasaId, podtipId, podtipNaziv, pjFrmId, pjFrmNaziv, pjKmtId, pjKmtNaziv, kmtNaziv,
+                    datumDokumenta, datumSinkronizacijeDokumenta, komercijalistaId, komercijalistaNaziv,
                     nacinPlacanjaId, nacinPlacanjaNaziv, opaska, vipsId);
+
             listaDokumenta.add(myObj);
 
             brojac++;
@@ -1508,6 +1522,29 @@ public class MainActivity extends AppCompatActivity
         return spisak;
     }
 
+    public static String getNazivZadanogPodtipaDokumenta(Activity a) {
+        String myTabela = "podtip_dokumenta";
+        postavkeAplikacije myPostavke = new postavkeAplikacije(a);
+        long id = myPostavke.getPodtipDokumenta();
+        if (id == 0) {
+            return "Provjerite postavke!!!";
+        }
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
+        Cursor c;
+        c = myDB.rawQuery("SELECT * FROM " + myTabela + " WHERE _id = " + id + ";", null);
+
+        int NazivIndex = c.getColumnIndex("naziv");
+
+        c.moveToFirst();
+        String naziv = "";
+        for (int j = 0; j < c.getCount(); j++) {
+            naziv = c.getString(NazivIndex);
+            break;
+        }
+        c.close();
+        myDB.close();
+        return naziv;
+    }
     public static List<NacinPlacanja> getListaNacinaPlacanja(Activity a, String filter) {
         List<NacinPlacanja> spisak = new ArrayList<NacinPlacanja>();
         String myTabela = "nacin_placanja";

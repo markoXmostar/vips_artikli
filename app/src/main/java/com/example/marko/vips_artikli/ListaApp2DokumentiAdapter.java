@@ -81,7 +81,7 @@ public class ListaApp2DokumentiAdapter extends ArrayAdapter {
         //alternate row color end
         App2Dokumenti myObject = (App2Dokumenti) this.getItem(position);
         //layoutHandler.ID.setText(komitent.getId());
-        layoutHandler.DatumDokumenta.setText(MainActivity.parseDateFromSQLLiteDBFormatToMyFormat(myObject.getDatumDokumenta()));
+        layoutHandler.DatumDokumenta.setText(myObject.getDatumDokumentaString());
         layoutHandler.Komitent.setText(myObject.getKmtNaziv() + " / " + myObject.getPjKmtNaziv());
         layoutHandler.NacinPlacanja.setText(myObject.getNacinPlacanjaNaziv());
         if (myObject.getDatumSinkronizacije() == null) {

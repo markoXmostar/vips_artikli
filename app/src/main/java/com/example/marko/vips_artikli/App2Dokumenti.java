@@ -1,5 +1,6 @@
 package com.example.marko.vips_artikli;
 
+import android.text.format.DateFormat;
 import android.util.Log;
 
 import java.text.ParseException;
@@ -22,7 +23,7 @@ public class App2Dokumenti {
 
     private List<App2Stavke> spisakStavki;
 
-    public App2Dokumenti(long id, long kasaId, long podtipId, String podtipNaziv, long pjFrmId, String pjFrmNaziv, long pjKmtId, String pjKmtNaziv, String kmtNaziv, String strDatumDokumenta, String strDatumSinkronizacije,
+    public App2Dokumenti(long id, long kasaId, long podtipId, String podtipNaziv, long pjFrmId, String pjFrmNaziv, long pjKmtId, String pjKmtNaziv, String kmtNaziv, Date DatumDokumenta, Date DatumSinkronizacije,
                          long komercijalistaId, String komercijalistNaziv, long nacinPlacanjaId, String nacinPlacanjaNaziv, String opaska, long vipsId) {
         this.id = id;
         this.podtipId = podtipId;
@@ -38,18 +39,11 @@ public class App2Dokumenti {
         this.KmtNaziv = kmtNaziv;
         this.komercijalistNaziv = komercijalistNaziv;
         this.nacinPlacanjaNaziv = nacinPlacanjaNaziv;
-        Log.d(TAG, "App2Dokumenti: DATUM U JSON FORMATU JE:" + strDatumDokumenta);
-        this.datumDokumenta = MainActivity.getDateFromJSONFormat(strDatumDokumenta);
+        //Log.d(TAG, "App2Dokumenti: DATUM U JSON FORMATU JE:" + strDatumDokumenta);
+        //2018-04-05T00:00:00
+        this.datumDokumenta = DatumDokumenta;
+        this.datumSinkronizacije = DatumSinkronizacije;
         this.opaska = opaska;
-        if (strDatumSinkronizacije == null) {
-            this.datumSinkronizacije = null;
-        } else {
-            if (strDatumSinkronizacije.isEmpty()) {
-                this.datumSinkronizacije = null;
-            } else {
-                this.datumSinkronizacije = MainActivity.getDateFromJSONFormat(strDatumSinkronizacije);
-            }
-        }
 
     }
 
@@ -177,12 +171,12 @@ public class App2Dokumenti {
         return datumDokumenta;
     }
 
-    public String getDatumDokumenta_String() {
-        return MainActivity.parseDateFromSQLLiteDBFormatToMyFormat(datumDokumenta);
+    public String getDatumDokumentaString() {
+        return DateFormat.format(MainActivity.DatumFormat, datumDokumenta).toString();
     }
 
-    public String getDatumSinkronizacije_String() {
-        return MainActivity.parseDateFromSQLLiteDBFormatToMyFormat(datumSinkronizacije);
+    public String getDatumSinkronizacijeString() {
+        return DateFormat.format(MainActivity.DatumFormat, datumSinkronizacije).toString();
     }
 
     public void setDatumDokumenta(Date datumDokumenta) {

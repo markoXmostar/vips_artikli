@@ -22,7 +22,7 @@ public class App2DokumentiActivity extends AppCompatActivity {
         listSpisakDokumenata = (ListView) findViewById(R.id.listSpisakDokumenata_App2);
         listSpisakDokumenata.setItemsCanFocus(false);
 
-
+        setTitle();
         ucitajDokumente();
     }
 
@@ -35,6 +35,11 @@ public class App2DokumentiActivity extends AppCompatActivity {
         for (App2Dokumenti dok : spisakDok) {
             listaDokumenta.add(dok);
         }
+    }
+
+    private void setTitle() {
+        this.setTitle(MainActivity.getNazivZadanogPodtipaDokumenta(this));
+
     }
 
 
