@@ -1154,6 +1154,90 @@ public class MainActivity extends AppCompatActivity
         return listaStavki;
     }
 
+    public static List<App2Stavke> getListaStavki2(long IdDokumenta, Activity a) {
+        String tabelaApp1 = "stavke2";
+
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
+        if (!isTableExists(myDB, tabelaApp1)) {
+            return null;
+        }
+        List<App2Stavke> listaStavki = new ArrayList<App2Stavke>();
+
+        Log.d(TAG, "ucitajStavke: IdDOKUMENTA=" + IdDokumenta);
+
+
+        Cursor c;
+        Log.d(TAG, "ucitajStavke: " + "SELECT * FROM " + tabelaApp1 + " WHERE zaglavljeId=" + IdDokumenta + " ORDER BY rbr ASC");
+        c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " WHERE zaglavljeId=" + IdDokumenta + " ORDER BY rbr ASC", null);
+
+        long idStavke;
+        long zaglavljeId;
+        int rbr;
+        long artiklId;
+        String artiklSifra;
+        String artiklNaziv;
+        long jmjId;
+        String jmjNaziv;
+        long vrijednostId1;
+        String vrijednostNaziv;
+        String atributNaziv;
+        double kolicina;
+        String opaska;
+        long vipsId;
+        double kolicinaZadana;
+
+        int idStavkeIndex = c.getColumnIndex("_id");
+        int zaglavljeIdIndex = c.getColumnIndex("zaglavljeId");
+        int rbrIndex = c.getColumnIndex("rbr");
+        int artiklIdIndex = c.getColumnIndex("artiklId");
+        int artiklSifraIndex = c.getColumnIndex("artiklSifra");
+        int artiklNazivIndex = c.getColumnIndex("artiklNaziv");
+        int jmjIdIndex = c.getColumnIndex("jmjId");
+        int jmjNazivIndex = c.getColumnIndex("jmjNaziv");
+        int vrijednostId1Index = c.getColumnIndex("vrijednostId1");
+        int vrijednostNazivIndex = c.getColumnIndex("vrijednostNaziv");
+        int atributNazivIndex = c.getColumnIndex("atributNaziv");
+        int kolicinaIndex = c.getColumnIndex("kolicina");
+        int opaskaIndex = c.getColumnIndex("opaska");
+        int vipsIdIndex = c.getColumnIndex("vipsId");
+        int kolicinaZadanaIndex = c.getColumnIndex("kolicinaZadana");
+
+        c.moveToFirst();
+        int brojac = 0;
+        Log.d(TAG, "ucitajStavke: UCITANO JE STAVKI =" + c.getCount());
+        for (int j = 0; j < c.getCount(); j++) {
+            idStavke = c.getLong(idStavkeIndex);
+            zaglavljeId = c.getLong(zaglavljeIdIndex);
+            rbr = c.getInt(rbrIndex);
+            artiklId = c.getLong(artiklIdIndex);
+            artiklSifra = c.getString(artiklSifraIndex);
+            artiklNaziv = c.getString(artiklNazivIndex);
+            jmjId = c.getLong(jmjIdIndex);
+            jmjNaziv = c.getString(jmjNazivIndex);
+            vrijednostId1 = c.getLong(vrijednostId1Index);
+            vrijednostNaziv = c.getString(vrijednostNazivIndex);
+            atributNaziv = c.getString(atributNazivIndex);
+            kolicina = c.getDouble(kolicinaIndex);
+            opaska = c.getString(opaskaIndex);
+            vipsId = c.getLong(vipsIdIndex);
+            kolicinaZadana = c.getDouble(kolicinaZadanaIndex);
+
+
+            App2Stavke myObj = new App2Stavke(idStavke, zaglavljeId, artiklId, jmjId, vrijednostId1, vipsId, rbr, kolicina, kolicinaZadana, opaska, artiklSifra, artiklNaziv, jmjNaziv, vrijednostNaziv, atributNaziv);
+            Log.d(TAG, "getListaStavki2: " + idStavke + "#" + zaglavljeId + "#" + artiklId + "#" + jmjId + "#" + vrijednostId1 + "#" + vipsId + "#" + rbr + "#" + kolicina + "#" + kolicinaZadana + "#" + opaska + "#" + artiklSifra + "#" + artiklNaziv + "#" + jmjNaziv + "#" + vrijednostNaziv + "#" + atributNaziv);
+            listaStavki.add(myObj);
+
+            brojac++;
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        Log.d(TAG, "ucitajDokumente: U tabeli se nalazi " + brojac + " dokumenta!");
+        c.close();
+        myDB.close();
+        return listaStavki;
+    }
+
     public static List<App1Dokumenti> getListaDokumenta(Activity a){
 
         List<App1Dokumenti> listaDokumenta=new ArrayList<App1Dokumenti>();
@@ -1395,7 +1479,11 @@ public class MainActivity extends AppCompatActivity
     public static List<TipDokumenta> getListaTipovaDokumenta(Activity a, String filter, boolean prazanRed, String labelPrazanRed) {
         List<TipDokumenta> spisak = new ArrayList<TipDokumenta>();
         String myTabela = "tip_dokumenta";
+
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
+        if (!isTableExists(myDB, myTabela)) {
+            return null;
+        }
         Cursor c;
         if (filter.equals("")) {
             c = myDB.rawQuery("SELECT * FROM " + myTabela, null);

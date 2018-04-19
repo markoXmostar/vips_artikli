@@ -526,6 +526,15 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
                             //App2Stavke(long id, long zaglavljeId, long artiklId, long jmjId, long vrijednostId1, long vipsId, int rbr, double kolicina, double kolicinaZadana, String opaska,
                             // String artiklSifra, String artiklNaziv, String jmjNaziv, String vrijednostNaziv, String atributNaziv) {
+
+                            String _ops = myStv2.optString("opaska", "");
+                            if (myStv2.isNull("opaska")) {
+                                Log.d(TAG, "onPostExecute: OPASKA JE NULL");
+                                _ops = "";
+                            } else {
+                                Log.d(TAG, "onPostExecute: OPASKA NIJE NULL");
+                            }
+
                             App2Stavke _stv2 = new App2Stavke(myStv2.optLong("id", 0),
                                     myStv2.optLong("zaglavljeId", 0),
                                     myStv2.optLong("artiklId", 0),
@@ -535,13 +544,14 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                                     myStv2.optInt("rbr", 0),
                                     myStv2.optDouble("kolicina", 0),
                                     myStv2.optDouble("kolicinaZadana", 0),
-                                    myStv2.optString("opaska", ""),
+                                    _ops,
                                     myStv2.optString("artiklSifra", ""),
-                                    myStv2.optString("artiklNaziv", ""),
-                                    myStv2.optString("jmjNaziv", ""),
-                                    myStv2.optString("vrijednostNaziv", ""),
-                                    myStv2.optString("atributNaziv", ""));
+                                    myStv2.optString("artikl", ""),
+                                    myStv2.optString("jmj", ""),
+                                    myStv2.optString("vrijednost", ""),
+                                    myStv2.optString("atribut", ""));
                             ListaStavke2.add(_stv2);
+                            Log.d(TAG, "onPostExecute: " + _stv2.toString());
                         }
                         Log.d(TAG, "onPostExecute: BROJ Dokumenata2 =" + ListaStavke2.size());
                         UpisiStavke2UBazu(ListaStavke2);

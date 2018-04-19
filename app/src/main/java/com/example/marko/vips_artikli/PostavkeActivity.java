@@ -13,6 +13,8 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.util.List;
+
 
 public class PostavkeActivity extends AppCompatActivity {
 
@@ -103,56 +105,60 @@ public class PostavkeActivity extends AppCompatActivity {
         });
 
         ArrayAdapter<TipDokumenta> tipAdapter = new ArrayAdapter<TipDokumenta>(this, android.R.layout.simple_spinner_item);
-        for (TipDokumenta tipDok : MainActivity.getListaTipovaDokumenta(PostavkeActivity.this, "", true, "SVI TIPOVI DOKUMENATA")) {
-            tipAdapter.add(tipDok);
-        }
-        spinTipDokumenta.setAdapter(tipAdapter);
+        List<TipDokumenta> listaTipovaDokumenata = MainActivity.getListaTipovaDokumenta(PostavkeActivity.this, "", true, "SVI TIPOVI DOKUMENATA");
+        if (listaTipovaDokumenata != null) {
+            for (TipDokumenta tipDok : listaTipovaDokumenata) {
+                tipAdapter.add(tipDok);
+            }
 
-        spinTipDokumenta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                spinnerTouched = false;
-                TipDokumenta tiDok = (TipDokumenta) adapterView.getItemAtPosition(i);
-                idTipDokumenta = tiDok.getId();
-                if (idTipDokumenta != myPostavke.getTipDokumenta()) {
-                    myPostavke.snimiTipDokumenta(idTipDokumenta);
-                    Log.d(TAG, "onItemSelected: SNIMI tipDokumenta=" + idTipDokumenta);
-                }
-                ArrayAdapter<PodtipDokumenta> podtipAdapter = new ArrayAdapter<PodtipDokumenta>(PostavkeActivity.this, android.R.layout.simple_spinner_item);
-                for (PodtipDokumenta podtip : MainActivity.getListaPodtipova(PostavkeActivity.this, "", idTipDokumenta, false, " ")) {
-                    podtipAdapter.add(podtip);
-                }
-                spinPodtipDokumenta.setAdapter(podtipAdapter);
-                spinPodtipDokumenta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        PodtipDokumenta podtipDok = (PodtipDokumenta) adapterView.getItemAtPosition(i);
-                        idPodtipDokumenta = podtipDok.getId();
-                        if (idPodtipDokumenta != myPostavke.getPodtipDokumenta()) {
-                            if (spinnerTouched) {
-                                myPostavke.snimiPodtipDokumenta(idPodtipDokumenta);
-                                Log.d(TAG, "onItemSelected: SNIMI idPodtipDokumenta=" + idPodtipDokumenta);
+
+            spinTipDokumenta.setAdapter(tipAdapter);
+            spinTipDokumenta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    spinnerTouched = false;
+                    TipDokumenta tiDok = (TipDokumenta) adapterView.getItemAtPosition(i);
+                    idTipDokumenta = tiDok.getId();
+                    if (idTipDokumenta != myPostavke.getTipDokumenta()) {
+                        myPostavke.snimiTipDokumenta(idTipDokumenta);
+                        Log.d(TAG, "onItemSelected: SNIMI tipDokumenta=" + idTipDokumenta);
+                    }
+                    ArrayAdapter<PodtipDokumenta> podtipAdapter = new ArrayAdapter<PodtipDokumenta>(PostavkeActivity.this, android.R.layout.simple_spinner_item);
+                    for (PodtipDokumenta podtip : MainActivity.getListaPodtipova(PostavkeActivity.this, "", idTipDokumenta, false, " ")) {
+                        podtipAdapter.add(podtip);
+                    }
+                    spinPodtipDokumenta.setAdapter(podtipAdapter);
+                    spinPodtipDokumenta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            PodtipDokumenta podtipDok = (PodtipDokumenta) adapterView.getItemAtPosition(i);
+                            idPodtipDokumenta = podtipDok.getId();
+                            if (idPodtipDokumenta != myPostavke.getPodtipDokumenta()) {
+                                if (spinnerTouched) {
+                                    myPostavke.snimiPodtipDokumenta(idPodtipDokumenta);
+                                    Log.d(TAG, "onItemSelected: SNIMI idPodtipDokumenta=" + idPodtipDokumenta);
+                                }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
 
-                    }
-                });
-                spinPodtipDokumenta.setSelection(getIndex_PodtipDokumenta(myPostavke.getPodtipDokumenta()));
-            }
+                        }
+                    });
+                    spinPodtipDokumenta.setSelection(getIndex_PodtipDokumenta(myPostavke.getPodtipDokumenta()));
+                }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-            }
-        });
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                }
+            });
 
-        //setRadi(true);
-        spinTipDokumenta.setSelection(getIndex_TipDokumenta(myPostavke.getTipDokumenta()));
-        spinPodtipDokumenta.setSelection(getIndex_PodtipDokumenta(myPostavke.getPodtipDokumenta()));
+            //setRadi(true);
+            spinTipDokumenta.setSelection(getIndex_TipDokumenta(myPostavke.getTipDokumenta()));
+            spinPodtipDokumenta.setSelection(getIndex_PodtipDokumenta(myPostavke.getPodtipDokumenta()));
 
+        }
 
         spinnerVrstaAplikacije.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -272,10 +278,13 @@ public class PostavkeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        PodtipDokumenta podtipDok = (PodtipDokumenta) spinPodtipDokumenta.getSelectedItem();
-        idPodtipDokumenta = podtipDok.getId();
-        _myPostavke.snimiPodtipDokumenta(idPodtipDokumenta);
-        Log.d(TAG, "onDestroy: SNIMI::: ON_DESTROY = snimljen podtip=" + idPodtipDokumenta);
+        if (spinPodtipDokumenta.getCount() > 0) {
+            PodtipDokumenta podtipDok = (PodtipDokumenta) spinPodtipDokumenta.getSelectedItem();
+            idPodtipDokumenta = podtipDok.getId();
+            _myPostavke.snimiPodtipDokumenta(idPodtipDokumenta);
+            Log.d(TAG, "onDestroy: SNIMI::: ON_DESTROY = snimljen podtip=" + idPodtipDokumenta);
+        }
+
     }
 
 

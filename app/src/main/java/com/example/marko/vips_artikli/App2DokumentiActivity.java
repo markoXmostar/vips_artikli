@@ -1,11 +1,17 @@
 package com.example.marko.vips_artikli;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class App2DokumentiActivity extends AppCompatActivity {
 
@@ -24,6 +30,19 @@ public class App2DokumentiActivity extends AppCompatActivity {
 
         setTitle();
         ucitajDokumente();
+
+        listSpisakDokumenata.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                App2Dokumenti selektiranDok = (App2Dokumenti) adapterView.getItemAtPosition(i);
+                //Toast.makeText(App1DokumentiActivity.this,selektiranDok.getId() +"/" +selektiranDok.getDatumDokumentaString() + "-" + selektiranDok.getKomitentNaziv(),Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(App2DokumentiActivity.this, App2StavkeActivity.class);
+                intent.putExtra("idDokumenta", selektiranDok.getVipsId());
+                startActivity(intent);
+
+            }
+        });
     }
 
     private void ucitajDokumente() {

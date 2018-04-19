@@ -149,4 +149,25 @@ public class App2Stavke {
     public void setOpaska(String opaska) {
         this.opaska = opaska;
     }
+
+    @Override
+    public String toString() {
+        return "App2Stavke{" +
+                "id=" + id +
+                ", zaglavljeId=" + zaglavljeId +
+                ", artiklId=" + artiklId +
+                ", jmjId=" + jmjId +
+                ", vrijednostId1=" + vrijednostId1 +
+                ", vipsId=" + vipsId +
+                ", rbr=" + rbr +
+                ", kolicina=" + kolicina +
+                ", kolicinaZadana=" + kolicinaZadana +
+                ", opaska='" + opaska + '\'' +
+                ", artiklSifra='" + artiklSifra + '\'' +
+                ", artiklNaziv='" + artiklNaziv + '\'' +
+                ", jmjNaziv='" + jmjNaziv + '\'' +
+                ", vrijednostNaziv='" + vrijednostNaziv + '\'' +
+                ", atributNaziv='" + atributNaziv + '\'' +
+                '}';
+    }
 }

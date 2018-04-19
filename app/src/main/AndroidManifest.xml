@@ -47,7 +47,8 @@
             android:label="@string/PostavkeNaslov" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".PinActivity" />
-        <activity android:name=".App2DokumentiActivity"></activity>
+        <activity android:name=".App2DokumentiActivity" />
+        <activity android:name=".App2StavkeActivity"></activity>
     </application>
 
 </manifest>
