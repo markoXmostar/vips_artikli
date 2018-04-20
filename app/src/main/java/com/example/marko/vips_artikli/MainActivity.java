@@ -529,6 +529,7 @@ public class MainActivity extends AppCompatActivity
         progressDialog.setMessage("Brišem podatke sa uređaja. Molim pričekajte!");
         progressDialog.setCancelable(false);
         progressDialog.show();
+        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
         deleteAllTable(this, "jmj");
         deleteAllTable(this, "tip_dokumenta");
         deleteAllTable(this, "podtip_dokumenta");
@@ -543,7 +544,13 @@ public class MainActivity extends AppCompatActivity
         deleteAllTable(this, "PjKomitenta");
         deleteAllTable(this, "dokumenti1");
         deleteAllTable(this, "stavke1");
-        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
+        if (isTableExists(myDB, "dokumenti2")) {
+            deleteAllTable(this, "dokumenti2");
+        }
+        if (isTableExists(myDB, "stavke2")) {
+            deleteAllTable(this, "stavke2");
+        }
+
         rekreirajLogTabelu(myDB);
         progressDialog.dismiss();
 
@@ -626,12 +633,13 @@ public class MainActivity extends AppCompatActivity
             } else {
                 podtipDokumenta = myPostavke.getPodtipDokumenta();
             }
+            Log.d(TAG, "postaviTabeleZaSync: POSTAVLJEN PODTIP ZA APP 2/ podtipID = " + podtipDokumenta);
             akcija = "dokumentizaglavlja";
-            urlString = url + akcija + "?d=" + DJELATNIK + "&u=" + UREDJAJ + "&p=" + podtipDokumenta;
+            urlString = url + akcija + "?d=" + DJELATNIK + "&u=" + UREDJAJ + "&p=" + String.valueOf(podtipDokumenta);
             spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "dokumenti2"));
 
             akcija = "dokumentistavke";
-            urlString = url + akcija + "?d=" + DJELATNIK + "&u=" + UREDJAJ + "&p=" + podtipDokumenta;
+            urlString = url + akcija + "?d=" + DJELATNIK + "&u=" + UREDJAJ + "&p=" + String.valueOf(podtipDokumenta);
             spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "stavke2"));
         }
 
@@ -1170,7 +1178,7 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "ucitajStavke: " + "SELECT * FROM " + tabelaApp1 + " WHERE zaglavljeId=" + IdDokumenta + " ORDER BY rbr ASC");
         c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " WHERE zaglavljeId=" + IdDokumenta + " ORDER BY rbr ASC", null);
 
-        long idStavke;
+        int idStavke;
         long zaglavljeId;
         int rbr;
         long artiklId;
@@ -1206,7 +1214,7 @@ public class MainActivity extends AppCompatActivity
         int brojac = 0;
         Log.d(TAG, "ucitajStavke: UCITANO JE STAVKI =" + c.getCount());
         for (int j = 0; j < c.getCount(); j++) {
-            idStavke = c.getLong(idStavkeIndex);
+            idStavke = c.getInt(idStavkeIndex);
             zaglavljeId = c.getLong(zaglavljeIdIndex);
             rbr = c.getInt(rbrIndex);
             artiklId = c.getLong(artiklIdIndex);
@@ -1224,7 +1232,8 @@ public class MainActivity extends AppCompatActivity
 
 
             App2Stavke myObj = new App2Stavke(idStavke, zaglavljeId, artiklId, jmjId, vrijednostId1, vipsId, rbr, kolicina, kolicinaZadana, opaska, artiklSifra, artiklNaziv, jmjNaziv, vrijednostNaziv, atributNaziv);
-            Log.d(TAG, "getListaStavki2: " + idStavke + "#" + zaglavljeId + "#" + artiklId + "#" + jmjId + "#" + vrijednostId1 + "#" + vipsId + "#" + rbr + "#" + kolicina + "#" + kolicinaZadana + "#" + opaska + "#" + artiklSifra + "#" + artiklNaziv + "#" + jmjNaziv + "#" + vrijednostNaziv + "#" + atributNaziv);
+
+            Log.d(TAG, "BAZA getListaDokumenta2: STAVKE2 = " + myObj.toString());
             listaStavki.add(myObj);
 
             brojac++;
@@ -1340,7 +1349,7 @@ public class MainActivity extends AppCompatActivity
 
         SimpleDateFormat SQLLite_dateFormat = new SimpleDateFormat(MainActivity.DatumFormat);
 
-        long id;
+        int id;
         long kasaId;
         long podtipId;
         String podtipNaziv;
@@ -1349,7 +1358,6 @@ public class MainActivity extends AppCompatActivity
         long pjKmtId;
         String pjKmtNaziv;
         String kmtNaziv;
-
         long komercijalistaId;
         String komercijalistaNaziv;
         long nacinPlacanjaId;
@@ -1380,7 +1388,7 @@ public class MainActivity extends AppCompatActivity
         c.moveToFirst();
         int brojac = 0;
         for (int j = 0; j < c.getCount(); j++) {
-            id = c.getLong(idIndex);
+            id = c.getInt(idIndex);
             kasaId = c.getLong(idkasaIdIndex);
             podtipId = c.getLong(idpodtipIdIndex);
             podtipNaziv = c.getString(idpodtipNazivIndex);
@@ -1426,7 +1434,7 @@ public class MainActivity extends AppCompatActivity
             App2Dokumenti myObj = new App2Dokumenti(id, kasaId, podtipId, podtipNaziv, pjFrmId, pjFrmNaziv, pjKmtId, pjKmtNaziv, kmtNaziv,
                     datumDokumenta, datumSinkronizacijeDokumenta, komercijalistaId, komercijalistaNaziv,
                     nacinPlacanjaId, nacinPlacanjaNaziv, opaska, vipsId);
-
+            Log.d(TAG, "BAZA getListaDokumenta2: DOKUMENT2 = " + myObj.toString());
             listaDokumenta.add(myObj);
 
             brojac++;

@@ -16,14 +16,15 @@ public class App2Dokumenti {
     private static final String TAG = "dokumenti2";
     //{"id":null,"kasaId":null,"podtipId":51,"podtip":"Narudžbenica kupca - Pocket PC","pjFrmId":1,"pjFrm":"VP Čitluk","pjKmtId":15595,"pjKmt":"Sjedište","kmt":"Vanima d.o.o. - Mostar",
     // "datumDokumenta":"2018-04-05T00:00:00","komercijalistId":null,"komercijalist":"","nacinPlacanjaId":1,"nacinPlacanja":"Virman","opaska":"","vipsId":501923}
-    private long id, podtipId, kasaId, pjFrmId, pjKmtId, komercijalistaId, nacinPlacanjaId, vipsId;
+    int id;
+    private long podtipId, kasaId, pjFrmId, pjKmtId, komercijalistaId, nacinPlacanjaId, vipsId;
     private Date datumDokumenta;
     private Date datumSinkronizacije;
     private String opaska, podtipNaziv, pjFrmNaziv, pjKmtNaziv, KmtNaziv, komercijalistNaziv, nacinPlacanjaNaziv;
 
     private List<App2Stavke> spisakStavki;
 
-    public App2Dokumenti(long id, long kasaId, long podtipId, String podtipNaziv, long pjFrmId, String pjFrmNaziv, long pjKmtId, String pjKmtNaziv, String kmtNaziv, Date DatumDokumenta, Date DatumSinkronizacije,
+    public App2Dokumenti(int id, long kasaId, long podtipId, String podtipNaziv, long pjFrmId, String pjFrmNaziv, long pjKmtId, String pjKmtNaziv, String kmtNaziv, Date DatumDokumenta, Date DatumSinkronizacije,
                          long komercijalistaId, String komercijalistNaziv, long nacinPlacanjaId, String nacinPlacanjaNaziv, String opaska, long vipsId) {
         this.id = id;
         this.podtipId = podtipId;
@@ -103,11 +104,11 @@ public class App2Dokumenti {
         this.spisakStavki = spisakStavki;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -197,5 +198,29 @@ public class App2Dokumenti {
 
     public void setOpaska(String opaska) {
         this.opaska = opaska;
+    }
+
+    @Override
+    public String toString() {
+        return "App2Dokumenti{" +
+                "id=" + id +
+                ", podtipId=" + podtipId +
+                ", kasaId=" + kasaId +
+                ", pjFrmId=" + pjFrmId +
+                ", pjKmtId=" + pjKmtId +
+                ", komercijalistaId=" + komercijalistaId +
+                ", nacinPlacanjaId=" + nacinPlacanjaId +
+                ", vipsId=" + vipsId +
+                ", datumDokumenta=" + datumDokumenta +
+                ", datumSinkronizacije=" + datumSinkronizacije +
+                ", opaska='" + opaska + '\'' +
+                ", podtipNaziv='" + podtipNaziv + '\'' +
+                ", pjFrmNaziv='" + pjFrmNaziv + '\'' +
+                ", pjKmtNaziv='" + pjKmtNaziv + '\'' +
+                ", KmtNaziv='" + KmtNaziv + '\'' +
+                ", komercijalistNaziv='" + komercijalistNaziv + '\'' +
+                ", nacinPlacanjaNaziv='" + nacinPlacanjaNaziv + '\'' +
+                ", spisakStavki=" + spisakStavki +
+                '}';
     }
 }

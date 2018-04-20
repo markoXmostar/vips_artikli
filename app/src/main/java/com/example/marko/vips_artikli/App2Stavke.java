@@ -1,18 +1,21 @@
 package com.example.marko.vips_artikli;
 
+import java.io.Serializable;
+
 /**
  * Created by marko on 10.4.2018..
  */
 
-public class App2Stavke {
+public class App2Stavke implements Serializable {
     //{"id":0,"zaglavljeId":501923,"rbr":1,"artiklId":170624,"jmjId":4,"vrijednostId1":0,"kolicina":1.00000,"opaska":null,"vipsId":5604939,"kolicinaZadana":1.00000}
     //{"id":0,"zaglavljeId":501923,"rbr":1,"artiklId":170624,"artiklSifra":"03947","artikl":" BACVA 50L","jmjId":4,"jmj":"kom","vrijednostId1":0,"vrijednost":"","atribut":"","kolicina":1.00000,"opaska":null,"vipsId":5604939,"kolicinaZadana":1.00000}
-    private long id, zaglavljeId, artiklId, jmjId, vrijednostId1, vipsId;
+    int id;
+    private long zaglavljeId, artiklId, jmjId, vrijednostId1, vipsId;
     private int rbr;
     private double kolicina, kolicinaZadana;
     private String opaska, artiklSifra, artiklNaziv, jmjNaziv, vrijednostNaziv, atributNaziv;
 
-    public App2Stavke(long id, long zaglavljeId, long artiklId, long jmjId, long vrijednostId1, long vipsId, int rbr, double kolicina, double kolicinaZadana, String opaska, String artiklSifra, String artiklNaziv, String jmjNaziv, String vrijednostNaziv, String atributNaziv) {
+    public App2Stavke(int id, long zaglavljeId, long artiklId, long jmjId, long vrijednostId1, long vipsId, int rbr, double kolicina, double kolicinaZadana, String opaska, String artiklSifra, String artiklNaziv, String jmjNaziv, String vrijednostNaziv, String atributNaziv) {
         this.id = id;
         this.zaglavljeId = zaglavljeId;
         this.artiklId = artiklId;
@@ -30,7 +33,7 @@ public class App2Stavke {
         this.atributNaziv = atributNaziv;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -74,7 +77,7 @@ public class App2Stavke {
         this.atributNaziv = atributNaziv;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

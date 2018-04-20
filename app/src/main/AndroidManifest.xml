@@ -48,7 +48,8 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".PinActivity" />
         <activity android:name=".App2DokumentiActivity" />
-        <activity android:name=".App2StavkeActivity"></activity>
+        <activity android:name=".App2StavkeActivity" />
+        <activity android:name=".App2UnosKolicine"></activity>
     </application>
 
 </manifest>

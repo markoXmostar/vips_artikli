@@ -487,7 +487,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                             Date datumSink = null;
                             //App2Dokumenti(long id, long kasaId, long podtipId, String podtipNaziv, long pjFrmId, String pjFrmNaziv, long pjKmtId, String pjKmtNaziv,String kmtNaziv, String datumDokumenta,
                             //  long komercijalistaId,String komercijalistNaziv, long nacinPlacanjaId, String nacinPlacanjaNaziv, String opaska, long vipsId)
-                            App2Dokumenti _dok2 = new App2Dokumenti(myDok2.optLong("id", 0),
+                            App2Dokumenti _dok2 = new App2Dokumenti(myDok2.optInt("id", 0),
                                     myDok2.optLong("kasaId", 0),
                                     myDok2.optLong("podtipId", 0), myDok2.optString("podtip", ""),
                                     myDok2.optLong("pjFrmId", 0), myDok2.optString("pjFrm", ""),
@@ -535,7 +535,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                                 Log.d(TAG, "onPostExecute: OPASKA NIJE NULL");
                             }
 
-                            App2Stavke _stv2 = new App2Stavke(myStv2.optLong("id", 0),
+                            App2Stavke _stv2 = new App2Stavke(myStv2.optInt("id", 0),
                                     myStv2.optLong("zaglavljeId", 0),
                                     myStv2.optLong("artiklId", 0),
                                     myStv2.optLong("jmjId", 0),
@@ -1050,7 +1050,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
             // "jmjId":4,"jmj":"kom","vrijednostId1":0,"vrijednost":"","atribut":"","kolicina":1.00000,"opaska":null,"vipsId":5604939,"kolicinaZadana":1.00000}
 
             myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
-                    "_id long, " +
+                    "_id integer PRIMARY KEY AUTOINCREMENT, " +
                     "zaglavljeId long, " +
                     "rbr int, " +
                     "artiklId long, " +
@@ -1070,9 +1070,9 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
             myDB.execSQL("DELETE FROM " + myTabela + ";");
             for (int i = 0; i < Lista.size(); i++) {
                 App2Stavke myStv2 = Lista.get(i);
-                myDB.execSQL("INSERT INTO " + myTabela + " (_id, zaglavljeId, rbr, artiklId, artiklSifra, artiklNaziv,  jmjId, jmjNaziv, vrijednostId1, vrijednostNaziv," +
+                myDB.execSQL("INSERT INTO " + myTabela + " ( zaglavljeId, rbr, artiklId, artiklSifra, artiklNaziv,  jmjId, jmjNaziv, vrijednostId1, vrijednostNaziv," +
                         " atributNaziv, kolicina, opaska, vipsId, kolicinaZadana) VALUES (" +
-                        myStv2.getId() + "," +
+                        //myStv2.getId() + "," +
                         myStv2.getZaglavljeId() + "," +
                         myStv2.getRbr() + "," +
                         myStv2.getArtiklId() + ",'" +
@@ -1121,7 +1121,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
             // "datumDokumenta":"2018-04-05T00:00:00","komercijalistId":null,"komercijalist":"","nacinPlacanjaId":1,"nacinPlacanja":"Virman","opaska":"","vipsId":501923}
 
             myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
-                    "_id long, " +
+                    "_id integer PRIMARY KEY AUTOINCREMENT, " +
                     "kasaId long, " +
                     "podtipId long, " +
                     "podtipNaziv varchar, " +
@@ -1143,9 +1143,9 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
             myDB.execSQL("DELETE FROM " + myTabela + ";");
             for (int i = 0; i < Lista.size(); i++) {
                 App2Dokumenti myDok2 = Lista.get(i);
-                myDB.execSQL("INSERT INTO " + myTabela + " (_id, kasaId, podtipId, podtipNaziv, pjFrmId,pjFrmNaziv,  pjKmtId,pjKmtNaziv,kmtNaziv, datumDokumenta," +
+                myDB.execSQL("INSERT INTO " + myTabela + " ( kasaId, podtipId, podtipNaziv, pjFrmId,pjFrmNaziv,  pjKmtId,pjKmtNaziv,kmtNaziv, datumDokumenta," +
                         " komercijalistaId,komercijalistaNaziv, nacinPlacanjaId,nacinPlacanjaNaziv, vipsId, opaska) VALUES (" +
-                        myDok2.getId() + "," +
+                        //myDok2.getId() + "," +
                         myDok2.getKasaId() + "," +
                         myDok2.getPodtipId() + ",'" +
                         myDok2.getPodtipNaziv() + "'," +

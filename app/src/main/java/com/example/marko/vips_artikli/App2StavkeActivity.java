@@ -1,9 +1,11 @@
 package com.example.marko.vips_artikli;
 
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.List;
@@ -32,6 +34,16 @@ public class App2StavkeActivity extends AppCompatActivity {
 
         listSpisakStavki = (ListView) findViewById(R.id.listSpisakStavki_App2);
         ucitajStavke();
+
+        listSpisakStavki.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                App2Stavke stavka = (App2Stavke) listSpisakStavki.getItemAtPosition(i);
+                Intent intent = new Intent(App2StavkeActivity.this, App2UnosKolicine.class);
+                intent.putExtra("stavka", stavka);
+                startActivityForResult(intent, 1);
+            }
+        });
     }
 
     private void ucitajStavke() {
