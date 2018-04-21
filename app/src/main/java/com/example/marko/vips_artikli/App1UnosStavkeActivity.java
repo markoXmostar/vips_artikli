@@ -123,6 +123,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
     private ArtiklJmj izabranaJMJ;
     private long idDokumenta;
 
+    private int unosStavke = 0;
+
     private postavkeAplikacije myPostavke;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +133,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
 
         Bundle b=getIntent().getExtras();
         idDokumenta=b.getLong("idDokumenta");
+        unosStavke = b.getInt("tipStavke", 0);
 
         myPostavke = new postavkeAplikacije(App1UnosStavkeActivity.this);
 
@@ -153,8 +156,14 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
         btnOk=(Button)findViewById(R.id.btnOK_App1UnosStavke);
         btnCancel =(Button)findViewById(R.id.btnCancel_App1UnosStavke);
 
+        if (unosStavke == 0) {
+            //za aplikaciju 1
+            varijantaPretrageArtikala = myPostavke.getVrstaPretrageArtikala();
+        } else {
+            // za aplikaciju 2 ne treba kamera ni bar codereader;
+            varijantaPretrageArtikala = 0;
+        }
 
-        varijantaPretrageArtikala = myPostavke.getVrstaPretrageArtikala();
         switch (varijantaPretrageArtikala) {
             case 0:
                 //pretraga normalna
@@ -365,19 +374,27 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
                             //txtNapomena.getText().toString());
                             "");
                 }
+                if (unosStavke == 0) {
+                    //za aplikaciju 1
+                    if (myPostavke.isBrziUnosArtikala()) {
+                        MainActivity.snimiStavku(App1UnosStavkeActivity.this, idDokumenta, newStavka);
+                        MainActivity.svirajOK(myPostavke);
+                        recreate();
+                        txtBarcode.setText("");
+                        txtBarcode.requestFocus();
 
-                if (myPostavke.isBrziUnosArtikala()) {
-                    MainActivity.snimiStavku(App1UnosStavkeActivity.this, idDokumenta, newStavka);
-                    MainActivity.svirajOK(myPostavke);
-                    recreate();
-                    txtBarcode.setText("");
-                    txtBarcode.requestFocus();
-
+                    } else {
+                        returnIntent.putExtra("stavka", newStavka);
+                        setResult(Activity.RESULT_OK, returnIntent);
+                        finish();
+                    }
                 } else {
+                    //za aplikaciju 2 NEMA BRZOG UNOSA!!
                     returnIntent.putExtra("stavka", newStavka);
                     setResult(Activity.RESULT_OK, returnIntent);
                     finish();
                 }
+
 
             }
         });

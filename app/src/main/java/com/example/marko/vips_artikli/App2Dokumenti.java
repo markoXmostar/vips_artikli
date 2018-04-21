@@ -21,11 +21,11 @@ public class App2Dokumenti {
     private Date datumDokumenta;
     private Date datumSinkronizacije;
     private String opaska, podtipNaziv, pjFrmNaziv, pjKmtNaziv, KmtNaziv, komercijalistNaziv, nacinPlacanjaNaziv;
-
+    private boolean zavrsen;
     private List<App2Stavke> spisakStavki;
 
     public App2Dokumenti(int id, long kasaId, long podtipId, String podtipNaziv, long pjFrmId, String pjFrmNaziv, long pjKmtId, String pjKmtNaziv, String kmtNaziv, Date DatumDokumenta, Date DatumSinkronizacije,
-                         long komercijalistaId, String komercijalistNaziv, long nacinPlacanjaId, String nacinPlacanjaNaziv, String opaska, long vipsId) {
+                         long komercijalistaId, String komercijalistNaziv, long nacinPlacanjaId, String nacinPlacanjaNaziv, String opaska, long vipsId, boolean zavrsen) {
         this.id = id;
         this.podtipId = podtipId;
         this.kasaId = kasaId;
@@ -45,7 +45,16 @@ public class App2Dokumenti {
         this.datumDokumenta = DatumDokumenta;
         this.datumSinkronizacije = DatumSinkronizacije;
         this.opaska = opaska;
+        this.zavrsen = zavrsen;
 
+    }
+
+    public boolean isZavrsen() {
+        return zavrsen;
+    }
+
+    public void setZavrsen(boolean zavrsen) {
+        this.zavrsen = zavrsen;
     }
 
     public String getPodtipNaziv() {
@@ -220,6 +229,7 @@ public class App2Dokumenti {
                 ", KmtNaziv='" + KmtNaziv + '\'' +
                 ", komercijalistNaziv='" + komercijalistNaziv + '\'' +
                 ", nacinPlacanjaNaziv='" + nacinPlacanjaNaziv + '\'' +
+                ", zavrsen=" + zavrsen +
                 ", spisakStavki=" + spisakStavki +
                 '}';
     }

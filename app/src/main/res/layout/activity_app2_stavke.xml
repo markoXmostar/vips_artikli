@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context="com.example.marko.vips_artikli.App2StavkeActivity">
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabNovaStavka_App2Stavke"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        android:clickable="true"
+        android:src="@drawable/dodaj"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <ListView
         android:id="@+id/listSpisakStavki_App2"
         android:layout_width="0dp"

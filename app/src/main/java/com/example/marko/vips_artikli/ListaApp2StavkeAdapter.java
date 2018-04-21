@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +82,19 @@ public class ListaApp2StavkeAdapter extends ArrayAdapter {
         App2Stavke myObject = (App2Stavke) this.getItem(position);
         //layoutHandler.ID.setText(komitent.getId());
         //layoutHandler.NazivArtikla.setText(myObject.getArtiklSifra() + " | " + myObject.getArtiklNaziv() + "\r\n" + myObject.getAtributNaziv());
-        layoutHandler.NazivArtikla.setText(myObject.getArtiklSifra() + " | " + myObject.getArtiklNaziv() + "\n" + "Nema atributa");
+
+        String atributStr, atributNaz, atributVri;
+        atributNaz = myObject.getAtributNaziv();
+        atributVri = myObject.getVrijednostNaziv();
+        atributStr = atributNaz + " : " + atributVri;
+        /*
+        String str = atributStr;
+        str.replace(" : ", "");
+        if (TextUtils.isEmpty(str)){
+            atributStr=" Nema atributa";
+        }
+        */
+        layoutHandler.NazivArtikla.setText(myObject.getArtiklSifra() + " | " + myObject.getArtiklNaziv() + "\n" + atributStr);
         layoutHandler.JMJ.setText(myObject.getJmjNaziv());
         layoutHandler.Kolicina.setText(String.valueOf(myObject.getKolicina()));
         layoutHandler.ZadanaKolicina.setText(String.valueOf(myObject.getKolicinaZadana()));

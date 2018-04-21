@@ -496,7 +496,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                                     datumSink,
                                     myDok2.optLong("komercijalistId", 0), myDok2.optString("komercijalist", ""),
                                     myDok2.optLong("nacinPlacanjaId", 0), myDok2.optString("nacinPlacanja", ""),
-                                    myDok2.optString("opaska", ""), myDok2.optLong("vipsId", 0));
+                                    myDok2.optString("opaska", ""), myDok2.optLong("vipsId", 0), false);
                             ListaDokumenti2.add(_dok2);
                         }
                         Log.d(TAG, "onPostExecute: BROJ Dokumenata2 =" + ListaDokumenti2.size());
@@ -1137,14 +1137,19 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                     "nacinPlacanjaId long, " +
                     "nacinPlacanjaNaziv varchar, " +
                     "vipsId long, " +
+                    "zavrsen boolean, " +
                     "opaska VARCHAR);");
 
             Log.d(TAG, "Brišem sve iz tabele " + myTabela);
             myDB.execSQL("DELETE FROM " + myTabela + ";");
             for (int i = 0; i < Lista.size(); i++) {
                 App2Dokumenti myDok2 = Lista.get(i);
+                int myZavrsen = 0;
+                if (myDok2.isZavrsen()) {
+                    myZavrsen = 1;
+                }
                 myDB.execSQL("INSERT INTO " + myTabela + " ( kasaId, podtipId, podtipNaziv, pjFrmId,pjFrmNaziv,  pjKmtId,pjKmtNaziv,kmtNaziv, datumDokumenta," +
-                        " komercijalistaId,komercijalistaNaziv, nacinPlacanjaId,nacinPlacanjaNaziv, vipsId, opaska) VALUES (" +
+                        " komercijalistaId,komercijalistaNaziv, nacinPlacanjaId,nacinPlacanjaNaziv, vipsId, opaska, zavrsen) VALUES (" +
                         //myDok2.getId() + "," +
                         myDok2.getKasaId() + "," +
                         myDok2.getPodtipId() + ",'" +
@@ -1160,7 +1165,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                         myDok2.getNacinPlacanjaId() + ",'" +
                         myDok2.getNacinPlacanjaNaziv() + "'," +
                         myDok2.getVipsId() + ",'" +
-                        myDok2.getOpaska() + "');");
+                        myDok2.getOpaska() + "'," + myZavrsen + ");");
 
                 Log.d(TAG, "UpisiDokumente2UBazu: DATUM DOKUMENTA UPISAN U BAZU JE :::" + myDok2.getDatumDokumentaString());
 

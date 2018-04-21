@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -33,6 +34,9 @@ public class App2UnosKolicine extends AppCompatActivity {
         final EditText etxtKolicina = (EditText) findViewById(R.id.etxtKolicina_App2UnosKolicine);
 
         etxtKolicina.setText(String.valueOf(myStv.getKolicina()));
+        etxtKolicina.setSelectAllOnFocus(true);
+        etxtKolicina.requestFocus();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         Button btnPostavi = (Button) findViewById(R.id.btnPopuni_App2UnosKolicine);
         btnPostavi.setOnClickListener(new View.OnClickListener() {
@@ -47,7 +51,9 @@ public class App2UnosKolicine extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent returnIntent = new Intent();
-                App1Stavke newStavka = null;
+                App2Stavke newStavka = myStv;
+                double novaKolicina = Double.parseDouble(etxtKolicina.getText().toString());
+                newStavka.setKolicina(novaKolicina);
                 returnIntent.putExtra("stavka", newStavka);
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();

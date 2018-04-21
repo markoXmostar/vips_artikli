@@ -84,10 +84,10 @@ public class ListaApp2DokumentiAdapter extends ArrayAdapter {
         layoutHandler.DatumDokumenta.setText(myObject.getDatumDokumentaString());
         layoutHandler.Komitent.setText(myObject.getKmtNaziv() + " / " + myObject.getPjKmtNaziv());
         layoutHandler.NacinPlacanja.setText(myObject.getNacinPlacanjaNaziv());
-        if (myObject.getDatumSinkronizacije() == null) {
-            layoutHandler.Slika.setImageResource(R.drawable.img_error);
-        } else {
+        if (myObject.isZavrsen()) {
             layoutHandler.Slika.setImageResource(R.drawable.img_ok);
+        } else {
+            layoutHandler.Slika.setImageResource(R.drawable.img_error);
         }
         return row;
 

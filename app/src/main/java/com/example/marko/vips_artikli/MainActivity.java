@@ -834,6 +834,16 @@ public class MainActivity extends AppCompatActivity
         return artikl;
     }
 
+    public static int getStavke2NoviRbr(Activity a, long dokumentID) {
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
+        Cursor c;
+        c = myDB.rawQuery("SELECT count(*) FROM stavke2;", null);
+        c.moveToFirst();
+        int count = c.getInt(0);
+        myDB.close();
+        return count;
+    }
+
     public static Artikl getArtiklById(Activity a, long artId) {
         Artikl artikl = null;
 
@@ -1366,6 +1376,7 @@ public class MainActivity extends AppCompatActivity
         String opaska;
         String datumDokumentaString;
         String datumSinkronizacijeString;
+        boolean zavrsen;
 
         int idIndex = c.getColumnIndex("_id");
         int idkasaIdIndex = c.getColumnIndex("kasaId");
@@ -1384,6 +1395,7 @@ public class MainActivity extends AppCompatActivity
         int idnacinPlacanjaNazivIndex = c.getColumnIndex("nacinPlacanjaNaziv");
         int idvipsIdIndex = c.getColumnIndex("vipsId");
         int idopaskaIndex = c.getColumnIndex("opaska");
+        int idzavrsenIndex = c.getColumnIndex("zavrsen");
 
         c.moveToFirst();
         int brojac = 0;
@@ -1403,6 +1415,7 @@ public class MainActivity extends AppCompatActivity
             nacinPlacanjaNaziv = c.getString(idnacinPlacanjaNazivIndex);
             vipsId = c.getLong(idvipsIdIndex);
             opaska = c.getString(idopaskaIndex);
+            zavrsen = (c.getInt(idzavrsenIndex) == 1);
 
             Log.d(TAG, "getListaDokumenta2: ČITAM DATUM");
 
@@ -1433,7 +1446,7 @@ public class MainActivity extends AppCompatActivity
 
             App2Dokumenti myObj = new App2Dokumenti(id, kasaId, podtipId, podtipNaziv, pjFrmId, pjFrmNaziv, pjKmtId, pjKmtNaziv, kmtNaziv,
                     datumDokumenta, datumSinkronizacijeDokumenta, komercijalistaId, komercijalistaNaziv,
-                    nacinPlacanjaId, nacinPlacanjaNaziv, opaska, vipsId);
+                    nacinPlacanjaId, nacinPlacanjaNaziv, opaska, vipsId, zavrsen);
             Log.d(TAG, "BAZA getListaDokumenta2: DOKUMENT2 = " + myObj.toString());
             listaDokumenta.add(myObj);
 
@@ -1790,8 +1803,41 @@ public class MainActivity extends AppCompatActivity
                     IdDokumenta + "," + rezultat.getArtiklId() + ",'" + rezultat.getArtiklNaziv() + "'," + rezultat.getKolicina() + ", '" + rezultat.isImaAtribut() + "',null,null" +
                     ",null," + rezultat.getJmjId() + ",'" + rezultat.getJmjNaziv() + "','" + rezultat.getNapomena() + "');");
         }
+        myDB.close();
+    }
 
+    public static void snimiStavku2(Activity a, long IdDokumenta, App2Stavke stavka) {
+        App2Stavke myStv2 = stavka;
+        String tabelaApp2 = "stavke2";
+        SQLiteDatabase myDB = null;
+        myDB = a.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
 
+        myDB.execSQL("INSERT INTO " + tabelaApp2 + " ( zaglavljeId, rbr, artiklId, artiklSifra, artiklNaziv,  jmjId, jmjNaziv, vrijednostId1, vrijednostNaziv," +
+                " atributNaziv, kolicina, opaska, vipsId, kolicinaZadana) VALUES (" +
+                //myStv2.getId() + "," +
+                IdDokumenta + "," +
+                myStv2.getRbr() + "," +
+                myStv2.getArtiklId() + ",'" +
+                myStv2.getArtiklSifra() + "','" +
+                myStv2.getArtiklNaziv() + "'," +
+                myStv2.getJmjId() + ",'" +
+                myStv2.getJmjNaziv() + "'," +
+                myStv2.getVrijednostId1() + ",'" +
+                myStv2.getVrijednostNaziv() + "','" +
+                myStv2.getAtributNaziv() + "'," +
+                myStv2.getKolicina() + ",'" +
+                myStv2.getOpaska() + "',0,0);");
+
+        myDB.close();
+    }
+
+    public static void updateStavke2(Activity a, App2Stavke stavka) {
+        App2Stavke rezultat = stavka;
+        String tabelaApp1 = "stavke2";
+        SQLiteDatabase myDB = null;
+        myDB = a.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+        String strSQL = "UPDATE " + tabelaApp1 + " SET kolicina = " + String.valueOf(rezultat.getKolicina()) + " WHERE _id = " + rezultat.getId() + ";";
+        myDB.execSQL(strSQL);
         myDB.close();
     }
 

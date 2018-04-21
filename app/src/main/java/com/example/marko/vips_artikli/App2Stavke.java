@@ -1,5 +1,7 @@
 package com.example.marko.vips_artikli;
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
 
 /**
@@ -62,14 +64,17 @@ public class App2Stavke implements Serializable {
     }
 
     public String getVrijednostNaziv() {
+
         return vrijednostNaziv;
     }
 
     public void setVrijednostNaziv(String vrijednostNaziv) {
+
         this.vrijednostNaziv = vrijednostNaziv;
     }
 
     public String getAtributNaziv() {
+
         return atributNaziv;
     }
 
