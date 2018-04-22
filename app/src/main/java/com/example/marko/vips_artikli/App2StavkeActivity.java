@@ -83,6 +83,8 @@ public class App2StavkeActivity extends AppCompatActivity {
                                 int y = selektiranaStavka.getId();
                                 long x = Long.valueOf(y);
                                 MainActivity.izbrisiRedakIzTabele(App2StavkeActivity.this, "stavke2", "_id", x);
+                                MainActivity.updateOstalihRBR(App2StavkeActivity.this, selektiranaStavka.getZaglavljeId(), selektiranaStavka.getRbr());
+                                MainActivity.updateZavrsenoInDokumenti2(App2StavkeActivity.this, selektiranaStavka.getZaglavljeId());
                                 ucitajStavke();
                                 break;
 
@@ -115,6 +117,7 @@ public class App2StavkeActivity extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 App2Stavke rezultat = (App2Stavke) data.getSerializableExtra("stavka");
                 MainActivity.updateStavke2(App2StavkeActivity.this, rezultat);
+
                 ucitajStavke();
             }
             if (resultCode == Activity.RESULT_CANCELED) {

@@ -763,6 +763,13 @@ public class MainActivity extends AppCompatActivity
         myDB.close();
     }
 
+    public static void updateOstalihRBR(Activity a, Long myID, int izbrisaniRBR) {
+        SQLiteDatabase myDB = null;
+        myDB = a.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+        myDB.execSQL("UPDATE stavke2 SET rbr = rbr-1 WHERE zaglavljeId = " + myID + " AND rbr > " + izbrisaniRBR + " ;");
+        myDB.close();
+    }
+
     public static Date getDateFromSQLLiteDBFormat(String dateFromSqlLiteAsString){
         Date date=new Date();
         SimpleDateFormat simpleSqlDateFormat = new SimpleDateFormat(SqlLiteDateFormat);
@@ -837,11 +844,29 @@ public class MainActivity extends AppCompatActivity
     public static int getStavke2NoviRbr(Activity a, long dokumentID) {
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
         Cursor c;
-        c = myDB.rawQuery("SELECT count(*) FROM stavke2;", null);
+        c = myDB.rawQuery("SELECT count(*) FROM stavke2 WHERE zaglavljeId =" + dokumentID + ";", null);
         c.moveToFirst();
         int count = c.getInt(0);
+        c.close();
         myDB.close();
-        return count;
+        Log.d(TAG, "getStavke2NoviRbr: STAVKE2. Novi RBR=" + String.valueOf(count + 1));
+        return count + 1;
+    }
+
+    public static void updateZavrsenoInDokumenti2(Activity a, long dokumentID) {
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
+        Cursor c;
+        c = myDB.rawQuery("SELECT count(*) FROM stavke2 WHERE zaglavljeId =" + dokumentID + " AND vipsID != 0 AND kolicina != kolicinaZadana;", null);
+        c.moveToFirst();
+        int count = c.getInt(0);
+        Log.d(TAG, "updateZavrsenoInDokumenti2: STAVKE2. Broj stavki koje se razlikuju od zadanih količina je = " + count);
+        int zavrsen = 0;
+        if (count == 0) {
+            zavrsen = 1;
+        }
+        c.close();
+        myDB.execSQL("UPDATE dokumenti2 SET zavrsen = " + zavrsen + " WHERE vipsId =" + dokumentID + ";");
+        myDB.close();
     }
 
     public static Artikl getArtiklById(Activity a, long artId) {
@@ -929,6 +954,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
         c.close();
+        myDB.close();
         return naziv;
     }
 
@@ -948,6 +974,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
         c.close();
+        myDB.close();
         return naziv;
     }
 
@@ -990,6 +1017,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
         c.close();
+        myDB.close();
         return  listaAtributa;
     }
 
@@ -1062,6 +1090,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
         c.close();
+        myDB.close();
         return lista;
     }
 
@@ -1098,6 +1127,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
         c.close();
+        myDB.close();
         return lista;
     }
 
@@ -1839,6 +1869,8 @@ public class MainActivity extends AppCompatActivity
         String strSQL = "UPDATE " + tabelaApp1 + " SET kolicina = " + String.valueOf(rezultat.getKolicina()) + " WHERE _id = " + rezultat.getId() + ";";
         myDB.execSQL(strSQL);
         myDB.close();
+        //poslije update-a stavke mora se i dokument updetati!!!
+        MainActivity.updateZavrsenoInDokumenti2(a, stavka.getZaglavljeId());
     }
 
     public static void svirajUpozorenje(postavkeAplikacije myPostavke) {

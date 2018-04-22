@@ -19,6 +19,9 @@ public class App2DokumentiActivity extends AppCompatActivity {
     private static String tabelaApp1 = "dokumenti2";
 
     private ListView listSpisakDokumenata;
+    private ListaApp2DokumentiAdapter listaDokumenta;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,10 +30,13 @@ public class App2DokumentiActivity extends AppCompatActivity {
 
         listSpisakDokumenata = (ListView) findViewById(R.id.listSpisakDokumenata_App2);
         listSpisakDokumenata.setItemsCanFocus(false);
+        listaDokumenta = new ListaApp2DokumentiAdapter(this, R.layout.row_app2_zaglavlje);
+        listSpisakDokumenata.setAdapter(listaDokumenta);
 
         setTitle();
-        ucitajDokumente();
+        //ucitajDokumente();
 
+        Log.d(TAG, "onCreate: CREATE Dokument2");
         listSpisakDokumenata.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -46,14 +52,26 @@ public class App2DokumentiActivity extends AppCompatActivity {
     }
 
     private void ucitajDokumente() {
-        ListaApp2DokumentiAdapter listaDokumenta = new ListaApp2DokumentiAdapter(this, R.layout.row_app2_zaglavlje);
-        listSpisakDokumenata.setAdapter(listaDokumenta);
+        Log.d(TAG, "onCreate: UČITAVAM Dokument2");
         Log.d(TAG, "ucitajDokumente: Učitavam dokumente 2 /START");
         List<App2Dokumenti> spisakDok = MainActivity.getListaDokumenta2(App2DokumentiActivity.this, 0);
         Log.d(TAG, "ucitajDokumente: Učitao sam dokumente 2 /END");
         for (App2Dokumenti dok : spisakDok) {
             listaDokumenta.add(dok);
         }
+        //ucitan=true;
+    }
+
+    private void updateDokumenata() {
+//        if (!ucitan){
+//            ucitan=true;
+//        }else{
+        Log.d(TAG, "onCreate: UPDATE Dokument2");
+        listaDokumenta.clear();
+        ucitajDokumente();
+        listaDokumenta.notifyDataSetChanged();
+        listaDokumenta.setNotifyOnChange(true);
+//        }
     }
 
     private void setTitle() {
@@ -61,5 +79,15 @@ public class App2DokumentiActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateDokumenata();
+        Log.d(TAG, "onRestart: DOKUMENT2. Reload");
+        if (listSpisakDokumenata != null) {
+            listSpisakDokumenata.invalidateViews();
+        }
 
+
+    }
 }

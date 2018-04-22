@@ -1088,6 +1088,8 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                         myStv2.getVipsId() + "," +
                         myStv2.getKolicinaZadana() + ");");
 
+                MainActivity.updateZavrsenoInDokumenti2(myMainActivity, myStv2.getZaglavljeId());
+
             }
             Log.d(TAG, "Gotovo " + myTabela);
             myDB.close();
@@ -1168,6 +1170,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                         myDok2.getOpaska() + "'," + myZavrsen + ");");
 
                 Log.d(TAG, "UpisiDokumente2UBazu: DATUM DOKUMENTA UPISAN U BAZU JE :::" + myDok2.getDatumDokumentaString());
+
 
             }
             Log.d(TAG, "Gotovo " + myTabela);
