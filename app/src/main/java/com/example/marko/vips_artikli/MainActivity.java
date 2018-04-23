@@ -1752,6 +1752,13 @@ public class MainActivity extends AppCompatActivity
         myDB.close();
     }
 
+    public static void izbrisiDokumente2PoslijeSinkronizacije(Activity a, int idDok) {
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
+        myDB.execSQL("DELETE FROM dokumenti2 WHERE _id = " + idDok + ";");
+        Log.d(TAG, "izbrisiDokumente2PoslijeSinkronizacije: DOKUMENTI2: Dokument IZBRISAN! ID=" + idDok);
+        myDB.close();
+    }
+
     public static boolean sendAllDokuments(Activity a) {
         ProgressDialog pd = new ProgressDialog(a);
         pd.setMessage("Šaljem podatke, molim pričekajte!");

@@ -95,8 +95,11 @@ public class App2DokumentiActivity extends AppCompatActivity {
                                     if (rezultat.equals("OK")) {
 
                                         //izbrisi dokumente i stavke
+                                        MainActivity.izbrisiDokumente2PoslijeSinkronizacije(App2DokumentiActivity.this, selektiraniDok.getId());
 
-                                        ucitajDokumente();
+                                        //ucitajDokumente();
+                                    } else {
+                                        Toast.makeText(App2DokumentiActivity.this, "GREŠKA PRI SLANJU PODATAKA! POKUŠAJTE KASNIJE.", Toast.LENGTH_LONG).show();
                                     }
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
