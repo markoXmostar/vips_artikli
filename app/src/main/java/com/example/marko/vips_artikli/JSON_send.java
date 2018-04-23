@@ -30,10 +30,14 @@ public class JSON_send extends AsyncTask<String, String, String> {
     List<App1Dokumenti> spisakDokumenta;
     Activity myActivity=null;
     private ProgressDialog progressDialog;
+    private boolean sendVipsID;
+    private int vrstaAplikacije;
 
-    public JSON_send(Activity a,List<App1Dokumenti> spisakDokumentaZaSync) {
+    public JSON_send(Activity a, List<App1Dokumenti> spisakDokumentaZaSync, boolean sendVipsID, int vrstaAplikacije) {
         spisakDokumenta = spisakDokumentaZaSync;
         myActivity=a;
+        this.sendVipsID = sendVipsID;
+        this.vrstaAplikacije = vrstaAplikacije;
     }
 
     protected void onPreExecute() {
@@ -96,8 +100,9 @@ public class JSON_send extends AsyncTask<String, String, String> {
     private JSONObject mojJson() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("UredjajId", 0);
+            jsonObject.put("UredjajId", MainActivity.UREDJAJ);
             jsonObject.put("DjelatnikId", MainActivity.DJELATNIK);
+            jsonObject.put("VrstaAplikacije", vrstaAplikacije);
 
             JSONArray jsonArrayDokumenti = new JSONArray();
             for (App1Dokumenti dokument : spisakDokumenta) {
@@ -111,18 +116,29 @@ public class JSON_send extends AsyncTask<String, String, String> {
                 jsonDokument.put("KomercijalistID", 0);
                 jsonDokument.put("NacinPlacanjaId", 0);
                 jsonDokument.put("Opaska", dokument.getNapomena());
+                if (sendVipsID) {
+                    jsonDokument.put("vipsID", dokument.getVipsId());
+                }
 
                 JSONArray jsonArray = new JSONArray();
                 for (App1Stavke stavka : dokument.getSpisakStavki()) {
                     JSONObject jsonStavka = new JSONObject();
                     jsonStavka.put("ID", stavka.getId());
                     jsonStavka.put("ZaglavljeId", dokument.getId());
-                    jsonStavka.put("Rbr", 0);
+                    if (vrstaAplikacije == 2) {
+                        jsonStavka.put("Rbr", stavka.getRbr());
+                    } else {
+                        jsonStavka.put("Rbr", 0);
+                    }
+
                     jsonStavka.put("ArtiklId", stavka.getArtiklId());
                     jsonStavka.put("JmjId", stavka.getJmjId());
                     jsonStavka.put("VrijednostId1", stavka.getAtributVrijednost());
                     jsonStavka.put("Kolicina", stavka.getKolicina());
                     jsonStavka.put("Opaska", stavka.getNapomena());
+                    if (sendVipsID) {
+                        jsonStavka.put("vipsID", stavka.getVipsID());
+                    }
                     jsonArray.put(jsonStavka);
                 }
 

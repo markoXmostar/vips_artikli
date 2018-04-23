@@ -20,6 +20,16 @@ public class App1Dokumenti {
     private Date datumSinkronizacije;
     private String napomena;
 
+    private long vipsId;
+
+    public long getVipsId() {
+        return vipsId;
+    }
+
+    public void setVipsId(long vipsId) {
+        this.vipsId = vipsId;
+    }
+
     private String KomitentNaziv,PjKomitentNaziv,TipDokumentaNaziv,PodtipDokumentaNaziv;
     
     private List<App1Stavke> spisakStavki;

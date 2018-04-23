@@ -22,6 +22,25 @@ public class App1Stavke implements Serializable {
     private double kolicina;
     private String napomena;
 
+    private long vipsID;
+    private int rbr;
+
+    public int getRbr() {
+        return rbr;
+    }
+
+    public void setRbr(int rbr) {
+        this.rbr = rbr;
+    }
+
+    public long getVipsID() {
+        return vipsID;
+    }
+
+    public void setVipsID(long vipsID) {
+        this.vipsID = vipsID;
+    }
+
     public App1Stavke(long id, long zaglavljeId, long artiklId, String artiklNaziv, long jmjId, String jmjNaziv,
                       boolean imaAtribut, long atributId, String atributNaziv, String atributVrijednost, double kolicina, String napomena) {
         this.id = id;

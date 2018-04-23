@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,6 +48,19 @@ public class App2Dokumenti {
         this.opaska = opaska;
         this.zavrsen = zavrsen;
 
+        spisakStavki = new ArrayList<App2Stavke>();
+    }
+
+    public List<App2Stavke> getSpisakStavki() {
+        return spisakStavki;
+    }
+
+    public void izbrisiSveStavke() {
+        spisakStavki.clear();
+    }
+
+    public void doadajStavku(App2Stavke stavka) {
+        spisakStavki.add(stavka);
     }
 
     public boolean isZavrsen() {
@@ -105,9 +119,6 @@ public class App2Dokumenti {
         this.nacinPlacanjaNaziv = nacinPlacanjaNaziv;
     }
 
-    public List<App2Stavke> getSpisakStavki() {
-        return spisakStavki;
-    }
 
     public void setSpisakStavki(List<App2Stavke> spisakStavki) {
         this.spisakStavki = spisakStavki;

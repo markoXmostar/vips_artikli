@@ -146,7 +146,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
                                 List<App1Dokumenti> spisakDokZaSync = getDokumentZaSyncIliPrintanje(selektiranDok);
 
                                 try {
-                                    String rezultat=new JSON_send(App1DokumentiActivity.this,spisakDokZaSync).execute().get();
+                                    String rezultat = new JSON_send(App1DokumentiActivity.this, spisakDokZaSync, false, 1).execute().get();
                                     Log.d(TAG, "onClick: REZULTAT ASYNCTASKA JE=>" + rezultat);
                                     if (rezultat.equals("OK")){
 

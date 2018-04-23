@@ -853,6 +853,15 @@ public class MainActivity extends AppCompatActivity
         return count + 1;
     }
 
+    public static boolean getZavrsenoDokumenti2ById(Activity a, int id) {
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
+        Cursor c;
+        c = myDB.rawQuery("SELECT zavrsen FROM dokumenti2 WHERE _id =" + id + ";", null);
+        c.moveToFirst();
+        boolean value = (c.getInt(0) == 1);
+        return value;
+    }
+
     public static void updateZavrsenoInDokumenti2(Activity a, long dokumentID) {
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
         Cursor c;
@@ -1131,6 +1140,23 @@ public class MainActivity extends AppCompatActivity
         return lista;
     }
 
+    public static App1Dokumenti pretvoriApp2Dok_App1Dok(App2Dokumenti dok2) {
+
+        App1Dokumenti rezultat = new App1Dokumenti(dok2.getId(), 0, dok2.getPodtipId(), 0, dok2.getPjKmtId(),
+                dok2.getDatumDokumenta(), null, dok2.getOpaska(), dok2.getKmtNaziv(), dok2.getPjKmtNaziv(), "", dok2.getPodtipNaziv());
+        return rezultat;
+    }
+
+    public static App1Stavke pretvoriApp2Stv_App1Stv(App2Stavke stv2) {
+        boolean imaAtribut = false;
+        if (stv2.getVrijednostId1() != 0) {
+            imaAtribut = true;
+        }
+        App1Stavke rezultat = new App1Stavke(stv2.getId(), stv2.getZaglavljeId(), stv2.getArtiklId(), stv2.getArtiklNaziv(), stv2.getJmjId(),
+                stv2.getJmjNaziv(), imaAtribut, stv2.getVrijednostId1(), stv2.getAtributNaziv(), stv2.getVrijednostNaziv(), stv2.getKolicina(), stv2.getOpaska());
+
+        return rezultat;
+    }
     public static List<App1Stavke> getListaStavki(long IdDokumenta, Activity a){
         String tabelaApp1 = "stavke1";
 
@@ -1749,7 +1775,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
         try {
-            String rezultat = new JSON_send(a, spisakDokumentaZaSync).execute().get();
+            String rezultat = new JSON_send(a, spisakDokumentaZaSync, false, 1).execute().get();
             if (rezultat.equals("OK")) {
                 MainActivity.updateZaglavljaPoslijeSinkronizacije(a, spisakDokumentaZaSync);
                 odgovor = true;
