@@ -1149,7 +1149,7 @@ public class MainActivity extends AppCompatActivity
 
     public static App1Stavke pretvoriApp2Stv_App1Stv(App2Stavke stv2) {
         boolean imaAtribut = false;
-        if (stv2.getVrijednostId1() != 0) {
+        if (stv2.getVrijednostId1() > 0) {
             imaAtribut = true;
         }
         App1Stavke rezultat = new App1Stavke(stv2.getId(), stv2.getZaglavljeId(), stv2.getArtiklId(), stv2.getArtiklNaziv(), stv2.getJmjId(),

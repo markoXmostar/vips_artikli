@@ -133,7 +133,7 @@ public class JSON_send extends AsyncTask<String, String, String> {
 
                     jsonStavka.put("ArtiklId", stavka.getArtiklId());
                     jsonStavka.put("JmjId", stavka.getJmjId());
-                    jsonStavka.put("VrijednostId1", stavka.getAtributVrijednost());
+                    jsonStavka.put("VrijednostId1", stavka.getAtributId());
                     jsonStavka.put("Kolicina", stavka.getKolicina());
                     jsonStavka.put("Opaska", stavka.getNapomena());
                     if (sendVipsID) {

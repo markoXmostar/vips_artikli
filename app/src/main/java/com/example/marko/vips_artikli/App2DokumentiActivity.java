@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -25,7 +27,7 @@ public class App2DokumentiActivity extends AppCompatActivity {
 
     private int lastDokId;
 
-
+    ArrayList<App2Dokumenti> spisakDok;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,7 @@ public class App2DokumentiActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 final App2Dokumenti selektiraniDok = (App2Dokumenti) adapterView.getItemAtPosition(i);
+                final int position = i;
                 final CharSequence akcije[];
                 akcije = new CharSequence[]{"Prikaži detalje", "Sinkroniziraj"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(App2DokumentiActivity.this);
@@ -75,7 +78,6 @@ public class App2DokumentiActivity extends AppCompatActivity {
 
                             case 1:
                                 //UPLOAD
-                                Toast.makeText(App2DokumentiActivity.this, selektiraniDok.toString(), Toast.LENGTH_LONG).show();
                                 List<App2Dokumenti> spisakDokZaSync = getDokumentZaSyncIliPrintanje(selektiraniDok);
                                 List<App1Dokumenti> spisak = new ArrayList<App1Dokumenti>();
                                 for (App2Dokumenti dok : spisakDokZaSync) {
@@ -96,7 +98,13 @@ public class App2DokumentiActivity extends AppCompatActivity {
 
                                         //izbrisi dokumente i stavke
                                         MainActivity.izbrisiDokumente2PoslijeSinkronizacije(App2DokumentiActivity.this, selektiraniDok.getId());
-                                        ucitajDokumente();
+                                        Log.d(TAG, "onClick: 1. IZBRISAO SAM PODATAK IZ BAZE!");
+
+                                        spisakDok.remove(selektiraniDok);
+                                        Log.d(TAG, "onClick: 2. IZBRISAO SAM PODATAK IZ LISTE NA MJESTU " + position);
+                                        listaDokumenta.notifyDataSetChanged();
+                                        listaDokumenta.notifyDataSetInvalidated();
+                                        Log.d(TAG, "onClick: 3. OSVJEŽIO SAM ADAPTER!");
 
                                     } else {
                                         Toast.makeText(App2DokumentiActivity.this, "GREŠKA PRI SLANJU PODATAKA! POKUŠAJTE KASNIJE.", Toast.LENGTH_LONG).show();
@@ -130,15 +138,26 @@ public class App2DokumentiActivity extends AppCompatActivity {
         return spisakDokZaSync;
     }
     private void ucitajDokumente() {
-        Log.d(TAG, "onCreate: UČITAVAM Dokument2");
-        Log.d(TAG, "ucitajDokumente: Učitavam dokumente 2 /START");
-        List<App2Dokumenti> spisakDok = MainActivity.getListaDokumenta2(App2DokumentiActivity.this, 0);
-        Log.d(TAG, "ucitajDokumente: Učitao sam dokumente 2 /END");
-        for (App2Dokumenti dok : spisakDok) {
-            listaDokumenta.add(dok);
+        spisakDok = new ArrayList<App2Dokumenti>();
+
+        List<App2Dokumenti> spisak = MainActivity.getListaDokumenta2(App2DokumentiActivity.this, 0);
+        for (App2Dokumenti dok : spisak) {
+            spisakDok.add(dok);
         }
+        listaDokumenta.list = spisakDok;
+
     }
 
+    /*
+    When creating and adding a new list to the Adapter. Always follow these guidelines:
+
+    1. Initialise the arrayList while declaring it globally. TO JE KOD MENE "spisakDok"
+    2. Add the List to the adapter directly with out checking for null and empty values. "listaDokumenta.list=spisakDok;"
+    3. Set the adapter to the list directly (don't check for any condition). Adapter guarantees you that wherever you make changes to the data of the arrayList it will take
+        care of it, but never loose the reference.Always modify the data in the arrayList itself (if your data is completely new
+        than you can call adapter.clear() and arrayList.clear() before actually adding data to the list) but don't set the adapter i.e
+        If the new data is populated in the arrayList than just adapter.notifyDataSetChanged()
+     */
     private void updateDokumenata() {
 
         if (lastDokId != 0) {
