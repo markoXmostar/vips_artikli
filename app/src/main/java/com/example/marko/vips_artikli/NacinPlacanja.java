@@ -31,4 +31,14 @@ public class NacinPlacanja {
         this.naziv = naziv;
     }
 
+    @Override
+    public String toString() {
+        /*
+        return "NacinPlacanja{" +
+                "id=" + id +
+                ", naziv='" + naziv + '\'' +
+                '}';
+        */
+        return naziv;
+    }
 }

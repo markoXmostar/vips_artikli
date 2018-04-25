@@ -29,6 +29,9 @@
         <item name="android:popupBackground">#DFFFFFFF</item>
     </style>
 
+    <style name="mySpinnerUnosStyle" parent="Base.Widget.AppCompat.Spinner">
+        <item name="android:spinnerMode">dialog</item>
+    </style>
 
 
     <style name="mojTextStyleZaIzbor" parent="TextAppearance.AppCompat">

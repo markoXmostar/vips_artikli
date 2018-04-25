@@ -564,6 +564,35 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                     }
                     break;
 
+                case "asortimankupca":
+                    result = "{\"asortimankupca\":" + result + ",\"ResponseStatus\":{}}";
+                    Log.d(TAG, "onPostExecute: " + result);
+                    jObject = null;
+                    try {
+                        jObject = new JSONObject(result);
+                        String _stavke2 = jObject.getString("asortimankupca");
+                        JSONArray arr = new JSONArray(_stavke2);
+                        ArrayList<AsortimanKupca> asortimanLista = new ArrayList<AsortimanKupca>();
+                        Log.d(TAG, "onPostExecute: BROJ zapisa na webu za asortimankupca je: " + arr.length());
+                        for (int i = 0; i < arr.length(); i++) {
+                            JSONObject myStv2 = arr.getJSONObject(i);
+
+                            AsortimanKupca _asort = new AsortimanKupca(myStv2.optLong("pjKmtId", 0),
+                                    myStv2.optLong("artiklId", 0));
+                            asortimanLista.add(_asort);
+                            Log.d(TAG, "onPostExecute: " + _asort.toString());
+                        }
+                        Log.d(TAG, "onPostExecute: BROJ Dokumenata2 =" + asortimanLista.size());
+                        UpisiAsortimanUBazu(asortimanLista);
+                        vrijeme2 = new Date(System.currentTimeMillis());
+                        long different = vrijeme2.getTime() - vrijeme1.getTime();
+                        Log.d(TAG, "onPostExecute: VRIJEME UČITAVANJA S INTERNETA I UPISA U BAZU JE :" + different + "ms");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
                 case "prijavaKorisnika":
                     //result = "{\"prijavaKorisnika\":" + result + ",\"ResponseStatus\":{}}";
 
@@ -727,6 +756,45 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                 greska + "','" + LOGporuka + "'," + smjer + ",'" + tabela + "'," + lastSyncID + ");");
 
         myDB.close();
+    }
+
+    private void UpisiAsortimanUBazu(ArrayList<AsortimanKupca> Lista) {
+        boolean greska = false;
+        String greskaStr = "";
+        String myTabela = myTbl.NazivTabele;
+        try {
+            Log.d(TAG, "Otvaram bazu");
+            SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+            Log.d(TAG, "UpisiAsortuimanKupcaUBazu: brišem tabelu " + myTabela + " ukoliko postoji");
+            myDB.execSQL("DROP TABLE IF EXISTS " + myTabela + ";");
+            Log.d(TAG, "Kreiram tabelu");
+            myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
+                    "pjKmtId long, " +
+                    "artiklId long);");
+            Log.d(TAG, "Brišem sve iz tabele");
+            myDB.execSQL("DELETE FROM " + myTabela + ";");
+            for (int i = 0; i < Lista.size(); i++) {
+                AsortimanKupca myAsortiman = Lista.get(i);
+                myDB.execSQL("INSERT INTO " + myTabela + " (pjKmtId, artiklId ) VALUES (" +
+                        myAsortiman.getPjID() + "," +
+                        myAsortiman.getArtiklID() + ");");
+            }
+            Log.d(TAG, "Gotovo ");
+            myDB.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            greskaStr = e.getMessage();
+            greska = true;
+        } finally {
+            if (greska) {
+                UpisiLOG(1, greskaStr, myTabela, 0, -1);
+                Log.d(TAG, "UpisiAsortimanKupcaUBazu: " + greskaStr);
+            } else {
+                greskaStr = "Uspješno upisano :" + Integer.toString(Lista.size()) + " podataka";
+                Log.d(TAG, "UpisiUBazu: " + greskaStr + "/" + myTabela);
+                UpisiLOG(0, greskaStr, myTabela, 0, Lista.size());
+            }
+        }
     }
 
     private void UpisiJMJUBazu(ArrayList<jmj> Lista) {

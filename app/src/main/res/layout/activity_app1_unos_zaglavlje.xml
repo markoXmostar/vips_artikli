@@ -131,14 +131,38 @@
         app:layout_constraintStart_toEndOf="@+id/labelPodtipDokumenta_App1Zaglavlje"
         app:layout_constraintTop_toBottomOf="@+id/txtTipDokumenta_App1Zaglavlje" />
 
-    <EditText
-        android:id="@+id/etxtNapomena_App1ZaglavljeDokumenta"
+
+    <TextView
+        android:id="@+id/labelVrstaPlacanja_App1Zaglavlje"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Vrsta plaćanja"
+        android:textSize="@dimen/velicinaTeksta"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtPodtipDokumenta_App1Zaglavlje" />
+
+    <Spinner
+        android:id="@+id/spinVrstaPlacanja_App1Zaglavlje"
+        style="@style/mySpinnerUnosStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:dropDownWidth="match_parent"
+        app:layout_constraintBottom_toBottomOf="@+id/labelVrstaPlacanja_App1Zaglavlje"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/labelVrstaPlacanja_App1Zaglavlje"
+        app:layout_constraintTop_toTopOf="@+id/labelVrstaPlacanja_App1Zaglavlje" />
+
+    <EditText
+        android:id="@+id/etxtNapomena_App1Zaglavlje"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:ems="10"
         android:gravity="left|top"
         android:hint="@string/Napomena"
@@ -147,8 +171,7 @@
         android:singleLine="false"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPodtipDokumenta_App1Zaglavlje" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -177,4 +200,28 @@
             android:text="@string/OKtext" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/labelSaldoKupca_App1Zaglavlje"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Saldo kupca:"
+        android:textSize="@dimen/velicinaTeksta"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/labelVrstaPlacanja_App1Zaglavlje" />
+
+    <TextView
+        android:id="@+id/txtSaldoKupca_App1Zaglavlje"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="0,00"
+        android:textColor="@color/myCrvena"
+        android:textSize="@dimen/velicinaTeksta"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/labelSaldoKupca_App1Zaglavlje"
+        app:layout_constraintTop_toBottomOf="@+id/labelVrstaPlacanja_App1Zaglavlje" />
 </android.support.constraint.ConstraintLayout>

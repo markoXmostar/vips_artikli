@@ -132,6 +132,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, App1DokumentiActivity.class);
+                intent.putExtra("vrstaAplikacije", 1);
                 startActivity(intent);
             }
         });
@@ -139,6 +140,14 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, App2DokumentiActivity.class);
+                startActivity(intent);
+            }
+        });
+        fabApp3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, App1DokumentiActivity.class);
+                intent.putExtra("vrstaAplikacije", 3);
                 startActivity(intent);
             }
         });
@@ -550,6 +559,9 @@ public class MainActivity extends AppCompatActivity
         if (isTableExists(myDB, "stavke2")) {
             deleteAllTable(this, "stavke2");
         }
+        if (isTableExists(myDB, "asortimanKupca")) {
+            deleteAllTable(this, "asortimanKupca");
+        }
 
         rekreirajLogTabelu(myDB);
         progressDialog.dismiss();
@@ -625,7 +637,28 @@ public class MainActivity extends AppCompatActivity
         urlString = url + "idnazivrid" + "?d=" + DJELATNIK + "&t=" + akcija;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "PjKomitenta"));
 
-        if (myPostavke.getVrstaAplikacije() == 0 || myPostavke.getVrstaAplikacije() == 2) {
+        if (myPostavke.getVrstaAplikacije() == 0) {
+            long podtipDokumenta = 0;
+            if (myPostavke.getPodtipDokumenta() == 0) {
+                podtipDokumenta = 51;
+            } else {
+                podtipDokumenta = myPostavke.getPodtipDokumenta();
+            }
+            Log.d(TAG, "postaviTabeleZaSync: POSTAVLJEN PODTIP ZA APP 2/ podtipID = " + podtipDokumenta);
+            akcija = "dokumentizaglavlja";
+            urlString = url + akcija + "?d=" + DJELATNIK + "&u=" + UREDJAJ + "&p=" + String.valueOf(podtipDokumenta);
+            spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "dokumenti2"));
+
+            akcija = "dokumentistavke";
+            urlString = url + akcija + "?d=" + DJELATNIK + "&u=" + UREDJAJ + "&p=" + String.valueOf(podtipDokumenta);
+            spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "stavke2"));
+
+            akcija = "asortimankupca";
+            urlString = url + akcija + "?d=" + DJELATNIK;
+            spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "asortimankupca"));
+
+        }
+        if (myPostavke.getVrstaAplikacije() == 2) {
 
             long podtipDokumenta = 0;
             if (myPostavke.getPodtipDokumenta() == 0) {
@@ -641,6 +674,12 @@ public class MainActivity extends AppCompatActivity
             akcija = "dokumentistavke";
             urlString = url + akcija + "?d=" + DJELATNIK + "&u=" + UREDJAJ + "&p=" + String.valueOf(podtipDokumenta);
             spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "stavke2"));
+        }
+
+        if (myPostavke.getVrstaAplikacije() == 3) {
+            akcija = "asortimankupca";
+            urlString = url + akcija + "?d=" + DJELATNIK;
+            spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "asortimanKupca"));
         }
 
     }
@@ -665,16 +704,6 @@ public class MainActivity extends AppCompatActivity
 
                 }
             }.execute(tbl.urlTabele, tbl.Akcija);
-            /*
-            try {
-
-               String result=new JSON_recive(this, tbl,brojac + "/" + ukupnoZaSync).execute(tbl.urlTabele, tbl.Akcija).get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-            */
         }
 
 

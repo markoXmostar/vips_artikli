@@ -74,12 +74,16 @@ public class App1DokumentiActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    int vrstaAplikacije = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app1_dokumenti);
 
         //getActionBar().setTitle(getString(R.string.title_activity_app1_dokumenti));
+        Bundle b = getIntent().getExtras();
+        vrstaAplikacije = b.getInt("vrstaAplikacije", 1);
 
         listSpisakDokumenata = (ListView) findViewById(R.id.listSpisakDokumenata_App1);
         listSpisakDokumenata.setItemsCanFocus(false);
@@ -93,6 +97,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(App1DokumentiActivity.this, App1UnosZaglavljaActivity.class);
+                intent.putExtra("vrstaAplikacije", vrstaAplikacije);
                 startActivityForResult(intent,1);
             }
         });

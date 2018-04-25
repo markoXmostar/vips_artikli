@@ -8,9 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.Calendar;
@@ -19,7 +21,8 @@ import java.util.Calendar;
 public class App1UnosZaglavljaActivity extends AppCompatActivity {
 
     private static final String TAG="App1Zaglavlje";
-    TextView txtDatumDokumenta,txtKomitent,txtPjKomitenta,labelPjKomitenta,txtTipDokumenta,txtPodtipDokumenta,labelPodtipDokumenta;
+    TextView txtDatumDokumenta, txtKomitent, txtPjKomitenta, labelPjKomitenta, txtTipDokumenta, txtPodtipDokumenta, labelPodtipDokumenta, txtSaldoKupca, lblSaldoKupca, lblVrstaPlacanja;
+    Spinner spinVrstaPlacanja;
     EditText etxtNapomena;
     Button btnOk,btnCancel;
 
@@ -36,6 +39,8 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
     }
     public void setIzabraniKomitent(Komitent new_izabraniKomitent) {
         izabraniKomitent = new_izabraniKomitent;
+        double saldo = 0;
+        txtSaldoKupca.setText(String.valueOf(saldo));
 
         if (new_izabraniKomitent!=null){
             txtKomitent.setText(izabraniKomitent.getNaziv());
@@ -45,6 +50,8 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
 
             txtPjKomitenta.setEnabled(true);
             labelPjKomitenta.setEnabled(true);
+
+
         }
         else {
             txtPjKomitenta.setVisibility(View.GONE);
@@ -115,7 +122,7 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
     private PodtipDokumenta izabranPodtip;
 
     postavkeAplikacije myPostavke;
-
+    int vrstaAplikacije = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,11 +138,34 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
         labelPodtipDokumenta=(TextView)findViewById(R.id.labelPodtipDokumenta_App1Zaglavlje);
         btnOk=(Button)findViewById(R.id.btnOK_App1ZaglavljeDokumenata);
         btnCancel=(Button)findViewById(R.id.btnCancel_App1ZaglavljeDokumenata);
-        etxtNapomena=(EditText)findViewById(R.id.etxtNapomena_App1ZaglavljeDokumenta);
+        etxtNapomena = (EditText) findViewById(R.id.etxtNapomena_App1Zaglavlje);
+
+        txtSaldoKupca = (TextView) findViewById(R.id.txtSaldoKupca_App1Zaglavlje);
+        lblSaldoKupca = (TextView) findViewById(R.id.labelSaldoKupca_App1Zaglavlje);
+        lblVrstaPlacanja = (TextView) findViewById(R.id.labelVrstaPlacanja_App1Zaglavlje);
+        spinVrstaPlacanja = (Spinner) findViewById(R.id.spinVrstaPlacanja_App1Zaglavlje);
+
+        Bundle b = getIntent().getExtras();
+        vrstaAplikacije = b.getInt("vrstaAplikacije", 1);
+
+        if (vrstaAplikacije != 3) {
+            txtSaldoKupca.setVisibility(View.GONE);
+            lblSaldoKupca.setVisibility(View.GONE);
+            lblVrstaPlacanja.setVisibility(View.GONE);
+            spinVrstaPlacanja.setVisibility(View.GONE);
+        } else {
+            ArrayAdapter<NacinPlacanja> nacinPlacanjaArrayAdapter = new ArrayAdapter<NacinPlacanja>(App1UnosZaglavljaActivity.this, R.layout.spinner_item_mydialog);
+            for (NacinPlacanja podtip : MainActivity.getListaNacinaPlacanja(App1UnosZaglavljaActivity.this, "")) {
+                nacinPlacanjaArrayAdapter.add(podtip);
+            }
+            nacinPlacanjaArrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_mydialog);
+            spinVrstaPlacanja.setAdapter(nacinPlacanjaArrayAdapter);
+
+        }
 
         setIzabraniKomitent(null);
-
         myPostavke = new postavkeAplikacije(this);
+
         long zadaniTipDokumenta = myPostavke.getTipDokumenta();
         TipDokumenta tipDok = MainActivity.getTipDokumentaByID(this, zadaniTipDokumenta);
 
