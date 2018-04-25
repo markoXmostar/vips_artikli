@@ -350,7 +350,11 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                         for (int i = 0; i < arr.length(); i++) {
                             JSONObject myKomitent = arr.getJSONObject(i);
                             Komitent _komitent = new Komitent(myKomitent.optLong("id", 0),
-                                    myKomitent.optString("naziv"), myKomitent.optString("sifra"));
+                                    myKomitent.optString("naziv"),
+                                    myKomitent.optString("sifra"),
+                                    myKomitent.optDouble("saldo", 0),
+                                    myKomitent.optDouble("uRoku", 0),
+                                    myKomitent.optDouble("vanRoka", 0));
                             ListaKomitenata.add(_komitent);
                         }
                         Log.d(TAG, "onPostExecute: BROJ komitenata =" + ListaKomitenata.size());
@@ -1074,15 +1078,15 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
             Log.d(TAG, "Kreiram tabelu");
             myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
                     "_id long, " +
-                    "naziv VARCHAR, sifra VARCHAR);");
+                    "naziv VARCHAR, sifra VARCHAR, saldo double,uroku double, vanroka double);");
 
             Log.d(TAG, "Brišem sve iz tabele " + myTabela);
             myDB.execSQL("DELETE FROM " + myTabela + ";");
             for (int i = 0; i < Lista.size(); i++) {
                 Komitent myKom = Lista.get(i);
-                myDB.execSQL("INSERT INTO " + myTabela + " (_id, naziv,sifra ) VALUES (" +
+                myDB.execSQL("INSERT INTO " + myTabela + " (_id, naziv,sifra,saldo,uroku,vanroka ) VALUES (" +
                         myKom.getId() + ",'" +
-                        myKom.getNaziv() + "','" + myKom.getSifra() + "');");
+                        myKom.getNaziv() + "','" + myKom.getSifra() + "'," + myKom.getSaldo() + "," + myKom.getuRoku() + "," + myKom.getVanRoka() + ");");
 
             }
             Log.d(TAG, "Gotovo " + myTabela);

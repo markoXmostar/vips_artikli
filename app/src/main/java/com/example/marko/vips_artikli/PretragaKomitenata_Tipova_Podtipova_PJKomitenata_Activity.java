@@ -125,10 +125,7 @@ public class PretragaKomitenata_Tipova_Podtipova_PJKomitenata_Activity extends A
                     case "komitenti":
                         Komitent kk=(Komitent) listaObjekata.getItemAtPosition(i);
                         Intent returnIntent = new Intent();
-                        returnIntent.putExtra("idKomitenta",kk.getId());
-                        returnIntent.putExtra("nazivKomitenta",kk.getNaziv());
-                        returnIntent.putExtra("sifraKomitenta",kk.getSifra());
-
+                        returnIntent.putExtra("komitent", kk);
                         setResult(Activity.RESULT_OK,returnIntent);
                         finish();
                         break;
@@ -187,19 +184,26 @@ public class PretragaKomitenata_Tipova_Podtipova_PJKomitenata_Activity extends A
         int IdIndex = c.getColumnIndex("_id");
         int SifraIndex = c.getColumnIndex("sifra");
         int NazivIndex = c.getColumnIndex("naziv");
+        int SaldoIndex = c.getColumnIndex("saldo");
+        int uRokuIndex = c.getColumnIndex("uroku");
+        int vanRokaIndex = c.getColumnIndex("vanroka");
 
         c.moveToFirst();
         int brojac = 0;
         for (int j = 0; j < c.getCount(); j++) {
             long id;
             String sifra, naziv;
+            double saldo, uroku, vanroka;
 
             id = c.getLong(IdIndex);
             sifra = c.getString(SifraIndex);
             naziv = c.getString(NazivIndex);
+            saldo = c.getDouble(SaldoIndex);
+            uroku = c.getDouble(uRokuIndex);
+            vanroka = c.getDouble(vanRokaIndex);
 
 
-            Komitent komitentProvider = new Komitent(id, naziv, sifra);
+            Komitent komitentProvider = new Komitent(id, naziv, sifra, saldo, uroku, vanroka);
             listKomitenataAdapter.add(komitentProvider);
             brojac++;
             if (j != c.getCount()) {

@@ -65,7 +65,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
         }
         */
         if (id == R.id.sinkroniziraj_dokumenti1) {
-            if (MainActivity.sendAllDokuments(App1DokumentiActivity.this)) {
+            if (MainActivity.sendAllDokuments(App1DokumentiActivity.this, vrstaAplikacije)) {
                 ucitajDokumente();
             }
             return true;
@@ -217,10 +217,11 @@ public class App1DokumentiActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
 
-                Long IdKomitenta=data.getLongExtra("idKomitenta",-1);
-                Long IdPjKomitenta=data.getLongExtra("idPjKomitenta",-1);
-                Long idTipDokumenta=data.getLongExtra("idTipDokumenta",-1);
-                Long idPodtipDokumenta=data.getLongExtra("idPodtipDokumenta",-1);
+                long IdKomitenta = data.getLongExtra("idKomitenta", -1);
+                long IdPjKomitenta = data.getLongExtra("idPjKomitenta", -1);
+                long idTipDokumenta = data.getLongExtra("idTipDokumenta", -1);
+                long idPodtipDokumenta = data.getLongExtra("idPodtipDokumenta", -1);
+                long idVrstaPlacanja = data.getLongExtra("idVrstaPlacanja", -1);
                 String datumDokumenta=data.getStringExtra("datumDokumenta");
                 SimpleDateFormat dateFormat = new SimpleDateFormat(DatumFormat);
 
@@ -241,6 +242,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
                 String nazivKomitenta=data.getStringExtra("nazivKomitenta");
                 String nazivTipDokumenta=data.getStringExtra("nazivTipDokumenta");
                 String nazivPodtipDokumenta=data.getStringExtra("nazivPodtipDokumenta");
+                String nazivVrstaPlacanja = data.getStringExtra("nazivVrstaPlacanja");
                 String napomena=data.getStringExtra("napomena");
                 if (napomena==null){
                     napomena="";
@@ -249,9 +251,9 @@ public class App1DokumentiActivity extends AppCompatActivity {
                 Log.d(TAG, "Otvaram bazu");
                 myDB = openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
                 myDB.execSQL("INSERT INTO " + tabelaApp1 +" (idTip, TipDokumentaNaziv, idPodtip, PodipDokumentaNaziv, idKomitent, KomitentNaziv, idPjKomitenta, PjKomitentaNaziv, " +
-                        "datumDokumenta, napomena) VALUES (" +
+                        "idVrstaPlacanja, VrstaPlacanjaNaziv, datumDokumenta, vrstaAplikacije , napomena) VALUES (" +
                         idTipDokumenta + ",'" + nazivTipDokumenta + "', " + idPodtipDokumenta + ",'" + nazivPodtipDokumenta + "', " + IdKomitenta + ",'" + nazivKomitenta + "', " +
-                        IdPjKomitenta + ",'" + nazivPjKomitenta + "','" + SQLDatum +"','" + napomena + "');");
+                        IdPjKomitenta + ",'" + nazivPjKomitenta + "'," + idVrstaPlacanja + ",'" + nazivVrstaPlacanja + "','" + SQLDatum + "'," + vrstaAplikacije + ",'" + napomena + "');");
                 myDB.close();
                 ucitajDokumente();
 
@@ -270,7 +272,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
     private void ucitajDokumente() {
         ListaApp1DokumentiAdapter listaDokumenta = new ListaApp1DokumentiAdapter(this, R.layout.row_app1_zaglavlje);
         listSpisakDokumenata.setAdapter(listaDokumenta);
-        List<App1Dokumenti> spisakDok=MainActivity.getListaDokumenta(App1DokumentiActivity.this);
+        List<App1Dokumenti> spisakDok = MainActivity.getListaDokumenta(App1DokumentiActivity.this, vrstaAplikacije);
         for (App1Dokumenti dok:spisakDok) {
             listaDokumenta.add(dok);
         }

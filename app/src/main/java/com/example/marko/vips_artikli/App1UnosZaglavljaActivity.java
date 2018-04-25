@@ -39,8 +39,7 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
     }
     public void setIzabraniKomitent(Komitent new_izabraniKomitent) {
         izabraniKomitent = new_izabraniKomitent;
-        double saldo = 0;
-        txtSaldoKupca.setText(String.valueOf(saldo));
+
 
         if (new_izabraniKomitent!=null){
             txtKomitent.setText(izabraniKomitent.getNaziv());
@@ -270,6 +269,15 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
                 returnIntent.putExtra("nazivPjKomitenta",getIzabranaPJKomitenta().getNaziv());
                 returnIntent.putExtra("nazivTipDokumenta",getIzabraniTiP().getNaziv());
                 returnIntent.putExtra("nazivPodtipDokumenta", getIzabraniPodtip().getNaziv());
+                if (vrstaAplikacije == 3) {
+                    NacinPlacanja np = (NacinPlacanja) spinVrstaPlacanja.getSelectedItem();
+                    returnIntent.putExtra("idVrstaPlacanja", np.getId());
+                    returnIntent.putExtra("nazivVrstaPlacanja", np.getNaziv());
+                } else {
+                    returnIntent.putExtra("idVrstaPlacanja", 0);
+                    returnIntent.putExtra("nazivVrstaPlacanja", "");
+                }
+
                 returnIntent.putExtra("napomena",etxtNapomena.getText().toString());
                 setResult(Activity.RESULT_OK,returnIntent);
                 finish();
@@ -290,22 +298,15 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
 
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
-                //String result=data.getStringExtra("Komitent");
-                Long idKom=data.getLongExtra("idKomitenta",0);
-                String nazivKom=data.getStringExtra("nazivKomitenta");
-                String sifraKom=data.getStringExtra("sifraKomitenta");
 
-                Log.d(TAG, "onActivityResult: vraćeno je:::> Naziv komitenta=" + nazivKom);
-                Log.d(TAG, "onActivityResult: vraćeno je:::> Sifra komitenta=" + sifraKom);
-                Log.d(TAG, "onActivityResult: vraćeno je:::> ID komitenta=" + idKom.toString());
-
-                Komitent myKomitent=new Komitent(idKom,sifraKom,nazivKom);
+                Komitent myKomitent = (Komitent) data.getSerializableExtra("komitent");
                 setIzabraniKomitent(myKomitent);
-
 
             }
             if (resultCode == Activity.RESULT_CANCELED) {
+
                 setIzabraniKomitent(null);
+
             }
         }
         if (requestCode == 2) {

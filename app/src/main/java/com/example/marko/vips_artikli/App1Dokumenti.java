@@ -20,6 +20,8 @@ public class App1Dokumenti {
     private Date datumSinkronizacije;
     private String napomena;
 
+    private int vrstaAplikacije;
+
     private long vipsId;
 
     public long getVipsId() {

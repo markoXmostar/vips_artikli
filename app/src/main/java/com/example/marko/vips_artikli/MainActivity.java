@@ -26,6 +26,7 @@ import android.view.WindowManager;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -502,7 +503,13 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, RegistriActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_send) {
-            sendAllDokuments(this);
+            int vrstaAplikacije = myPostavke.getVrstaAplikacije();
+            if (vrstaAplikacije != 0) {
+                sendAllDokuments(this, vrstaAplikacije);
+            } else {
+                Toast.makeText(MainActivity.this, "Nije moguće poslati podatke jer nije izabran tip aplikacije koji se šalje!", Toast.LENGTH_LONG).show();
+            }
+
         } else if (id== R.id.nav_recive){
             fabUpdatePodataka.callOnClick();
         } else if (id == R.id.nav_odjava) {
@@ -630,7 +637,7 @@ public class MainActivity extends AppCompatActivity
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "artiklatribut"));
 
         akcija = "komitenti";
-        urlString = url + akcija + "?d=" + DJELATNIK;
+        urlString = url + akcija + "?d=" + DJELATNIK + "&sk=" + myPostavke.getSaldakonti();
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "komitenti"));
 
         akcija = "komitentpj";
@@ -1342,14 +1349,14 @@ public class MainActivity extends AppCompatActivity
         return listaStavki;
     }
 
-    public static List<App1Dokumenti> getListaDokumenta(Activity a){
+    public static List<App1Dokumenti> getListaDokumenta(Activity a, int vrstaAplikacije) {
 
         List<App1Dokumenti> listaDokumenta=new ArrayList<App1Dokumenti>();
         String tabelaApp1 = "dokumenti1";
 
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
         Cursor c;
-        c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " ORDER BY datumUpisa DESC", null);
+        c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " WHERE vrstaAplikacije = " + vrstaAplikacije + " ORDER BY datumUpisa DESC", null);
 
         SimpleDateFormat simpleDateTimeFormat = new SimpleDateFormat(DatumVrijemeFormat);
         SimpleDateFormat SQLLite_dateFormat = new SimpleDateFormat(MainActivity.SqlLiteDateFormat);
@@ -1788,14 +1795,14 @@ public class MainActivity extends AppCompatActivity
         myDB.close();
     }
 
-    public static boolean sendAllDokuments(Activity a) {
+    public static boolean sendAllDokuments(Activity a, int vrstaAplikacije) {
         ProgressDialog pd = new ProgressDialog(a);
         pd.setMessage("Šaljem podatke, molim pričekajte!");
         pd.setCancelable(false);
         pd.show();
 
         boolean odgovor = false;
-        List<App1Dokumenti> spisakSvihDokumenta = MainActivity.getListaDokumenta(a);
+        List<App1Dokumenti> spisakSvihDokumenta = MainActivity.getListaDokumenta(a, vrstaAplikacije);
         List<App1Dokumenti> spisakDokumentaZaSync = new ArrayList<App1Dokumenti>();
         for (App1Dokumenti dok : spisakSvihDokumenta) {
             if (dok.getDatumSinkronizacije() == null) {
@@ -1816,7 +1823,7 @@ public class MainActivity extends AppCompatActivity
                 MainActivity.updateZaglavljaPoslijeSinkronizacije(a, spisakDokumentaZaSync);
                 odgovor = true;
             }
-            Log.d(TAG, "UODATE URAĐEN ZA " + spisakDokumentaZaSync.size() + " DOKUMENATA!");
+            Log.d(TAG, "UPDATE URAĐEN ZA " + spisakDokumentaZaSync.size() + " DOKUMENATA!");
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -1863,15 +1870,18 @@ public class MainActivity extends AppCompatActivity
                 "_id Integer PRIMARY KEY AUTOINCREMENT, " +
                 "idTip VARCHAR, " +
                 "TipDokumentaNaziv VARCHAR," +
-                "idPodtip VARCHAR," +
+                "idPodtip long," +
                 "PodipDokumentaNaziv VARCHAR," +
-                "idKomitent VARCHAR, " +
+                "idKomitent long, " +
                 "KomitentNaziv VARCHAR," +
-                "idPjKomitenta VARCHAR, " +
+                "idPjKomitenta long, " +
                 "PjKomitentaNaziv VARCHAR," +
+                "idVrstaPlacanja long, " +
+                "VrstaPlacanjaNaziv VARCHAR, " +
                 "datumDokumenta datetime, " +
                 "datumSinkronizacije datetime," +
                 "datumUpisa datetime default current_timestamp," +
+                "vrstaAplikacije Integer, " +
                 "napomena VARCHAR);");
         myDB.close();
 

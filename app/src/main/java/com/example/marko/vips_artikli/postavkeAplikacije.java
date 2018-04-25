@@ -11,7 +11,7 @@ import android.util.Log;
 public final class postavkeAplikacije {
     private static String TAG = "postavke";
 
-    private int vrstaPretrageArtikala, vrstaAplikacije, brojDecimala, dlt_id;
+    private int vrstaPretrageArtikala, vrstaAplikacije, brojDecimala, dlt_id, saldakonti;
     private float defoltnaKolicina;
     private long tipDokumenta, podtipDokumenta;
     private String pin;
@@ -39,6 +39,7 @@ public final class postavkeAplikacije {
         svirajUpozorenja = settings.getBoolean("svirajUpozorenja", true);
         dlt_id = settings.getInt("dlt_id", 0);
         pin = settings.getString("pin", "1234");
+        saldakonti = settings.getInt("saldakonti", 1);
 
         Log.d(TAG, "procitajPostavke: vrstaPretrage=" + vrstaPretrageArtikala);
         Log.d(TAG, "procitajPostavke: vrstaAplikacije=" + vrstaAplikacije);
@@ -96,6 +97,10 @@ public final class postavkeAplikacije {
 
     public long getPodtipDokumenta() {
         return podtipDokumenta;
+    }
+
+    public int getSaldakonti() {
+        return saldakonti;
     }
 
     public void snimiDLT_ID(int value) {
