@@ -217,6 +217,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
 
+                vrstaAplikacije = data.getIntExtra("vrstaAplikacije", vrstaAplikacije);
                 long IdKomitenta = data.getLongExtra("idKomitenta", -1);
                 long IdPjKomitenta = data.getLongExtra("idPjKomitenta", -1);
                 long idTipDokumenta = data.getLongExtra("idTipDokumenta", -1);
@@ -224,6 +225,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
                 long idVrstaPlacanja = data.getLongExtra("idVrstaPlacanja", -1);
                 String datumDokumenta=data.getStringExtra("datumDokumenta");
                 SimpleDateFormat dateFormat = new SimpleDateFormat(DatumFormat);
+
 
                 Date datumDok=new Date();
                 SimpleDateFormat dateSQLLiteFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
@@ -243,6 +245,9 @@ public class App1DokumentiActivity extends AppCompatActivity {
                 String nazivTipDokumenta=data.getStringExtra("nazivTipDokumenta");
                 String nazivPodtipDokumenta=data.getStringExtra("nazivPodtipDokumenta");
                 String nazivVrstaPlacanja = data.getStringExtra("nazivVrstaPlacanja");
+                if (nazivVrstaPlacanja == null) {
+                    nazivVrstaPlacanja = "";
+                }
                 String napomena=data.getStringExtra("napomena");
                 if (napomena==null){
                     napomena="";
@@ -268,6 +273,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
     private void kreirajTabeluDokumenata() {
         MainActivity.kreirajTabeluDokumenata(App1DokumentiActivity.this);
     }
+
 
     private void ucitajDokumente() {
         ListaApp1DokumentiAdapter listaDokumenta = new ListaApp1DokumentiAdapter(this, R.layout.row_app1_zaglavlje);

@@ -39,7 +39,7 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
     }
     public void setIzabraniKomitent(Komitent new_izabraniKomitent) {
         izabraniKomitent = new_izabraniKomitent;
-
+        double saldo, uroku, vanroka;
 
         if (new_izabraniKomitent!=null){
             txtKomitent.setText(izabraniKomitent.getNaziv());
@@ -50,14 +50,30 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
             txtPjKomitenta.setEnabled(true);
             labelPjKomitenta.setEnabled(true);
 
-
+            if (vrstaAplikacije == 3) {
+                txtSaldoKupca.setVisibility(View.VISIBLE);
+                lblSaldoKupca.setVisibility(View.VISIBLE);
+                saldo = new_izabraniKomitent.getSaldo();
+                uroku = new_izabraniKomitent.getuRoku();
+                vanroka = new_izabraniKomitent.getVanRoka();
+                if (saldo > 0) {
+                    String txtSaldo = String.valueOf(saldo) + "\n" + "U roku = " + String.valueOf(uroku) + "\n" + "Van roka = " + String.valueOf(vanroka);
+                    txtSaldoKupca.setText(txtSaldo);
+                } else {
+                    txtSaldoKupca.setText(String.valueOf(saldo));
+                }
+            }
         }
         else {
             txtPjKomitenta.setVisibility(View.GONE);
             labelPjKomitenta.setVisibility(View.GONE);
-
             txtPjKomitenta.setEnabled(false);
             labelPjKomitenta.setEnabled(false);
+            if (vrstaAplikacije == 3) {
+                txtSaldoKupca.setVisibility(View.GONE);
+                lblSaldoKupca.setVisibility(View.GONE);
+                txtSaldoKupca.setText(String.valueOf(0));
+            }
         }
         setIzabranaPJKomitenta(null);
     }
@@ -260,6 +276,7 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
                 }
 
                 Intent returnIntent = new Intent();
+                returnIntent.putExtra("vrstaAplikacije", vrstaAplikacije);
                 returnIntent.putExtra("idKomitenta",getIzabraniKomitent().getId());
                 returnIntent.putExtra("idPjKomitenta",getIzabranaPJKomitenta().getId());
                 returnIntent.putExtra("idTipDokumenta",getIzabraniTiP().getId());
