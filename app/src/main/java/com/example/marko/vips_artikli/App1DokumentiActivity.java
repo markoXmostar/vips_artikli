@@ -110,6 +110,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(App1DokumentiActivity.this, App1StavkeActivity.class);
                 intent.putExtra("idDokumenta", selektiranDok.getId());
+                intent.putExtra("kmtID", selektiranDok.getIdKomitent());
                 boolean isSync = false;
                 if (selektiranDok.getDatumSinkronizacije() != null) {
                     isSync = true;

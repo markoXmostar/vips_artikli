@@ -22,6 +22,8 @@ public class ArtikliActivity extends AppCompatActivity {
     public static final String TAG="ARTIKLI";
     private int varijantaForme=99;
 
+    private long kmtID = 0; // ovo služi za asortiman kupca
+
     ListView artiklListView;
     TextView NoDataText;
 
@@ -70,6 +72,8 @@ public class ArtikliActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    boolean asortimanKupca = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +88,8 @@ public class ArtikliActivity extends AppCompatActivity {
         Bundle b = getIntent().getExtras();
         if (b != null) {
             varijantaForme = b.getInt("varijanta");
+            asortimanKupca = b.getBoolean("asortimanKupca", false);
+            kmtID = b.getLong("kmtID", 0);
         }
 
 
@@ -125,9 +131,21 @@ public class ArtikliActivity extends AppCompatActivity {
         SQLiteDatabase myDB=this.openOrCreateDatabase(MainActivity.myDATABASE,this.MODE_PRIVATE,null);
         Cursor c;
         if (filter.equals("")) {
-            c=myDB.rawQuery("SELECT * FROM artikli",null);
+            String sql;
+            if (asortimanKupca) {
+                sql = "SELECT * FROM artikli WHERE _id IN (SELECT artiklId FROM asortimankupca WHERE pjKmtId=" + kmtID + ");";
+            } else {
+                sql = "SELECT * FROM artikli;";
+            }
+            c = myDB.rawQuery(sql, null);
         }else{
-            c=myDB.rawQuery("SELECT * FROM artikli where sifra like '%" + filter + "%' or naziv like '%" + filter + "%' or kataloskiBroj like '%" + filter + "%'" ,null);
+            String sql;
+            if (asortimanKupca) {
+                sql = "SELECT * FROM artikli WHERE _id IN (SELECT artiklId FROM asortimankupca WHERE pjKmtId=" + kmtID + ") AND sifra like '%" + filter + "%' or naziv like '%" + filter + "%' or kataloskiBroj like '%" + filter + "%'";
+            } else {
+                sql = "SELECT * FROM artikli where sifra like '%" + filter + "%' or naziv like '%" + filter + "%' or kataloskiBroj like '%" + filter + "%'";
+            }
+            c = myDB.rawQuery(sql, null);
         }
 
         int IdIndex=c.getColumnIndex("_id");

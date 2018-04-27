@@ -28,6 +28,7 @@ public class App1StavkeActivity extends AppCompatActivity {
     private static String tabelaApp1 = "stavke1";
 
     private long IdDokumenta=0;
+    private long kmtID = 0;
 
     ListView listSpisakStavki;
     private FloatingActionButton fabNovaStavka;
@@ -46,6 +47,8 @@ public class App1StavkeActivity extends AppCompatActivity {
         Bundle b = getIntent().getExtras();
 
         final long IdDok = b.getLong("idDokumenta");
+        kmtID = b.getLong("kmtID", 0);
+
         IdDokumenta = IdDok;
 
         fabNovaStavka = (FloatingActionButton) findViewById(R.id.fabNovaStavka_App1);
@@ -68,6 +71,7 @@ public class App1StavkeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(App1StavkeActivity.this, App1UnosStavkeActivity.class);
                 intent.putExtra("idDokumenta",IdDokumenta);
+                intent.putExtra("kmtID", kmtID);
                 startActivityForResult(intent,1);
             }
         });

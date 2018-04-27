@@ -21,7 +21,8 @@ import java.util.Calendar;
 public class App1UnosZaglavljaActivity extends AppCompatActivity {
 
     private static final String TAG="App1Zaglavlje";
-    TextView txtDatumDokumenta, txtKomitent, txtPjKomitenta, labelPjKomitenta, txtTipDokumenta, txtPodtipDokumenta, labelPodtipDokumenta, txtSaldoKupca, lblSaldoKupca, lblVrstaPlacanja;
+    TextView txtDatumDokumenta, txtKomitent, txtPjKomitenta, labelPjKomitenta, txtTipDokumenta, txtPodtipDokumenta, labelPodtipDokumenta, txtSaldoKupca, lblVrstaPlacanja;
+    //TextView lblSaldoKupca;
     Spinner spinVrstaPlacanja;
     EditText etxtNapomena;
     Button btnOk,btnCancel;
@@ -52,12 +53,12 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
 
             if (vrstaAplikacije == 3) {
                 txtSaldoKupca.setVisibility(View.VISIBLE);
-                lblSaldoKupca.setVisibility(View.VISIBLE);
+                //lblSaldoKupca.setVisibility(View.VISIBLE);
                 saldo = new_izabraniKomitent.getSaldo();
                 uroku = new_izabraniKomitent.getuRoku();
                 vanroka = new_izabraniKomitent.getVanRoka();
                 if (saldo > 0) {
-                    String txtSaldo = String.valueOf(saldo) + "\n" + "U roku = " + String.valueOf(uroku) + "\n" + "Van roka = " + String.valueOf(vanroka);
+                    String txtSaldo = "Saldo = " + String.valueOf(saldo) + "\n" + "U roku = " + String.valueOf(uroku) + "\n" + "Van roka = " + String.valueOf(vanroka);
                     txtSaldoKupca.setText(txtSaldo);
                 } else {
                     txtSaldoKupca.setText(String.valueOf(saldo));
@@ -71,7 +72,7 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
             labelPjKomitenta.setEnabled(false);
             if (vrstaAplikacije == 3) {
                 txtSaldoKupca.setVisibility(View.GONE);
-                lblSaldoKupca.setVisibility(View.GONE);
+                //lblSaldoKupca.setVisibility(View.GONE);
                 txtSaldoKupca.setText(String.valueOf(0));
             }
         }
@@ -156,7 +157,7 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
         etxtNapomena = (EditText) findViewById(R.id.etxtNapomena_App1Zaglavlje);
 
         txtSaldoKupca = (TextView) findViewById(R.id.txtSaldoKupca_App1Zaglavlje);
-        lblSaldoKupca = (TextView) findViewById(R.id.labelSaldoKupca_App1Zaglavlje);
+        //lblSaldoKupca = (TextView) findViewById(R.id.labelSaldoKupca_App1Zaglavlje);
         lblVrstaPlacanja = (TextView) findViewById(R.id.labelVrstaPlacanja_App1Zaglavlje);
         spinVrstaPlacanja = (Spinner) findViewById(R.id.spinVrstaPlacanja_App1Zaglavlje);
 
@@ -165,7 +166,7 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
 
         if (vrstaAplikacije != 3) {
             txtSaldoKupca.setVisibility(View.GONE);
-            lblSaldoKupca.setVisibility(View.GONE);
+            //lblSaldoKupca.setVisibility(View.GONE);
             lblVrstaPlacanja.setVisibility(View.GONE);
             spinVrstaPlacanja.setVisibility(View.GONE);
         } else {

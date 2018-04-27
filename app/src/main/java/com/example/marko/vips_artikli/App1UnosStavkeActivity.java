@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.vision.barcode.*;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -46,6 +47,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
     TextView tvBarcode;
 
     Button btnOk, btnCancel;
+    ToggleButton tbtnAsortimanKupca;
 
     private Artikl izabraniArtikl;
 
@@ -122,6 +124,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
 
     private ArtiklJmj izabranaJMJ;
     private long idDokumenta;
+    private long kmtID;
 
     private int unosStavke = 0;
 
@@ -134,6 +137,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
         Bundle b=getIntent().getExtras();
         idDokumenta=b.getLong("idDokumenta");
         unosStavke = b.getInt("tipStavke", 0);
+        kmtID = b.getLong("kmtID");
 
         myPostavke = new postavkeAplikacije(App1UnosStavkeActivity.this);
 
@@ -152,6 +156,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
 
         tvBarcode = (TextView) findViewById(R.id.tvBarcode_App1UnosStavke);
 
+
+        tbtnAsortimanKupca = (ToggleButton) findViewById(R.id.btnAsortimanKupca_App1UnosStavke);
 
         btnOk=(Button)findViewById(R.id.btnOK_App1UnosStavke);
         btnCancel =(Button)findViewById(R.id.btnCancel_App1UnosStavke);
@@ -198,7 +204,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
                 if ((keyCode == KeyEvent.KEYCODE_ENTER) && (keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
                     String barcodeStr = txtBarcode.getText().toString();
                     Log.d(TAG, "onKey: BARCODE=" + barcodeStr);
-                    Artikl myArt = MainActivity.getArtiklByBarcode(App1UnosStavkeActivity.this, barcodeStr);
+                    Artikl myArt = MainActivity.getArtiklByBarcode(App1UnosStavkeActivity.this, barcodeStr, tbtnAsortimanKupca.isChecked(), kmtID);
                     if (myArt != null) {
                         Log.d(TAG, "onKey: ARTIKL NAĐEN!!");
                         txtBarcode.setOkBackgroundColor();
@@ -238,8 +244,11 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
             public void onClick(View view) {
                 switch (varijantaPretrageArtikala){
                     case 0:
+
                         Intent intent = new Intent(App1UnosStavkeActivity.this, ArtikliActivity.class);
                         intent.putExtra("varijanta", 0);
+                        intent.putExtra("asortimanKupca", tbtnAsortimanKupca.isChecked());
+                        intent.putExtra("kmtID", kmtID);
                         startActivityForResult(intent,1);
                         break;
                     case 1:
@@ -463,7 +472,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
 
         String barcodeStr = barcode.displayValue;
         Log.d(TAG, "onKey: BARCODE=" + barcodeStr);
-        Artikl myArt = MainActivity.getArtiklByBarcode(App1UnosStavkeActivity.this, barcodeStr);
+        Artikl myArt = MainActivity.getArtiklByBarcode(App1UnosStavkeActivity.this, barcodeStr, tbtnAsortimanKupca.isChecked(), kmtID);
         if (myArt != null) {
             Log.d(TAG, "onKey: ARTIKL NAĐEN!!");
             setIzabraniArtikl(myArt);

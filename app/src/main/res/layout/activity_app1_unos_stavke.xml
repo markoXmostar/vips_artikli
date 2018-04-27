@@ -9,14 +9,14 @@
     <TextView
         android:id="@+id/tvBarcode_App1UnosStavke"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:textSize="@dimen/velicinaTeksta"
-        android:text="Barcode:"
+        android:layout_height="28dp"
+        android:layout_marginStart="8dp"
 
+        android:layout_marginTop="8dp"
+        android:text="Barcode:"
+        android:textSize="@dimen/velicinaTeksta"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/btnAsortimanKupca_App1UnosStavke" />
 
     <com.example.marko.vips_artikli.myEditTextNoKeyboard
         android:id="@+id/txtBarcode_App1UnosStavke"
@@ -26,11 +26,12 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:selectAllOnFocus="true"
         android:inputType="none"
+        android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/tvBarcode_App1UnosStavke"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/btnAsortimanKupca_App1UnosStavke" />
 
     <TextView
         android:id="@+id/tvArtikl_App1UnosStavke"
@@ -191,6 +192,31 @@
             android:focusable="false"
             android:text="@string/OKtext" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/lblAsortimanKupca_App1UnosStavke"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Asortiman kupca"
+        android:textSize="@dimen/velicinaTeksta"
+        app:layout_constraintBottom_toBottomOf="@+id/btnAsortimanKupca_App1UnosStavke"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnAsortimanKupca_App1UnosStavke" />
+
+    <ToggleButton
+        android:id="@+id/btnAsortimanKupca_App1UnosStavke"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="ToggleButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/lblAsortimanKupca_App1UnosStavke"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

@@ -128,7 +128,7 @@ public class App2StavkeActivity extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 App1Stavke rezultat = (App1Stavke) data.getSerializableExtra("stavka");
                 //treba naći šifru artikla i rbr stavke
-                Artikl myArt = MainActivity.getArtiklById(App2StavkeActivity.this, rezultat.getArtiklId());
+                Artikl myArt = MainActivity.getArtiklById(App2StavkeActivity.this, rezultat.getArtiklId(), 0, false);
                 int newRbr = MainActivity.getStavke2NoviRbr(App2StavkeActivity.this, IdDokumenta);
                 //pretvori stavku1 u stavku2
                 Log.d(TAG, "onActivityResult: ATRIBUT NAZIV: " + rezultat.getAtributNaziv());

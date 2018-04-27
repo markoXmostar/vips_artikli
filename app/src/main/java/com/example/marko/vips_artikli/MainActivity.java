@@ -853,10 +853,12 @@ public class MainActivity extends AppCompatActivity
         }
         return date;
     }
-    public static Artikl getArtiklByBarcode(Activity a, String barcode) {
+
+    public static Artikl getArtiklByBarcode(Activity a, String barcode, boolean asortimanKupca, long kmtId) {
         Artikl artikl = null;
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
         Cursor c;
+
         c = myDB.rawQuery("SELECT * FROM artiklbarcode WHERE barcode = '" + barcode + "';", null);
         Log.d(TAG, "getArtiklByBarcode: BARCODE" + barcode);
         int ArtikIdIndex = c.getColumnIndex("artiklId");
@@ -872,7 +874,7 @@ public class MainActivity extends AppCompatActivity
 
         if (artId > 0) {
             Log.d(TAG, "getArtiklByBarcode: DOHVAĆAM ARTIKL PO ID=" + artId);
-            artikl = getArtiklById(a, artId);
+            artikl = getArtiklById(a, artId, kmtId, asortimanKupca);
         }
         return artikl;
     }
@@ -914,13 +916,19 @@ public class MainActivity extends AppCompatActivity
         myDB.close();
     }
 
-    public static Artikl getArtiklById(Activity a, long artId) {
+    public static Artikl getArtiklById(Activity a, long artId, long kmtID, boolean asortimanKUpca) {
         Artikl artikl = null;
 
         SQLiteDatabase mDatabase = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
         Cursor c;
-        c = myDB.rawQuery("SELECT  * FROM artikli WHERE _id=" + artId + ";", null);
+        String sql;
+        if (asortimanKUpca) {
+            sql = "SELECT  * FROM artikli WHERE _id IN (SELECT artiklId FROM asortimankupca WHERE pjKmtId=" + kmtID + ") AND _id=" + artId + ";";
+        } else {
+            sql = "SELECT  * FROM artikli WHERE _id =" + artId + ";";
+        }
+        c = myDB.rawQuery(sql, null);
 
         int IdIndex = c.getColumnIndex("_id");
         int SifraIndex = c.getColumnIndex("sifra");
