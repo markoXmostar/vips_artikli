@@ -110,7 +110,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(App1DokumentiActivity.this, App1StavkeActivity.class);
                 intent.putExtra("idDokumenta", selektiranDok.getId());
-                intent.putExtra("kmtID", selektiranDok.getIdKomitent());
+                intent.putExtra("pjKmtID", selektiranDok.getIdPjKomitenta());
                 boolean isSync = false;
                 if (selektiranDok.getDatumSinkronizacije() != null) {
                     isSync = true;
@@ -152,7 +152,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
                                 List<App1Dokumenti> spisakDokZaSync = getDokumentZaSyncIliPrintanje(selektiranDok);
 
                                 try {
-                                    String rezultat = new JSON_send(App1DokumentiActivity.this, spisakDokZaSync, false, 1).execute().get();
+                                    String rezultat = new JSON_send(App1DokumentiActivity.this, spisakDokZaSync, false, vrstaAplikacije).execute().get();
                                     Log.d(TAG, "onClick: REZULTAT ASYNCTASKA JE=>" + rezultat);
                                     if (rezultat.equals("OK")){
 
@@ -165,7 +165,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
                                 } catch (ExecutionException e) {
                                     e.printStackTrace();
                                 }
-                                ucitajDokumente();
+                                //ucitajDokumente();
                                 //Toast.makeText(App1DokumentiActivity.this,akcije[which].toString(),Toast.LENGTH_LONG).show();
                                 break;
 
@@ -188,6 +188,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
         List<App1Dokumenti> spisakDokZaSync = new ArrayList<App1Dokumenti>();
         spisakDokZaSync.add(selektiranDok);
         selektiranDok.izbrisiSveStavke();
+        selektiranDok.setVrstaAplikacije(vrstaAplikacije);
         List<App1Stavke> mojeStavke = MainActivity.getListaStavki(selektiranDok.getId(), App1DokumentiActivity.this);
         for (App1Stavke stv : mojeStavke) {
             selektiranDok.doadajStavku(stv);

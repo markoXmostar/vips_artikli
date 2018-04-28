@@ -114,7 +114,7 @@ public class JSON_send extends AsyncTask<String, String, String> {
                 jsonDokument.put("PjKmtId", dokument.getIdPjKomitenta());
                 jsonDokument.put("DatumDokumenta", dokument.getDatumDokumentaJSONString());
                 jsonDokument.put("KomercijalistID", 0);
-                jsonDokument.put("NacinPlacanjaId", 0);
+                jsonDokument.put("NacinPlacanjaId", dokument.getIdNacinPlacanja());
                 jsonDokument.put("Opaska", dokument.getNapomena());
                 if (sendVipsID) {
                     jsonDokument.put("vipsID", dokument.getVipsId());

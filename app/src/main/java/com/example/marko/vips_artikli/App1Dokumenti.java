@@ -19,8 +19,35 @@ public class App1Dokumenti {
     private Date datumDokumenta;
     private Date datumSinkronizacije;
     private String napomena;
+    private long idNacinPlacanja;
+    private String nacinPlacanjaNaziv;
+
+
+    public long getIdNacinPlacanja() {
+        return idNacinPlacanja;
+    }
+
+    public void setIdNacinPlacanja(long idNacinPlacanja) {
+        this.idNacinPlacanja = idNacinPlacanja;
+    }
+
+    public String getNacinPlacanjaNaziv() {
+        return nacinPlacanjaNaziv;
+    }
+
+    public void setNacinPlacanjaNaziv(String nacinPlacanjaNaziv) {
+        this.nacinPlacanjaNaziv = nacinPlacanjaNaziv;
+    }
 
     private int vrstaAplikacije;
+
+    public int getVrstaAplikacije() {
+        return vrstaAplikacije;
+    }
+
+    public void setVrstaAplikacije(int vrstaAplikacije) {
+        this.vrstaAplikacije = vrstaAplikacije;
+    }
 
     private long vipsId;
 
@@ -58,7 +85,8 @@ public class App1Dokumenti {
         spisakStavki.clear();
     }
 
-    public App1Dokumenti(long id, long idTip, long idPodtip, long idKomitent, long idPjKomitenta, Date datumDokumenta, Date datumSinkronizacije, String napomena, String komitentNaziv, String pjKomitentNaziv, String tipDokumentaNaziv, String podtipDokumentaNaziv) {
+    public App1Dokumenti(long id, long idTip, long idPodtip, long idKomitent, long idPjKomitenta, Date datumDokumenta, Date datumSinkronizacije, String napomena,
+                         String komitentNaziv, String pjKomitentNaziv, String tipDokumentaNaziv, String podtipDokumentaNaziv, long idNacinPlacanja, String nacinPlacanjaNAziv) {
         this.id = id;
         this.idTip = idTip;
         this.idPodtip = idPodtip;
@@ -71,6 +99,8 @@ public class App1Dokumenti {
         this.PjKomitentNaziv = pjKomitentNaziv;
         this.TipDokumentaNaziv = tipDokumentaNaziv;
         this.PodtipDokumentaNaziv = podtipDokumentaNaziv;
+        this.idNacinPlacanja = idNacinPlacanja;
+        this.nacinPlacanjaNaziv = nacinPlacanjaNAziv;
 
         spisakStavki=new ArrayList<App1Stavke>();
         

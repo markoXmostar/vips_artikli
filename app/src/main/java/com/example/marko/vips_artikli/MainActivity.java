@@ -854,7 +854,7 @@ public class MainActivity extends AppCompatActivity
         return date;
     }
 
-    public static Artikl getArtiklByBarcode(Activity a, String barcode, boolean asortimanKupca, long kmtId) {
+    public static Artikl getArtiklByBarcode(Activity a, String barcode, boolean asortimanKupca, long pjKmtId) {
         Artikl artikl = null;
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
         Cursor c;
@@ -874,7 +874,7 @@ public class MainActivity extends AppCompatActivity
 
         if (artId > 0) {
             Log.d(TAG, "getArtiklByBarcode: DOHVAĆAM ARTIKL PO ID=" + artId);
-            artikl = getArtiklById(a, artId, kmtId, asortimanKupca);
+            artikl = getArtiklById(a, artId, pjKmtId, asortimanKupca);
         }
         return artikl;
     }
@@ -900,6 +900,15 @@ public class MainActivity extends AppCompatActivity
         return value;
     }
 
+    public static int getBrojArtikalaInAsortimanKupca(Activity a, long kmtID) {
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
+        Cursor c;
+        c = myDB.rawQuery("SELECT count(*) FROM asortimankupca WHERE pjKmtId =" + kmtID + ";", null);
+        c.moveToFirst();
+        int value = c.getInt(0);
+        return value;
+    }
+
     public static void updateZavrsenoInDokumenti2(Activity a, long dokumentID) {
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
         Cursor c;
@@ -916,7 +925,7 @@ public class MainActivity extends AppCompatActivity
         myDB.close();
     }
 
-    public static Artikl getArtiklById(Activity a, long artId, long kmtID, boolean asortimanKUpca) {
+    public static Artikl getArtiklById(Activity a, long artId, long pjKmtId, boolean asortimanKUpca) {
         Artikl artikl = null;
 
         SQLiteDatabase mDatabase = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
@@ -924,7 +933,7 @@ public class MainActivity extends AppCompatActivity
         Cursor c;
         String sql;
         if (asortimanKUpca) {
-            sql = "SELECT  * FROM artikli WHERE _id IN (SELECT artiklId FROM asortimankupca WHERE pjKmtId=" + kmtID + ") AND _id=" + artId + ";";
+            sql = "SELECT  * FROM artikli WHERE _id IN (SELECT artiklId FROM asortimankupca WHERE pjKmtId=" + pjKmtId + ") AND _id=" + artId + ";";
         } else {
             sql = "SELECT  * FROM artikli WHERE _id =" + artId + ";";
         }
@@ -1187,7 +1196,7 @@ public class MainActivity extends AppCompatActivity
     public static App1Dokumenti pretvoriApp2Dok_App1Dok(App2Dokumenti dok2) {
 
         App1Dokumenti rezultat = new App1Dokumenti(dok2.getId(), 0, dok2.getPodtipId(), 0, dok2.getPjKmtId(),
-                dok2.getDatumDokumenta(), null, dok2.getOpaska(), dok2.getKmtNaziv(), dok2.getPjKmtNaziv(), "", dok2.getPodtipNaziv());
+                dok2.getDatumDokumenta(), null, dok2.getOpaska(), dok2.getKmtNaziv(), dok2.getPjKmtNaziv(), "", dok2.getPodtipNaziv(), 0, "");
         return rezultat;
     }
 
@@ -1374,6 +1383,8 @@ public class MainActivity extends AppCompatActivity
         long idPodtip;
         long idKomitent;
         long idPjKomitenta;
+        long idNacinPlacanja;
+
         String datumDokumentaString;
         String datumSinkronizacijeString;
         String napomena;
@@ -1381,6 +1392,7 @@ public class MainActivity extends AppCompatActivity
         String komitentPjNaziv;
         String tipNaziv;
         String podtipNaziv;
+        String nacinPlacanjaNaziv;
 
         Date datumDokumenta = new Date();
         Date datumSinkronizacije = new Date();
@@ -1398,6 +1410,8 @@ public class MainActivity extends AppCompatActivity
         int idKomitentPjIndex = c.getColumnIndex("PjKomitentaNaziv");
         int idTipNazivIndex = c.getColumnIndex("TipDokumentaNaziv");
         int idPodtpNazivIndex = c.getColumnIndex("PodipDokumentaNaziv");
+        int idNacinPlacanjaIndex = c.getColumnIndex("idVrstaPlacanja");
+        int nacinPlacanjaNazivIndex = c.getColumnIndex("VrstaPlacanjaNaziv");
 
         c.moveToFirst();
         int brojac = 0;
@@ -1408,12 +1422,15 @@ public class MainActivity extends AppCompatActivity
             idPodtip = c.getLong(idPodipIndex);
             podtipNaziv = c.getString(idPodtpNazivIndex);
             idKomitent = c.getLong(idKomitentIndex);
+            idNacinPlacanja = c.getLong(idNacinPlacanjaIndex);
             komitentNaziv = c.getString(idKomitentNaziv);
             idPjKomitenta = c.getLong(idPjKomitentaIndex);
             komitentPjNaziv = c.getString(idKomitentPjIndex);
             datumDokumentaString = c.getString(idDatumDokumentaIndex);
             datumSinkronizacijeString = c.getString(idDatumSinkronizacijeIndex);
             napomena = c.getString(idNapomenaIndex);
+            nacinPlacanjaNaziv = c.getString(nacinPlacanjaNazivIndex);
+
             try {
                 datumDokumenta = (Date) SQLLite_dateFormat.parse(datumDokumentaString);
             } catch (ParseException e) {
@@ -1432,7 +1449,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             Log.d(TAG, "getListaDokumenta: DOKUMENT: _id=" + id +"/ datumSinkronizacije=" + datumSinkronizacijeString);
-            App1Dokumenti myObj = new App1Dokumenti(id, idTip, idPodtip, idKomitent, idPjKomitenta, datumDokumenta, datumSinkronizacije, napomena, komitentNaziv, komitentPjNaziv, tipNaziv, podtipNaziv);
+            App1Dokumenti myObj = new App1Dokumenti(id, idTip, idPodtip, idKomitent, idPjKomitenta, datumDokumenta, datumSinkronizacije, napomena, komitentNaziv, komitentPjNaziv, tipNaziv, podtipNaziv, idNacinPlacanja, nacinPlacanjaNaziv);
             listaDokumenta.add(myObj);
 
             brojac++;

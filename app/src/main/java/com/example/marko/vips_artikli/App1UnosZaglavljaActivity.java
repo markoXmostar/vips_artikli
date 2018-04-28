@@ -57,12 +57,12 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
                 saldo = new_izabraniKomitent.getSaldo();
                 uroku = new_izabraniKomitent.getuRoku();
                 vanroka = new_izabraniKomitent.getVanRoka();
-                if (saldo > 0) {
+                //if (saldo > 0) {
                     String txtSaldo = "Saldo = " + String.valueOf(saldo) + "\n" + "U roku = " + String.valueOf(uroku) + "\n" + "Van roka = " + String.valueOf(vanroka);
                     txtSaldoKupca.setText(txtSaldo);
-                } else {
-                    txtSaldoKupca.setText(String.valueOf(saldo));
-                }
+                //} else {
+                //    txtSaldoKupca.setText(String.valueOf(saldo));
+                //}
             }
         }
         else {

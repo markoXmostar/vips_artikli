@@ -124,7 +124,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
 
     private ArtiklJmj izabranaJMJ;
     private long idDokumenta;
-    private long kmtID;
+    private long pjKmtID;
 
     private int unosStavke = 0;
 
@@ -137,7 +137,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
         Bundle b=getIntent().getExtras();
         idDokumenta=b.getLong("idDokumenta");
         unosStavke = b.getInt("tipStavke", 0);
-        kmtID = b.getLong("kmtID");
+        pjKmtID = b.getLong("pjKmtID");
 
         myPostavke = new postavkeAplikacije(App1UnosStavkeActivity.this);
 
@@ -158,6 +158,15 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
 
 
         tbtnAsortimanKupca = (ToggleButton) findViewById(R.id.btnAsortimanKupca_App1UnosStavke);
+        int brojArtikalaInAsortiman = MainActivity.getBrojArtikalaInAsortimanKupca(App1UnosStavkeActivity.this, pjKmtID);
+
+        String off = tbtnAsortimanKupca.getTextOff().toString();
+        String on = tbtnAsortimanKupca.getTextOn().toString();
+        off = "Asortiman kupca (" + String.valueOf(brojArtikalaInAsortiman) + ") " + off;
+        on = "Asortiman kupca (" + String.valueOf(brojArtikalaInAsortiman) + ") " + on;
+        tbtnAsortimanKupca.setTextOff(off);
+        tbtnAsortimanKupca.setTextOn(on);
+        tbtnAsortimanKupca.toggle();
 
         btnOk=(Button)findViewById(R.id.btnOK_App1UnosStavke);
         btnCancel =(Button)findViewById(R.id.btnCancel_App1UnosStavke);
@@ -204,7 +213,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
                 if ((keyCode == KeyEvent.KEYCODE_ENTER) && (keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
                     String barcodeStr = txtBarcode.getText().toString();
                     Log.d(TAG, "onKey: BARCODE=" + barcodeStr);
-                    Artikl myArt = MainActivity.getArtiklByBarcode(App1UnosStavkeActivity.this, barcodeStr, tbtnAsortimanKupca.isChecked(), kmtID);
+                    Artikl myArt = MainActivity.getArtiklByBarcode(App1UnosStavkeActivity.this, barcodeStr, tbtnAsortimanKupca.isChecked(), pjKmtID);
                     if (myArt != null) {
                         Log.d(TAG, "onKey: ARTIKL NAĐEN!!");
                         txtBarcode.setOkBackgroundColor();
@@ -248,7 +257,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
                         Intent intent = new Intent(App1UnosStavkeActivity.this, ArtikliActivity.class);
                         intent.putExtra("varijanta", 0);
                         intent.putExtra("asortimanKupca", tbtnAsortimanKupca.isChecked());
-                        intent.putExtra("kmtID", kmtID);
+                        intent.putExtra("pjKmtID", pjKmtID);
                         startActivityForResult(intent,1);
                         break;
                     case 1:
@@ -472,7 +481,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
 
         String barcodeStr = barcode.displayValue;
         Log.d(TAG, "onKey: BARCODE=" + barcodeStr);
-        Artikl myArt = MainActivity.getArtiklByBarcode(App1UnosStavkeActivity.this, barcodeStr, tbtnAsortimanKupca.isChecked(), kmtID);
+        Artikl myArt = MainActivity.getArtiklByBarcode(App1UnosStavkeActivity.this, barcodeStr, tbtnAsortimanKupca.isChecked(), pjKmtID);
         if (myArt != null) {
             Log.d(TAG, "onKey: ARTIKL NAĐEN!!");
             setIzabraniArtikl(myArt);
@@ -492,7 +501,6 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
                     barcodeReader.resumeScanning();
                 }
             }).show();
-
             //}
         }
     }

@@ -22,7 +22,7 @@ public class ArtikliActivity extends AppCompatActivity {
     public static final String TAG="ARTIKLI";
     private int varijantaForme=99;
 
-    private long kmtID = 0; // ovo služi za asortiman kupca
+    private long pjKmtID = 0; // ovo služi za asortiman kupca
 
     ListView artiklListView;
     TextView NoDataText;
@@ -89,7 +89,7 @@ public class ArtikliActivity extends AppCompatActivity {
         if (b != null) {
             varijantaForme = b.getInt("varijanta");
             asortimanKupca = b.getBoolean("asortimanKupca", false);
-            kmtID = b.getLong("kmtID", 0);
+            pjKmtID = b.getLong("pjKmtID", 0);
         }
 
 
@@ -133,7 +133,7 @@ public class ArtikliActivity extends AppCompatActivity {
         if (filter.equals("")) {
             String sql;
             if (asortimanKupca) {
-                sql = "SELECT * FROM artikli WHERE _id IN (SELECT artiklId FROM asortimankupca WHERE pjKmtId=" + kmtID + ");";
+                sql = "SELECT * FROM artikli WHERE _id IN (SELECT artiklId FROM asortimankupca WHERE pjKmtId=" + pjKmtID + ");";
             } else {
                 sql = "SELECT * FROM artikli;";
             }
@@ -141,7 +141,7 @@ public class ArtikliActivity extends AppCompatActivity {
         }else{
             String sql;
             if (asortimanKupca) {
-                sql = "SELECT * FROM artikli WHERE _id IN (SELECT artiklId FROM asortimankupca WHERE pjKmtId=" + kmtID + ") AND sifra like '%" + filter + "%' or naziv like '%" + filter + "%' or kataloskiBroj like '%" + filter + "%'";
+                sql = "SELECT * FROM artikli WHERE _id IN (SELECT artiklId FROM asortimankupca WHERE pjKmtId=" + pjKmtID + ") AND sifra like '%" + filter + "%' or naziv like '%" + filter + "%' or kataloskiBroj like '%" + filter + "%'";
             } else {
                 sql = "SELECT * FROM artikli where sifra like '%" + filter + "%' or naziv like '%" + filter + "%' or kataloskiBroj like '%" + filter + "%'";
             }
