@@ -49,7 +49,10 @@
         <activity android:name=".PinActivity" />
         <activity android:name=".App2DokumentiActivity" />
         <activity android:name=".App2StavkeActivity" />
-        <activity android:name=".App2UnosKolicine"></activity>
+        <activity android:name=".App2UnosKolicine" />
+        <activity
+            android:name=".LogActivity"
+            android:label="@string/title_activity_log"></activity>
     </application>
 
 </manifest>

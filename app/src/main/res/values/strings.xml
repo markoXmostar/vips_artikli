@@ -56,4 +56,5 @@
     <string name="odjavi_i_izbrisi_podatke">Odjavi i izbriši podatke</string>
     <string name="sigurnost_aplikacije">Sigurnost aplikacije</string>
     <string name="postavke_aplikacije">Postavke aplikacije</string>
+    <string name="title_activity_log">LogActivity</string>
 </resources>

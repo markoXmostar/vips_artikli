@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity
 
     TextView txtLastSyncDate;
     TextView txtLastSyncID;
-    ListView listSyncLog;
+    //ListView listSyncLog;
     TextView txtPotrebnaSinkronizacija;
     FloatingActionButton fabUpdatePodataka,fabApp1,fabApp2,fabApp3;
 
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity
         txtLastSyncID=(TextView)findViewById(R.id.txtSyncID_main);
         txtLastSyncDate = (TextView) findViewById(R.id.txtDatumZadnjeSinkronizacije_main);
 
-        listSyncLog=(ListView)findViewById(R.id.listSyncLog_main);
+        //listSyncLog=(ListView)findViewById(R.id.listSyncLog_main);
         txtPotrebnaSinkronizacija=(TextView)findViewById(R.id.txtPotrebnaSinkronizacija);
         fabUpdatePodataka = (FloatingActionButton) findViewById(R.id.fabUpdatePodataka);
         fabApp1 = (FloatingActionButton) findViewById(R.id.fabApp1);
@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity
         String myTabela="log";
         Integer rbr=0;
         ListaDbLogAdapter listaLog = new ListaDbLogAdapter(this, R.layout.row_log);
-        listSyncLog.setAdapter(listaLog);
+        //listSyncLog.setAdapter(listaLog);
 
         List<dbLog> myListaLog=new ArrayList<dbLog>();
 
@@ -277,8 +277,8 @@ public class MainActivity extends AppCompatActivity
                 }
                 c.close();
 
-                txtLastSyncID.setText(Integer.toString(rbr));
-                zadnjaSinkronizacijaID=rbr;
+                //txtLastSyncID.setText(Integer.toString(rbr));
+                //zadnjaSinkronizacijaID=rbr;
                 Log.d(TAG, "getLOG: ZADNJI RBR =" + Integer.toString(rbr));
                 Cursor z;
                 z = myDB.rawQuery("SELECT * FROM " + myTabela + " WHERE redniBroj =" + rbr + ";", null);
@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity
                         }
                     }
                     if (getZadnjaSinkronizacijaVrijeme() != null) {
-                        txtLastSyncDate.setText(parseDateFromSQLLiteDBFormatToMyFormat(getZadnjaSinkronizacijaVrijeme()));
+                        //txtLastSyncDate.setText(parseDateFromSQLLiteDBFormatToMyFormat(getZadnjaSinkronizacijaVrijeme()));
                     }
                     z.close();
                 }
@@ -399,7 +399,7 @@ public class MainActivity extends AppCompatActivity
         for (dbLog db:novaListaLog) {
             listaLog.add(db);
         }
-        listSyncLog.setAdapter(listaLog);
+        //listSyncLog.setAdapter(listaLog);
         postaviVidljivostFabKontrola(true,false);
     }
 
@@ -644,7 +644,7 @@ public class MainActivity extends AppCompatActivity
         urlString = url + "idnazivrid" + "?d=" + DJELATNIK + "&t=" + akcija;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "PjKomitenta"));
 
-        if (myPostavke.getVrstaAplikacije() == 0) {
+        //if (myPostavke.getVrstaAplikacije() == 0) {
             long podtipDokumenta = 0;
             if (myPostavke.getPodtipDokumenta() == 0) {
                 podtipDokumenta = 51;
@@ -664,8 +664,8 @@ public class MainActivity extends AppCompatActivity
             urlString = url + akcija + "?d=" + DJELATNIK;
             spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "asortimankupca"));
 
-        }
-        if (myPostavke.getVrstaAplikacije() == 2) {
+        //}
+/*        if (myPostavke.getVrstaAplikacije() == 2) {
 
             long podtipDokumenta = 0;
             if (myPostavke.getPodtipDokumenta() == 0) {
@@ -687,7 +687,7 @@ public class MainActivity extends AppCompatActivity
             akcija = "asortimankupca";
             urlString = url + akcija + "?d=" + DJELATNIK;
             spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "asortimanKupca"));
-        }
+        }*/
 
     }
 
