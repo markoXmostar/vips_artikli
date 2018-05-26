@@ -8,4 +8,11 @@
         android:orderInCategory="300"
         android:title="@string/PosaljiPodatke_title"
         app:showAsAction="always|withText" />
+
+    <item
+        android:id="@+id/mainActivity"
+        android:icon="@drawable/ic_settings_white_24dp"
+        android:orderInCategory="100"
+        android:title="Administracija"
+        app:showAsAction="always|withText" />
 </menu>

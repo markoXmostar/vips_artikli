@@ -23,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -73,15 +74,13 @@ public class MainActivity extends AppCompatActivity
 
     public List<UrlTabele> spisakSyncTabela;
 
-    TextView txtLastSyncDate;
-    TextView txtLastSyncID;
-    //ListView listSyncLog;
-    TextView txtPotrebnaSinkronizacija;
-    FloatingActionButton fabUpdatePodataka,fabApp1,fabApp2,fabApp3;
+    Button btnViewLog, btnApp1, btnApp2, btnApp3, btnDownloadPodataka, btnPostavke;
 
     View glavniView;
 
     Integer lastSyncID=0;
+
+    public static int zadanaVrstaAplikacija = 0;
 
 
     @Override
@@ -92,18 +91,22 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        txtLastSyncID=(TextView)findViewById(R.id.txtSyncID_main);
-        txtLastSyncDate = (TextView) findViewById(R.id.txtDatumZadnjeSinkronizacije_main);
+        //fabUpdatePodataka = (FloatingActionButton) findViewById(R.id.fabUpdatePodataka);
+        //fabApp1 = (FloatingActionButton) findViewById(R.id.fabApp1);
+        //fabApp2 = (FloatingActionButton) findViewById(R.id.fabApp2);
+        //fabApp3 = (FloatingActionButton) findViewById(R.id.fabApp3);
 
-        //listSyncLog=(ListView)findViewById(R.id.listSyncLog_main);
-        txtPotrebnaSinkronizacija=(TextView)findViewById(R.id.txtPotrebnaSinkronizacija);
-        fabUpdatePodataka = (FloatingActionButton) findViewById(R.id.fabUpdatePodataka);
-        fabApp1 = (FloatingActionButton) findViewById(R.id.fabApp1);
-        fabApp2 = (FloatingActionButton) findViewById(R.id.fabApp2);
-        fabApp3 = (FloatingActionButton) findViewById(R.id.fabApp3);
+        btnViewLog = (Button) findViewById(R.id.btnViewLog);
+        btnApp1 = (Button) findViewById(R.id.btnApp1);
+        btnApp2 = (Button) findViewById(R.id.btnApp2);
+        btnApp3 = (Button) findViewById(R.id.btnApp3);
+        btnDownloadPodataka = (Button) findViewById(R.id.btnDownloadData);
+        btnPostavke = (Button) findViewById(R.id.btnPostavke);
+
         spisakSyncTabela = new ArrayList<UrlTabele>();
 
         procitajPostavke();
+        zadanaVrstaAplikacija = myPostavke.getVrstaAplikacije();
         if (!myPostavke.getPin().equals("")) {
             Intent intent = new Intent(this, PinActivity.class);
             startActivityForResult(intent, 998);
@@ -118,7 +121,7 @@ public class MainActivity extends AppCompatActivity
         //kraj
 
 
-        fabUpdatePodataka.setOnClickListener(new View.OnClickListener() {
+        btnDownloadPodataka.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -128,8 +131,14 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
-
-        fabApp1.setOnClickListener(new View.OnClickListener() {
+        btnViewLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, LogActivity.class);
+                startActivity(intent);
+            }
+        });
+        btnApp1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, App1DokumentiActivity.class);
@@ -137,14 +146,14 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
-        fabApp2.setOnClickListener(new View.OnClickListener() {
+        btnApp2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, App2DokumentiActivity.class);
                 startActivity(intent);
             }
         });
-        fabApp3.setOnClickListener(new View.OnClickListener() {
+        btnApp3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, App1DokumentiActivity.class);
@@ -152,6 +161,14 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
+        btnPostavke.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, PostavkeActivity.class);
+                startActivityForResult(intent, 1);
+            }
+        });
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -170,67 +187,111 @@ public class MainActivity extends AppCompatActivity
         } else {
             DJELATNIK = myPostavke.getDlt_id();
         }
+
+        if (potrebnaSinkronizacija) {
+            setEnableAppButton(false);
+        } else {
+
+            if (myPostavke.getVrstaAplikacije() != 0) {
+                switch (myPostavke.getVrstaAplikacije()) {
+                    case 1:
+                        btnApp3.setEnabled(false);
+                        btnApp2.setEnabled(false);
+                        //btnApp1.callOnClick();
+                        break;
+                    case 2:
+                        btnApp3.setEnabled(false);
+                        btnApp1.setEnabled(false);
+                        //btnApp2.callOnClick();
+                        break;
+                    case 3:
+                        btnApp1.setEnabled(false);
+                        btnApp2.setEnabled(false);
+                        //btnApp3.callOnClick();
+                        break;
+                }
+            } else {
+                setEnableAppButton(true);
+            }
+        }
+
     }
 
 
-    private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vidljiveTxtKontrole){
-        lastPotrebnaSyncVisible = potrebnaSyncVisible;
-        lastVidljiveTxtKontrole = vidljiveTxtKontrole;
-        if (potrebnaSyncVisible){
-            Log.d(TAG, "postaviVidljivostFabKontrola: Vidljivost" + !potrebnaSyncVisible);
-            fabUpdatePodataka.setVisibility(View.VISIBLE);
+    private void setEnableAppButton(boolean enable) {
+        btnApp1.setEnabled(enable);
+        btnApp2.setEnabled(enable);
+        btnApp3.setEnabled(enable);
+    }
+
+    /*
+        private void postaviVidljivostFabKontrola(boolean potrebnaSyncVisible,boolean vidljiveTxtKontrole){
+            lastPotrebnaSyncVisible = potrebnaSyncVisible;
+            lastVidljiveTxtKontrole = vidljiveTxtKontrole; //ovo služi samo za pamćenje zadnje postavke
+            if (potrebnaSyncVisible){
+                Log.d(TAG, "postaviVidljivostFabKontrola: Vidljivost" + !potrebnaSyncVisible);
+                fabUpdatePodataka.setVisibility(View.VISIBLE);
 
 
-            fabApp1.setVisibility(View.INVISIBLE);
-            fabApp2.setVisibility(View.INVISIBLE);
-            fabApp3.setVisibility(View.INVISIBLE);
+                fabApp1.setVisibility(View.INVISIBLE);
+                fabApp2.setVisibility(View.INVISIBLE);
+                fabApp3.setVisibility(View.INVISIBLE);
 
-            if (vidljiveTxtKontrole){
-                txtLastSyncID.setText("-1");
-                txtLastSyncDate.setText("/ NIKAD");
-                txtPotrebnaSinkronizacija.setVisibility(View.VISIBLE);
-            }else{
-                txtPotrebnaSinkronizacija.setVisibility(View.INVISIBLE);
+                if (vidljiveTxtKontrole){
+                    txtLastSyncID.setText("-1");
+                    txtLastSyncDate.setText("/ NIKAD");
+                    //txtPotrebnaSinkronizacija.setVisibility(View.VISIBLE);
+                }else{
+                    //txtPotrebnaSinkronizacija.setVisibility(View.INVISIBLE);
+                }
+
+            }
+            else{
+                Log.d(TAG, "postaviVidljivostFabKontrola: Vidljivost" + potrebnaSyncVisible);
+                fabUpdatePodataka.setVisibility(View.INVISIBLE);
+                //txtPotrebnaSinkronizacija.setVisibility(View.INVISIBLE);
+                switch (myPostavke.getVrstaAplikacije()) {
+                    case 0:
+                        //sve vidljive
+                        fabApp1.setVisibility(View.VISIBLE);
+                        fabApp2.setVisibility(View.VISIBLE);
+                        fabApp3.setVisibility(View.VISIBLE);
+                        break;
+                    case 1:
+                        //vidljiva 1
+                        fabApp1.setVisibility(View.VISIBLE);
+                        fabApp2.setVisibility(View.GONE);
+                        fabApp3.setVisibility(View.GONE);
+                        break;
+                    case 2:
+                        //vidljiva 2
+                        fabApp1.setVisibility(View.GONE);
+                        fabApp2.setVisibility(View.VISIBLE);
+                        fabApp3.setVisibility(View.GONE);
+                        break;
+                    case 3:
+                        //vidljiva 3
+                        fabApp1.setVisibility(View.GONE);
+                        fabApp2.setVisibility(View.GONE);
+                        fabApp3.setVisibility(View.VISIBLE);
+                        break;
+                }
+
+
+
             }
 
-        }
-        else{
-            Log.d(TAG, "postaviVidljivostFabKontrola: Vidljivost" + potrebnaSyncVisible);
-            fabUpdatePodataka.setVisibility(View.INVISIBLE);
-            txtPotrebnaSinkronizacija.setVisibility(View.INVISIBLE);
-            switch (myPostavke.getVrstaAplikacije()) {
-                case 0:
-                    //sve vidljive
-                    fabApp1.setVisibility(View.VISIBLE);
-                    fabApp2.setVisibility(View.VISIBLE);
-                    fabApp3.setVisibility(View.VISIBLE);
-                    break;
-                case 1:
-                    //vidljiva 1
-                    fabApp1.setVisibility(View.VISIBLE);
-                    fabApp2.setVisibility(View.GONE);
-                    fabApp3.setVisibility(View.GONE);
-                    break;
-                case 2:
-                    //vidljiva 2
-                    fabApp1.setVisibility(View.GONE);
-                    fabApp2.setVisibility(View.VISIBLE);
-                    fabApp3.setVisibility(View.GONE);
-                    break;
-                case 3:
-                    //vidljiva 3
-                    fabApp1.setVisibility(View.GONE);
-                    fabApp2.setVisibility(View.GONE);
-                    fabApp3.setVisibility(View.VISIBLE);
-                    break;
-            }
+    }
+    */
+    private boolean potrebnaSinkronizacija = true;
+    private static ListaDbLogAdapter ZadnjiLog;
 
-
-
-        }
-
-}
+    public static ListaDbLogAdapter getListaZadnjiLog() {
+        return ZadnjiLog;
+    }
     public void getLOG() {
+
+
         if (spisakSyncTabela.size() == 0) {
             return;
         } else {
@@ -248,6 +309,7 @@ public class MainActivity extends AppCompatActivity
         String myTabela="log";
         Integer rbr=0;
         ListaDbLogAdapter listaLog = new ListaDbLogAdapter(this, R.layout.row_log);
+        ZadnjiLog = new ListaDbLogAdapter(this, R.layout.row_log);
         //listSyncLog.setAdapter(listaLog);
 
         List<dbLog> myListaLog=new ArrayList<dbLog>();
@@ -261,7 +323,7 @@ public class MainActivity extends AppCompatActivity
         if (isTableExists(myDB, myTabela)){
             if (isFieldExist(myDB,myTabela,"redniBroj")){
 
-                postaviVidljivostFabKontrola(false,true);
+                //postaviVidljivostFabKontrola(false,true);
                 Cursor c;
                 c = myDB.rawQuery("SELECT MAX(redniBroj) AS rbr FROM " + myTabela, null);
                 int IdMax = c.getColumnIndex("rbr");
@@ -348,14 +410,17 @@ public class MainActivity extends AppCompatActivity
             tabelaLogPostoji=false;
         }
 
+
         for (dbLog db:myListaLog) {
             listaLog.add(db);
+            ZadnjiLog.add(db);
         }
 
         if (!tabelaLogPostoji){
             rekreirajLogTabelu(myDB);
             rbr=0;
-            postaviVidljivostFabKontrola(true,true);
+            //postaviVidljivostFabKontrola(true,true);
+            potrebnaSinkronizacija = true;
         }
         Log.d(TAG, "getLOG: BROJ ZAPISA U LOG TABELI JE " + listaLog.getCount());
         Log.d(TAG, "getLOG: BROJ POTREBNIH SYNC TABELA JE " + spisakSyncTabela.size());
@@ -365,9 +430,12 @@ public class MainActivity extends AppCompatActivity
 
             sastaviTabelePotrebnieZaSinkronizaciju(myListaLog);
             Log.d(TAG, "getLOG: Zadnja sinkronizacija nepotpuna potrebno je uraditi opet!");
+            //postaviVidljivostFabKontrola(true,false);
+            potrebnaSinkronizacija = true;
         }
         else {
             Log.d(TAG, "getLOG: Zadnja sinkronizacija uspješna!");
+            potrebnaSinkronizacija = false;
         }
 
         myDB.close();
@@ -400,7 +468,7 @@ public class MainActivity extends AppCompatActivity
             listaLog.add(db);
         }
         //listSyncLog.setAdapter(listaLog);
-        postaviVidljivostFabKontrola(true,false);
+
     }
 
     @Override
@@ -409,10 +477,30 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+
+
+            if (MainActivity.zadanaVrstaAplikacija == 0) {
+                super.onBackPressed();
+            } else {
+                switch (zadanaVrstaAplikacija) {
+                    case 1:
+                        btnApp1.callOnClick();
+                        break;
+                    case 2:
+                        btnApp2.callOnClick();
+                        break;
+                    case 3:
+                        btnApp3.callOnClick();
+                        break;
+                }
+            }
+
+
+            //super.onBackPressed();
         }
     }
 
+    /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -433,13 +521,10 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(intent, 1);
             return true;
         }
-        if (id == R.id.action_download_podataka) {
-            fabUpdatePodataka.callOnClick();
-        }
 
         return super.onOptionsItemSelected(item);
     }
-
+    */
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -472,6 +557,20 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 Log.d(TAG, "onActivityResult: ZATVARAM PIN ACTIVITY---OK");
 
+                if (myPostavke.getVrstaAplikacije() != 0 && !potrebnaSinkronizacija) {
+                    switch (myPostavke.getVrstaAplikacije()) {
+                        case 1:
+                            btnApp1.callOnClick();
+                            break;
+                        case 2:
+                            btnApp2.callOnClick();
+                            break;
+                        case 3:
+                            btnApp3.callOnClick();
+                            break;
+                    }
+                }
+
             } else {
                 Log.d(TAG, "onActivityResult: ZATVARAM PIN ACTIVITY---CANCEL");
                 finish();
@@ -483,7 +582,7 @@ public class MainActivity extends AppCompatActivity
 
     private void procitajPostavke() {
         myPostavke = new postavkeAplikacije(MainActivity.this);
-        postaviVidljivostFabKontrola(lastPotrebnaSyncVisible, lastVidljiveTxtKontrole);
+        //postaviVidljivostFabKontrola(lastPotrebnaSyncVisible, lastVidljiveTxtKontrole);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -511,7 +610,7 @@ public class MainActivity extends AppCompatActivity
             }
 
         } else if (id== R.id.nav_recive){
-            fabUpdatePodataka.callOnClick();
+            btnDownloadPodataka.callOnClick();
         } else if (id == R.id.nav_odjava) {
             myPostavke.snimiDLT_ID(0);
             brisiSvePodatke();
@@ -538,6 +637,7 @@ public class MainActivity extends AppCompatActivity
             finish();
         }
     }
+
 
     public void brisiSvePodatke() {
         //
@@ -1753,7 +1853,7 @@ public class MainActivity extends AppCompatActivity
         postavkeAplikacije myPostavke = new postavkeAplikacije(a);
         long id = myPostavke.getPodtipDokumenta();
         if (id == 0) {
-            return "Provjerite postavke!!!";
+            return "";
         }
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
         Cursor c;

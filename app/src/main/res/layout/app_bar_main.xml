@@ -24,58 +24,8 @@
         android:id="@+id/include"
         layout="@layout/content_main" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabUpdatePodataka"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/refresh_zeleni" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabApp1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp"
-        android:clickable="true"
 
-        app:layout_anchor="@id/fabUpdatePodataka"
-        app:srcCompat="@drawable/opcija1" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabApp2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|end"
-        android:layout_marginBottom="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp"
-        android:clickable="true"
-        app:layout_anchor="@id/fabApp1"
-        app:srcCompat="@drawable/opcija2" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabApp3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|end"
-        android:layout_marginBottom="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp"
-        app:layout_anchor="@id/fabApp2"
-        android:clickable="true"
-        app:srcCompat="@drawable/opcija3" />
 
 </android.support.design.widget.CoordinatorLayout>

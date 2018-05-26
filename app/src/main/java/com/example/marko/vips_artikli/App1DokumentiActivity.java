@@ -70,6 +70,9 @@ public class App1DokumentiActivity extends AppCompatActivity {
             }
             return true;
         }
+        if (id == R.id.mainActivity) {
+            finish();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -284,6 +287,20 @@ public class App1DokumentiActivity extends AppCompatActivity {
         for (App1Dokumenti dok:spisakDok) {
             listaDokumenta.add(dok);
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (MainActivity.zadanaVrstaAplikacija == 0) {
+            super.onBackPressed();
+        } else {
+            Intent a = new Intent(Intent.ACTION_MAIN);
+            a.addCategory(Intent.CATEGORY_HOME);
+            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(a);
+        }
+
     }
 
 }

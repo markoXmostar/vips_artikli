@@ -1,11 +1,15 @@
 package com.example.marko.vips_artikli;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,6 +32,23 @@ public class App2DokumentiActivity extends AppCompatActivity {
     private int lastDokId;
 
     ArrayList<App2Dokumenti> spisakDok;
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.app2_dokumenti_menu, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.mainActivity) {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,7 +196,28 @@ public class App2DokumentiActivity extends AppCompatActivity {
     }
 
     private void setTitle() {
-        this.setTitle(MainActivity.getNazivZadanogPodtipaDokumenta(this));
+        String naziv = MainActivity.getNazivZadanogPodtipaDokumenta(this);
+        if (naziv.isEmpty()) {
+
+            this.setTitle("Provjerite postavke!!!");
+
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+            builder1.setMessage("GREŠKA U POSTAVKAMA APLIKACIJE!\nPodtip dokumenta je postavljen na 0!\nPozovite administratora ili probajte ponovo učitati postavke tako da se odjavite i ponovo prijavite!");
+            builder1.setCancelable(false);
+            builder1.setPositiveButton(
+                    "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert11 = builder1.create();
+            alert11.show();
+
+        } else {
+            this.setTitle(naziv);
+        }
+
     }
 
 
@@ -183,5 +225,17 @@ public class App2DokumentiActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         updateDokumenata();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (MainActivity.zadanaVrstaAplikacija == 0) {
+            super.onBackPressed();
+        } else {
+            Intent a = new Intent(Intent.ACTION_MAIN);
+            a.addCategory(Intent.CATEGORY_HOME);
+            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(a);
+        }
     }
 }
