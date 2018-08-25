@@ -43,11 +43,14 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
         Date vrijeme1,vrijeme2;
 
-    public JSON_recive(Activity activity, MainActivity.UrlTabele _myTbl, String poruka) {
+    private int rbrLOG;
+
+    public JSON_recive(Activity activity, MainActivity.UrlTabele _myTbl, String poruka, int _rbrLOG) {
             myMainActivity=activity;
             progressDialog = new ProgressDialog(activity);
             myTbl = _myTbl;
         porukaNaEkranu = poruka;
+        rbrLOG = _rbrLOG;
         }
 
         @Override
@@ -750,7 +753,8 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
         //smjer 0 za download
         //smjer 1 za upload
-        Integer lastSyncID=zadnjaSinkronizacijaID+1;
+        //Integer lastSyncID=zadnjaSinkronizacijaID+1;
+        Integer lastSyncID = rbrLOG;
         if (brojPodataka == 0) {
             greska = 1;
             LOGporuka = "Nisu dohvaćeni podaci sa servera!!!";

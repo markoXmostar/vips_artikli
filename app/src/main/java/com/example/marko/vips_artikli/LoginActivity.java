@@ -2,6 +2,7 @@ package com.example.marko.vips_artikli;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -31,8 +32,10 @@ public class LoginActivity extends AppCompatActivity {
                 //api/auth?username=nikola&password=1111111
                 //spisakSyncTabela.add(new MainActivity.UrlTabele(akcija, urlString, true, "jmj"));
                 MainActivity.UrlTabele newUrl = new MainActivity.UrlTabele(akcija, urlString, true, "");
+                Activity a = LoginActivity.this;
+                int rbrLOG = MainActivity.getZadnjiID_log("log", a);
 
-                JSON_recive newJSON = (JSON_recive) new JSON_recive(LoginActivity.this, newUrl, "") {
+                JSON_recive newJSON = (JSON_recive) new JSON_recive(LoginActivity.this, newUrl, "", rbrLOG) {
                     @Override
                     public void onResponseReceived(int result) {
                         //btnPrijava.setText(Integer.toString(result));

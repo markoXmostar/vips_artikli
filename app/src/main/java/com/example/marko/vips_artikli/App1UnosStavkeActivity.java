@@ -129,6 +129,12 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
     private int unosStavke = 0;
 
     private postavkeAplikacije myPostavke;
+
+    private void postaviZadanuKolicinu() {
+        if (myPostavke.getDefoltnaKolicina() > 0) {
+            txtKolicina.setText(Float.toString(myPostavke.getDefoltnaKolicina()));
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,9 +152,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
         tvRokTrajanja = (TextView) findViewById(R.id.tvRokTrajanja_App1UnosStavke);
         txtJmj=(TextView)findViewById(R.id.txtJmj_App1UnosStavke);
         txtKolicina=(EditText)findViewById(R.id.txtKolicina_App1UnosStavke);
-        if (myPostavke.getDefoltnaKolicina() > 0) {
-            txtKolicina.setText(Float.toString(myPostavke.getDefoltnaKolicina()));
-        }
+        postaviZadanuKolicinu();
         //txtNapomena=(EditText) findViewById(R.id.etxtNapomena_App1UnosStavke);
         barcodeReader = (BarcodeReader) getSupportFragmentManager().findFragmentById(R.id.barcode_fragment);
 
@@ -398,6 +402,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
                         MainActivity.snimiStavku(App1UnosStavkeActivity.this, idDokumenta, newStavka);
                         MainActivity.svirajOK(myPostavke);
                         recreate();
+                        postaviZadanuKolicinu();
                         txtBarcode.setText("");
                         txtBarcode.requestFocus();
 

@@ -166,6 +166,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, PostavkeActivity.class);
                 startActivityForResult(intent, 1);
+
             }
         });
 
@@ -188,6 +189,11 @@ public class MainActivity extends AppCompatActivity
             DJELATNIK = myPostavke.getDlt_id();
         }
 
+        postaviDugmiceOvisnoOdOvlasti();
+
+    }
+
+    private void postaviDugmiceOvisnoOdOvlasti() {
         if (potrebnaSinkronizacija) {
             setEnableAppButton(false);
         } else {
@@ -197,16 +203,19 @@ public class MainActivity extends AppCompatActivity
                     case 1:
                         btnApp3.setEnabled(false);
                         btnApp2.setEnabled(false);
+                        btnApp1.setEnabled(true);
                         //btnApp1.callOnClick();
                         break;
                     case 2:
                         btnApp3.setEnabled(false);
+                        btnApp2.setEnabled(true);
                         btnApp1.setEnabled(false);
                         //btnApp2.callOnClick();
                         break;
                     case 3:
                         btnApp1.setEnabled(false);
                         btnApp2.setEnabled(false);
+                        btnApp3.setEnabled(true);
                         //btnApp3.callOnClick();
                         break;
                 }
@@ -214,7 +223,6 @@ public class MainActivity extends AppCompatActivity
                 setEnableAppButton(true);
             }
         }
-
     }
 
 
@@ -289,6 +297,27 @@ public class MainActivity extends AppCompatActivity
     public static ListaDbLogAdapter getListaZadnjiLog() {
         return ZadnjiLog;
     }
+
+    public static int getZadnjiID_log(String myTabela, Activity a) {
+
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
+        Integer rbr = 0;
+        Cursor c;
+        c = myDB.rawQuery("SELECT MAX(redniBroj) AS rbr FROM " + myTabela, null);
+        int IdMax = c.getColumnIndex("rbr");
+        c.moveToFirst();
+
+        for (int j = 0; j < c.getCount(); j++) {
+
+            rbr = c.getInt(IdMax);
+
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        return rbr;
+    }
     public void getLOG() {
 
 
@@ -307,7 +336,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         String myTabela="log";
-        Integer rbr=0;
+
         ListaDbLogAdapter listaLog = new ListaDbLogAdapter(this, R.layout.row_log);
         ZadnjiLog = new ListaDbLogAdapter(this, R.layout.row_log);
         //listSyncLog.setAdapter(listaLog);
@@ -318,12 +347,17 @@ public class MainActivity extends AppCompatActivity
         boolean tabelaLogPostoji=true;
 
         int brojZadnjihSyncTabela=0;
-
+        int rbr = 0;
 
         if (isTableExists(myDB, myTabela)){
             if (isFieldExist(myDB,myTabela,"redniBroj")){
 
                 //postaviVidljivostFabKontrola(false,true);
+
+                rbr = getZadnjiID_log(myTabela, this);
+                int brojac = 0;
+
+                /*
                 Cursor c;
                 c = myDB.rawQuery("SELECT MAX(redniBroj) AS rbr FROM " + myTabela, null);
                 int IdMax = c.getColumnIndex("rbr");
@@ -338,7 +372,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
                 c.close();
-
+                */
                 //txtLastSyncID.setText(Integer.toString(rbr));
                 //zadnjaSinkronizacijaID=rbr;
                 Log.d(TAG, "getLOG: ZADNJI RBR =" + Integer.toString(rbr));
@@ -437,7 +471,7 @@ public class MainActivity extends AppCompatActivity
             Log.d(TAG, "getLOG: Zadnja sinkronizacija uspješna!");
             potrebnaSinkronizacija = false;
         }
-
+        postaviDugmiceOvisnoOdOvlasti();
         myDB.close();
     }
 
@@ -537,7 +571,7 @@ public class MainActivity extends AppCompatActivity
                 Log.d(TAG, "onActivityResult: ZATVARAM POSTAVKE---CANCEL");
                 procitajPostavke();
             }
-
+            postaviDugmiceOvisnoOdOvlasti();
         }
         if (requestCode == 999) {
             //LOGIN
@@ -796,6 +830,9 @@ public class MainActivity extends AppCompatActivity
 
         Snackbar.make(view, "Radim download podataka molim pričekajte", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
+        SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
+        int rbrLOG = getZadnjiID_log("log", this);
+        rbrLOG += 1;
 
         Log.d(TAG, "napraviSinkronizacijuDownload: BROJ TABELA ZA SYNC=" + spisakSyncTabela.size());
         int brojac = 0;
@@ -805,7 +842,7 @@ public class MainActivity extends AppCompatActivity
             tbl.ZavrsenaSyncronizacija = false;
 
             brojac += 1;
-            new JSON_recive(this, tbl, "") {
+            new JSON_recive(this, tbl, "", rbrLOG) {
                 @Override
                 public void onResponseReceived(int result) {
 

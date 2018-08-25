@@ -64,6 +64,8 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
                 //    txtSaldoKupca.setText(String.valueOf(saldo));
                 //}
             }
+            //ovdje treba dodati da se automatski dodaje PJ ukoliko je sama
+            txtPjKomitenta.callOnClick();
         }
         else {
             txtPjKomitenta.setVisibility(View.GONE);
@@ -109,6 +111,7 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
             txtPodtipDokumenta.setEnabled(true);
             labelPodtipDokumenta.setVisibility(View.VISIBLE);
             txtPodtipDokumenta.setVisibility(View.VISIBLE);
+            txtPodtipDokumenta.callOnClick();
         }else{
             //txtTipDokumenta.setText(Izaberi);
             labelPodtipDokumenta.setEnabled(false);
