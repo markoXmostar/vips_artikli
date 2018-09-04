@@ -12,6 +12,7 @@ import android.print.PrintAttributes;
 import android.print.PrintManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -157,12 +158,18 @@ public class App1DokumentiActivity extends AppCompatActivity {
                                 try {
                                     String rezultat = new JSON_send(App1DokumentiActivity.this, spisakDokZaSync, false, vrstaAplikacije).execute().get();
                                     Log.d(TAG, "onClick: REZULTAT ASYNCTASKA JE=>" + rezultat);
-                                    if (rezultat.equals("OK")){
+                                    if (TextUtils.isEmpty(rezultat)) {
+                                        Toast.makeText(App1DokumentiActivity.this, "Nije moguće poslati podatke! Provjerite internet konekciju i dostupnost servera!", Toast.LENGTH_LONG).show();
 
-                                        //ucitajDokumente();
-                                        MainActivity.updateZaglavljaPoslijeSinkronizacije(App1DokumentiActivity.this, spisakDokZaSync);
-                                        ucitajDokumente();
+
+                                    } else {
+                                        if (rezultat.equals("OK")) {
+                                            //ucitajDokumente();
+                                            MainActivity.updateZaglavljaPoslijeSinkronizacije(App1DokumentiActivity.this, spisakDokZaSync);
+                                            ucitajDokumente();
+                                        }
                                     }
+
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 } catch (ExecutionException e) {

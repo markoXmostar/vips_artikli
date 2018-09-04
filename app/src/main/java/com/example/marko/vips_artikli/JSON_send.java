@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -155,10 +156,16 @@ public class JSON_send extends AsyncTask<String, String, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        Log.d(TAG, "onPostExecute: " + result);
-        if (result.equals("OK")) {
-            //MainActivity.updateZaglavljaPoslijeSinkronizacije(myActivity,spisakDokumenta);
+        if (TextUtils.isEmpty(result)) {
+            Log.d(TAG, "onPostExecute: PRAZAN STRING");
+            progressDialog.dismiss();
+        } else {
+            Log.d(TAG, "onPostExecute: " + result);
+            if (result.equals("OK")) {
+                //MainActivity.updateZaglavljaPoslijeSinkronizacije(myActivity,spisakDokumenta);
+            }
+            progressDialog.dismiss();
         }
-        progressDialog.dismiss();
+
     }
 }

@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity
 
         spisakSyncTabela = new ArrayList<UrlTabele>();
 
+
         procitajPostavke();
         zadanaVrstaAplikacija = myPostavke.getVrstaAplikacije();
         if (!myPostavke.getPin().equals("")) {
@@ -1980,7 +1981,12 @@ public class MainActivity extends AppCompatActivity
             }
         }
         try {
-            String rezultat = new JSON_send(a, spisakDokumentaZaSync, false, 1).execute().get();
+            String rezultat = new JSON_send(a, spisakDokumentaZaSync, false, vrstaAplikacije).execute().get();
+            if (TextUtils.isEmpty(rezultat)) {
+                Toast.makeText(a, "Nije moguće poslati podatke! Provjerite internet konekciju i dostupnost servera!", Toast.LENGTH_LONG).show();
+                pd.dismiss();
+                return false;
+            }
             if (rezultat.equals("OK")) {
                 MainActivity.updateZaglavljaPoslijeSinkronizacije(a, spisakDokumentaZaSync);
                 odgovor = true;
