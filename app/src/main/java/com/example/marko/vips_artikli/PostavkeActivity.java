@@ -58,6 +58,9 @@ public class PostavkeActivity extends AppCompatActivity {
         lblBrojDec.setText(String.valueOf(defBrojDec));
     }
 
+    private static boolean radi = false;
+    private static boolean omoguciPromjene = false;
+
     /*
         @Override
         protected void onStop(){
@@ -73,6 +76,7 @@ public class PostavkeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_postavke);
 
+        radi = false;
 
         btnBrziUnosArtikla = (Switch) findViewById(R.id.tbtnBrziUnosartikala_Postavke);
         btnDopustenaIzmjenaTipaDokumenta = (Switch) findViewById(R.id.btnDopustenaIZmjenaTipa_Postavke);
@@ -113,6 +117,7 @@ public class PostavkeActivity extends AppCompatActivity {
 
 
             spinTipDokumenta.setAdapter(tipAdapter);
+
             spinTipDokumenta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -120,8 +125,10 @@ public class PostavkeActivity extends AppCompatActivity {
                     TipDokumenta tiDok = (TipDokumenta) adapterView.getItemAtPosition(i);
                     idTipDokumenta = tiDok.getId();
                     if (idTipDokumenta != myPostavke.getTipDokumenta()) {
-                        myPostavke.snimiTipDokumenta(idTipDokumenta);
-                        Log.d(TAG, "onItemSelected: SNIMI tipDokumenta=" + idTipDokumenta);
+                        if (radi) {
+                            myPostavke.snimiTipDokumenta(idTipDokumenta);
+                            Log.d(TAG, "onItemSelected: SNIMI tipDokumenta=" + idTipDokumenta);
+                        }
                     }
                     ArrayAdapter<PodtipDokumenta> podtipAdapter = new ArrayAdapter<PodtipDokumenta>(PostavkeActivity.this, android.R.layout.simple_spinner_item);
                     for (PodtipDokumenta podtip : MainActivity.getListaPodtipova(PostavkeActivity.this, "", idTipDokumenta, false, " ")) {
@@ -135,8 +142,10 @@ public class PostavkeActivity extends AppCompatActivity {
                             idPodtipDokumenta = podtipDok.getId();
                             if (idPodtipDokumenta != myPostavke.getPodtipDokumenta()) {
                                 if (spinnerTouched) {
-                                    myPostavke.snimiPodtipDokumenta(idPodtipDokumenta);
-                                    Log.d(TAG, "onItemSelected: SNIMI idPodtipDokumenta=" + idPodtipDokumenta);
+                                    if (radi) {
+                                        myPostavke.snimiPodtipDokumenta(idPodtipDokumenta);
+                                        Log.d(TAG, "onItemSelected: SNIMI idPodtipDokumenta=" + idPodtipDokumenta);
+                                    }
                                 }
                             }
                         }
@@ -165,8 +174,11 @@ public class PostavkeActivity extends AppCompatActivity {
                 VrstaAplikacije vrsta = VrstaAplikacije.values()[position];
                 int value = vrsta.ordinal();
                 if (value != myPostavke.getVrstaAplikacije()) {
-                    myPostavke.snimiVrstuAplikacije(value);
-                    Log.d(TAG, "onItemSelected: SNIMI VrstaAplikacije=" + value);
+                    if (radi) {
+                        myPostavke.snimiVrstuAplikacije(value);
+                        Log.d(TAG, "onItemSelected: SNIMI VrstaAplikacije=" + value);
+                    }
+
                 }
                 //Toast.makeText(PostavkeActivity.this, value.toString(), Toast.LENGTH_LONG).show();
             } // to close the onItemSelected
@@ -185,8 +197,11 @@ public class PostavkeActivity extends AppCompatActivity {
 
                 int value = vrstaPretrageArtikala.ordinal();
                 if (value != myPostavke.getVrstaPretrageArtikala()) {
-                    myPostavke.snimiVrstuPretrageArtikala(value);
-                    Log.d(TAG, "onItemSelected: SNIMI VrstaPretrageArtikala=" + value);
+                    if (radi) {
+                        myPostavke.snimiVrstuPretrageArtikala(value);
+                        Log.d(TAG, "onItemSelected: SNIMI VrstaPretrageArtikala=" + value);
+                    }
+
                 }
 
                 //myPostavke.snimiVrstuPretrageArtikala(position);
@@ -216,7 +231,9 @@ public class PostavkeActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                myPostavke.snimiDefoltnuKolicinu(defKolicina);
+                if (radi) {
+                    myPostavke.snimiDefoltnuKolicinu(defKolicina);
+                }
 
             }
         });
@@ -237,9 +254,10 @@ public class PostavkeActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                Log.d(TAG, "onStopTrackingTouch: SNIMAM BROJ DECIMALA");
-                myPostavke.snimiBrojDecimala(defBrojDec);
-
+                if (radi) {
+                    Log.d(TAG, "onStopTrackingTouch: SNIMAM BROJ DECIMALA");
+                    myPostavke.snimiBrojDecimala(defBrojDec);
+                }
             }
         });
         if (myPostavke.getBrojDecimala() >= 0 && myPostavke.getBrojDecimala() <= 5) {
@@ -252,7 +270,10 @@ public class PostavkeActivity extends AppCompatActivity {
         btnBrziUnosArtikla.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                myPostavke.snimiBrziUnos(btnBrziUnosArtikla.isChecked());
+                if (radi) {
+                    myPostavke.snimiBrziUnos(btnBrziUnosArtikla.isChecked());
+                }
+
             }
         });
 
@@ -260,7 +281,10 @@ public class PostavkeActivity extends AppCompatActivity {
         btnDopustenaIzmjenaTipaDokumenta.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                myPostavke.snimiDopustenaIzmjenaTipaDokumenta(btnDopustenaIzmjenaTipaDokumenta.isChecked());
+                if (radi) {
+                    myPostavke.snimiDopustenaIzmjenaTipaDokumenta(btnDopustenaIzmjenaTipaDokumenta.isChecked());
+                }
+
             }
         });
 
@@ -268,9 +292,61 @@ public class PostavkeActivity extends AppCompatActivity {
         btnSvirajUpozorenja.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                myPostavke.snimiSvirajUpozorenja(btnSvirajUpozorenja.isChecked());
+                if (radi) {
+                    myPostavke.snimiSvirajUpozorenja(btnSvirajUpozorenja.isChecked());
+                }
+
             }
         });
+
+        //za omogućiti korisniku promjene postavki potrebno je samo postaviti omoguciPromjene na TRUE
+        if (omoguciPromjene) {
+            radi = true;
+        } else {
+            btnBrziUnosArtikla.setEnabled(false);
+            btnDopustenaIzmjenaTipaDokumenta.setEnabled(false);
+            sbarKolicina.setEnabled(false);
+            spinTipDokumenta.setEnabled(false);
+            spinPodtipDokumenta.setEnabled(false);
+            spinnerVrstaAplikacije.setEnabled(false);
+            sppinerVrstaPretrage.setEnabled(false);
+            sbarBrojDecimala.setEnabled(false);
+            lblDefKolicina.setEnabled(false);
+            lblBrojDec.setEnabled(false);
+            btnSvirajUpozorenja.setEnabled(false);
+
+            spinTipDokumenta.setSelection(getIndex_TipDokumenta(_myPostavke.getTipDokumenta()));
+            spinPodtipDokumenta.setSelection(getIndex_PodtipDokumenta(_myPostavke.getPodtipDokumenta()));
+            spinnerVrstaAplikacije.setSelection(getIndex_VrstaAplikacije(_myPostavke.getVrstaAplikacije()));
+            sppinerVrstaPretrage.setSelection(getIndex_VrstaPretrageArtikla(_myPostavke.getVrstaPretrageArtikala()));
+            sbarKolicina.setProgress(Math.round(_myPostavke.getDefoltnaKolicina() * 10));
+            if (_myPostavke.getBrojDecimala() >= 0 && _myPostavke.getBrojDecimala() <= 5) {
+                sbarBrojDecimala.setProgress(_myPostavke.getBrojDecimala());
+            } else {
+                sbarBrojDecimala.setProgress(2);
+            }
+            btnBrziUnosArtikla.setChecked(_myPostavke.isBrziUnosArtikala());
+            btnDopustenaIzmjenaTipaDokumenta.setChecked(_myPostavke.isDopustenaIzmjenaTipaDokumenta());
+            btnSvirajUpozorenja.setChecked(_myPostavke.isSvirajUpozorenja());
+
+//{"id":2,"kasaId":1,"pjFrmId":1,"saldoKomitenta":1,"vrstaAplikacije":3,"vrstaPretrage":0,"dopustenaIzmjenaTipaDokumenta":true,
+// "zadaniTipDokumenta":5,"zadaniPodtipDokumenta":10,"brziUnosPodataka":true,"zadanaKolicinaArtikala":2,"zvukoviUpozorenja":true,"brojDecimala":2}
+            Log.d(TAG, "onCreate: PostavkeAplikacije kasaID=" + _myPostavke.getKasaId());
+            Log.d(TAG, "onCreate: PostavkeAplikacije pjFrmId=" + _myPostavke.getPjFrmId());
+            Log.d(TAG, "onCreate: PostavkeAplikacije podtipDokumenta=" + _myPostavke.getPodtipDokumenta());
+            Log.d(TAG, "onCreate: PostavkeAplikacije defKolicina=" + _myPostavke.getDefoltnaKolicina());
+            Log.d(TAG, "onCreate: PostavkeAplikacije dltID=" + _myPostavke.getDlt_id());
+            Log.d(TAG, "onCreate: PostavkeAplikacije tipDokumenta=" + _myPostavke.getTipDokumenta());
+            Log.d(TAG, "onCreate: PostavkeAplikacije vrstaApp=" + _myPostavke.getVrstaAplikacije());
+            Log.d(TAG, "onCreate: PostavkeAplikacije vrstaPretrage=" + _myPostavke.getVrstaPretrageArtikala());
+            Log.d(TAG, "onCreate: PostavkeAplikacije saldoKomitenta=" + _myPostavke.getSaldakonti());
+            Log.d(TAG, "onCreate: PostavkeAplikacije dopustenaIzmjenaTipa=" + _myPostavke.isDopustenaIzmjenaTipaDokumenta());
+            Log.d(TAG, "onCreate: PostavkeAplikacije brziUnos=" + _myPostavke.isBrziUnosArtikala());
+            Log.d(TAG, "onCreate: PostavkeAplikacije zvukoviUpozorenja=" + _myPostavke.isSvirajUpozorenja());
+            Log.d(TAG, "onCreate: PostavkeAplikacije brojDecimala=" + _myPostavke.getBrojDecimala());
+
+
+        }
 
 
     }

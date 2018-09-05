@@ -609,11 +609,15 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                         jObject = new JSONObject(result);
                         //String _prijavaKorisnika = jObject.getString("prijavaKorisnika");
                         //JSONArray arr = new JSONArray(_prijavaKorisnika);
-                        //Log.d(TAG, "onPostExecute: BROJ ZAPISA PRIJAVE JE: " +arr.length());
+                        //Log.d(TAG, "onPostExecute: BROJ ZAPISA PRIJAVE JE: " +arr.length())
+
+                        //{"id":2,"kasaId":1,"pjFrmId":1,"saldoKomitenta":1,"vrstaAplikacije":3,"vrstaPretrage":0,"dopustenaIzmjenaTipaDokumenta":true,
+                        // "zadaniTipDokumenta":5,"zadaniPodtipDokumenta":10,"brziUnosPodataka":true,"zadanaKolicinaArtikala":2,"zvukoviUpozorenja":true,"brojDecimala":2}
+
                         JSONObject myPostavke = jObject;
                         int dlt_id = myPostavke.optInt("id", 0);
-                        int vrstaAplikacije = myPostavke.optInt("", 0);
-                        int vrstaPretrage = myPostavke.optInt("", 0);
+                        int vrstaAplikacije = myPostavke.optInt("vrstaAplikacije", 0);
+                        int vrstaPretrage = myPostavke.optInt("vrstaPretrage", 0);
                         boolean dopustenaIzmjenaTipaDokumenta = myPostavke.optBoolean("dopustenaIzmjenaTipaDokumenta", false);
                         long zadaniTipDokumenta = myPostavke.optLong("zadaniTipDokumenta", 0);
                         long zadaniPodtipDokumenta = myPostavke.optLong("zadaniPodtipDokumenta", 0);
@@ -621,13 +625,15 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                         double zadanaKolicinaArtikala = myPostavke.optDouble("zadanaKolicinaArtikala", 1);
                         boolean zvukoviUpozorenja = myPostavke.optBoolean("zvukoviUpozorenja", true);
                         int brojDecimala = myPostavke.optInt("brojDecimala", 2);
+                        int kasaID = myPostavke.optInt("kasaId", 0);
+                        int pjFrmId = myPostavke.optInt("pjFrmId", 0);
 
                         if (dlt_id > 0) {
 
                             postavkeAplikacije postavke = new postavkeAplikacije(myMainActivity);
-                            postavke.snimiDLT_ID(dlt_id);
-                            //postavke.snimiSvePostavke(dlt_id,zadaniTipDokumenta,zadaniPodtipDokumenta,vrstaAplikacije,vrstaPretrage,brziUnosPodataka,
-                            //        (float)zadanaKolicinaArtikala,brojDecimala,dopustenaIzmjenaTipaDokumenta,zvukoviUpozorenja);
+                            //postavke.snimiDLT_ID(dlt_id);
+                            postavke.snimiSvePostavke(dlt_id, kasaID, pjFrmId, zadaniTipDokumenta, zadaniPodtipDokumenta, vrstaAplikacije, vrstaPretrage, brziUnosPodataka,
+                                    (float) zadanaKolicinaArtikala, brojDecimala, dopustenaIzmjenaTipaDokumenta, zvukoviUpozorenja);
                             Log.d(TAG, "onPostExecute: URL PRIJAVE: " + myTbl.urlTabele);
                             Log.d(TAG, "onPostExecute: SNIMAM DLT_ID: " + dlt_id);
                             rezultat = dlt_id;

@@ -11,7 +11,7 @@ import android.util.Log;
 public final class postavkeAplikacije {
     private static String TAG = "postavke";
 
-    private int vrstaPretrageArtikala, vrstaAplikacije, brojDecimala, dlt_id, saldakonti;
+    private int vrstaPretrageArtikala, vrstaAplikacije, brojDecimala, dlt_id, saldakonti, kasaId, pjFrmId;
     private float defoltnaKolicina;
     private long tipDokumenta, podtipDokumenta;
     private String pin;
@@ -29,6 +29,8 @@ public final class postavkeAplikacije {
     private void procitajPostavke() {
         SharedPreferences settings = activity.getSharedPreferences(MainActivity.APP_POSTAVKE, 0);
         vrstaPretrageArtikala = settings.getInt("vrstaPretrageArtikala", 0);
+        kasaId = settings.getInt("kasaId", 0);
+        pjFrmId = settings.getInt("pjFrmId", 0);
         vrstaAplikacije = settings.getInt("vrstaAplikacije", 0);
         defoltnaKolicina = settings.getFloat("defoltnaKolicina", (float) 1.0);
         brojDecimala = settings.getInt("brojDecimala", 2);
@@ -51,6 +53,8 @@ public final class postavkeAplikacije {
         Log.d(TAG, "procitajPostavke: dopustenaIzmjenaTipaDokumenta=" + dopustenaIzmjenaTipaDokumenta);
         Log.d(TAG, "procitajPostavke: svirajUpozorenja=" + svirajUpozorenja);
         Log.d(TAG, "procitajPostavke: dlt_id=" + dlt_id);
+        Log.d(TAG, "procitajPostavke: kasaId=" + kasaId);
+        Log.d(TAG, "procitajPostavke: pjFrmId=" + pjFrmId);
         Log.d(TAG, "procitajPostavke: pin=" + pin);
     }
 
@@ -61,6 +65,14 @@ public final class postavkeAplikacije {
 
     public int getDlt_id() {
         return dlt_id;
+    }
+
+    public int getKasaId() {
+        return kasaId;
+    }
+
+    public int getPjFrmId() {
+        return pjFrmId;
     }
 
     public boolean isDopustenaIzmjenaTipaDokumenta() {
@@ -173,12 +185,14 @@ public final class postavkeAplikacije {
         editor.commit();
     }
 
-    public void snimiSvePostavke(int dlt_id, long tipDokumenta, long podtipDokumenta, int vrstaAplikacije, int vrstaPretrageArtikala, boolean brziUnosArtikala, float defoltnaKolicina,
+    public void snimiSvePostavke(int dlt_id, int kasaId, int pjFrmId, long tipDokumenta, long podtipDokumenta, int vrstaAplikacije, int vrstaPretrageArtikala, boolean brziUnosArtikala, float defoltnaKolicina,
                                  int brojDecimala, boolean dopustenaIzmjenaTipaDokumenta, boolean svirajUpozorenja) {
         SharedPreferences settings = activity.getSharedPreferences(MainActivity.APP_POSTAVKE, 0);
         SharedPreferences.Editor editor = settings.edit();
 
         editor.putInt("dlt_id", dlt_id);
+        editor.putInt("kasaId", kasaId);
+        editor.putInt("pjFrmId", pjFrmId);
         editor.putLong("tipDokumenta", tipDokumenta);
         editor.putLong("podtipDokumenta", podtipDokumenta);
         editor.putInt("vrstaAplikacije", vrstaAplikacije);
@@ -189,5 +203,23 @@ public final class postavkeAplikacije {
         editor.putBoolean("dopustenaIzmjenaTipaDokumenta", dopustenaIzmjenaTipaDokumenta);
         editor.putBoolean("svirajUpozorenja", svirajUpozorenja);
         editor.commit();
+
+        procitajPostavke();
+
+        Log.d(TAG, "POSTAVKE SNIMAM SA INTERNETA kasaId=" + kasaId);
+
+        Log.d(TAG, "snimiSvePostavke: PostavkeAplikacije kasaID=" + getKasaId());
+        Log.d(TAG, "snimiSvePostavke: PostavkeAplikacije pjFrmId=" + getPjFrmId());
+        Log.d(TAG, "snimiSvePostavke: PostavkeAplikacije podtipDokumenta=" + getPodtipDokumenta());
+        Log.d(TAG, "snimiSvePostavke: PostavkeAplikacije defKolicina=" + getDefoltnaKolicina());
+        Log.d(TAG, "snimiSvePostavke: PostavkeAplikacije dltID=" + getDlt_id());
+        Log.d(TAG, "snimiSvePostavke: PostavkeAplikacije tipDokumenta=" + getTipDokumenta());
+        Log.d(TAG, "snimiSvePostavke: PostavkeAplikacije vrstaApp=" + getVrstaAplikacije());
+        Log.d(TAG, "snimiSvePostavke: PostavkeAplikacije vrstaPretrage=" + getVrstaPretrageArtikala());
+        Log.d(TAG, "snimiSvePostavke: PostavkeAplikacije saldoKomitenta=" + getSaldakonti());
+        Log.d(TAG, "snimiSvePostavke: PostavkeAplikacije dopustenaIzmjenaTipa=" + isDopustenaIzmjenaTipaDokumenta());
+        Log.d(TAG, "snimiSvePostavke: PostavkeAplikacije brziUnos=" + isBrziUnosArtikala());
+        Log.d(TAG, "snimiSvePostavke: PostavkeAplikacije zvukoviUpozorenja=" + isSvirajUpozorenja());
+        Log.d(TAG, "snimiSvePostavke: PostavkeAplikacije brojDecimala=" + getBrojDecimala());
     }
 }
