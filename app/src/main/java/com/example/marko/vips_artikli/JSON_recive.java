@@ -533,15 +533,13 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
                             //App2Stavke(long id, long zaglavljeId, long artiklId, long jmjId, long vrijednostId1, long vipsId, int rbr, double kolicina, double kolicinaZadana, String opaska,
                             // String artiklSifra, String artiklNaziv, String jmjNaziv, String vrijednostNaziv, String atributNaziv) {
-
                             String _ops = myStv2.optString("opaska", "");
                             if (myStv2.isNull("opaska")) {
-                                Log.d(TAG, "onPostExecute: OPASKA JE NULL");
+                                //Log.d(TAG, "onPostExecute: OPASKA JE NULL");
                                 _ops = "";
                             } else {
-                                Log.d(TAG, "onPostExecute: OPASKA NIJE NULL");
+                                //Log.d(TAG, "onPostExecute: OPASKA NIJE NULL");
                             }
-
                             App2Stavke _stv2 = new App2Stavke(myStv2.optInt("id", 0),
                                     myStv2.optLong("zaglavljeId", 0),
                                     myStv2.optLong("artiklId", 0),
@@ -558,7 +556,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                                     myStv2.optString("vrijednost", ""),
                                     myStv2.optString("atribut", ""));
                             ListaStavke2.add(_stv2);
-                            Log.d(TAG, "onPostExecute: " + _stv2.toString());
+                            //Log.d(TAG, "onPostExecute: " + _stv2.toString());
                         }
                         Log.d(TAG, "onPostExecute: BROJ Dokumenata2 =" + ListaStavke2.size());
                         UpisiStavke2UBazu(ListaStavke2);
@@ -705,6 +703,8 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                     "podgrupaID int);");
             Log.d(TAG, "XXX Brišem sve iz tabele");
             myDB.execSQL("DELETE FROM " + myTabela);
+
+            myDB.beginTransaction();
             for (int i = 0; i < Lista.size(); i++) {
                 Artikl myArt = Lista.get(i);
                 myDB.execSQL("INSERT INTO " + myTabela + " (_id, sifra , " +
@@ -731,6 +731,8 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                         + ");");
             }
             Log.d(TAG, "XXX Gotovo");
+            myDB.setTransactionSuccessful();
+            myDB.endTransaction();
             myDB.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -787,6 +789,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                     "artiklId long);");
             Log.d(TAG, "Brišem sve iz tabele");
             myDB.execSQL("DELETE FROM " + myTabela + ";");
+            myDB.beginTransaction();
             for (int i = 0; i < Lista.size(); i++) {
                 AsortimanKupca myAsortiman = Lista.get(i);
                 myDB.execSQL("INSERT INTO " + myTabela + " (pjKmtId, artiklId ) VALUES (" +
@@ -794,6 +797,8 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                         myAsortiman.getArtiklID() + ");");
             }
             Log.d(TAG, "Gotovo ");
+            myDB.setTransactionSuccessful();
+            myDB.endTransaction();
             myDB.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -828,6 +833,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             Log.d(TAG, "Brišem sve iz tabele");
             myDB.execSQL("DELETE FROM " + myTabela + ";");
+            myDB.beginTransaction();
             for (int i = 0; i < Lista.size(); i++) {
                 jmj myJMJ = Lista.get(i);
                 myDB.execSQL("INSERT INTO " + myTabela + " (_id, naziv ) VALUES (" +
@@ -836,6 +842,8 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             }
             Log.d(TAG, "Gotovo ");
+            myDB.setTransactionSuccessful();
+            myDB.endTransaction();
             myDB.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -871,6 +879,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             Log.d(TAG, "Brišem sve iz tabele");
             myDB.execSQL("DELETE FROM " + myTabela + ";");
+            myDB.beginTransaction();
             for (int i = 0; i < Lista.size(); i++) {
                 Barcode barcode = Lista.get(i);
                 myDB.execSQL("INSERT INTO " + myTabela + " (artiklId, barcode ) VALUES (" +
@@ -879,6 +888,8 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             }
             Log.d(TAG, "Gotovo ");
+            myDB.setTransactionSuccessful();
+            myDB.endTransaction();
             myDB.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -913,6 +924,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                     "jmjId long);");
 
             Log.d(TAG, "Brišem sve iz tabele");
+            myDB.beginTransaction();
             myDB.execSQL("DELETE FROM " + myTabela + ";");
             for (int i = 0; i < Lista.size(); i++) {
                 ArtiklJmj object = Lista.get(i);
@@ -922,6 +934,8 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             }
             Log.d(TAG, "Gotovo ");
+            myDB.setTransactionSuccessful();
+            myDB.endTransaction();
             myDB.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -961,6 +975,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             Log.d(TAG, "Brišem sve iz tabele");
             myDB.execSQL("DELETE FROM " + myTabela + ";");
+            myDB.beginTransaction();
             for (int i = 0; i < Lista.size(); i++) {
                 ArtiklAtributStanje object = Lista.get(i);
                 myDB.execSQL("INSERT INTO " + myTabela + " (artiklId, vrijednostId1, vrijednost1, atribut1, stanje) VALUES (" +
@@ -972,6 +987,8 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             }
             Log.d(TAG, "Gotovo ");
+            myDB.setTransactionSuccessful();
+            myDB.endTransaction();
             myDB.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1007,6 +1024,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             Log.d(TAG, "Brišem sve iz tabele " +myTabela);
             myDB.execSQL("DELETE FROM "+ myTabela +";");
+            myDB.beginTransaction();
             for (int i = 0; i < Lista.size(); i++) {
                 TipDokumenta myTip = Lista.get(i);
                 myDB.execSQL("INSERT INTO " + myTabela +" (_id, naziv ) VALUES (" +
@@ -1015,6 +1033,8 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             }
             Log.d(TAG, "Gotovo " + myTabela);
+            myDB.setTransactionSuccessful();
+            myDB.endTransaction();
             myDB.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1050,6 +1070,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             Log.d(TAG, "Brišem sve iz tabele " +myTabela);
             myDB.execSQL("DELETE FROM "+ myTabela +";");
+            myDB.beginTransaction();
             for (int i = 0; i < Lista.size(); i++) {
                 PodtipDokumenta myPodTip = Lista.get(i);
                 myDB.execSQL("INSERT INTO " + myTabela +" (_id, naziv,rid ) VALUES (" +
@@ -1058,6 +1079,8 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             }
             Log.d(TAG, "Gotovo " + myTabela);
+            myDB.setTransactionSuccessful();
+            myDB.endTransaction();
             myDB.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1092,6 +1115,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             Log.d(TAG, "Brišem sve iz tabele " + myTabela);
             myDB.execSQL("DELETE FROM " + myTabela + ";");
+            myDB.beginTransaction();
             for (int i = 0; i < Lista.size(); i++) {
                 Komitent myKom = Lista.get(i);
                 myDB.execSQL("INSERT INTO " + myTabela + " (_id, naziv,sifra,saldo,uroku,vanroka ) VALUES (" +
@@ -1100,6 +1124,8 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             }
             Log.d(TAG, "Gotovo " + myTabela);
+            myDB.setTransactionSuccessful();
+            myDB.endTransaction();
             myDB.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1123,11 +1149,12 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
         String greskaStr = "";
         String myTabela = myTbl.NazivTabele;
         try {
-            Log.d(TAG, "Otvaram bazu" + myTabela);
+            Log.d(TAG, "Otvaram bazu! Tabela je: " + myTabela);
             SQLiteDatabase myDB = myMainActivity.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
             Log.d(TAG, "UpisiUBazu: brišem tabelu " + myTabela + " ukoliko postoji");
             myDB.execSQL("DROP TABLE IF EXISTS " + myTabela + ";");
             Log.d(TAG, "Kreiram tabelu");
+
             //{"id":0,"zaglavljeId":501923,"rbr":1,"artiklId":170624,"artiklSifra":"03947","artikl":" BACVA 50L",
             // "jmjId":4,"jmj":"kom","vrijednostId1":0,"vrijednost":"","atribut":"","kolicina":1.00000,"opaska":null,"vipsId":5604939,"kolicinaZadana":1.00000}
 
@@ -1150,6 +1177,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             Log.d(TAG, "Brišem sve iz tabele " + myTabela);
             myDB.execSQL("DELETE FROM " + myTabela + ";");
+            myDB.beginTransaction();
             for (int i = 0; i < Lista.size(); i++) {
                 App2Stavke myStv2 = Lista.get(i);
                 myDB.execSQL("INSERT INTO " + myTabela + " ( zaglavljeId, rbr, artiklId, artiklSifra, artiklNaziv,  jmjId, jmjNaziv, vrijednostId1, vrijednostNaziv," +
@@ -1170,11 +1198,21 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                         myStv2.getVipsId() + "," +
                         myStv2.getKolicinaZadana() + ");");
 
-                MainActivity.updateZavrsenoInDokumenti2(myMainActivity, myStv2.getZaglavljeId());
+
 
             }
             Log.d(TAG, "Gotovo " + myTabela);
+            myDB.setTransactionSuccessful();
+            myDB.endTransaction();
             myDB.close();
+
+            //poslije upisa u bazu stavki treba označiti koji su završeni dokumenti
+            for (int i = 0; i < Lista.size(); i++) {
+                App2Stavke myStv2 = Lista.get(i);
+                MainActivity.updateZavrsenoInDokumenti2(myMainActivity, myStv2.getZaglavljeId());
+            }
+
+
         } catch (SQLException e) {
             e.printStackTrace();
             greskaStr = e.getMessage();
@@ -1226,6 +1264,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             Log.d(TAG, "Brišem sve iz tabele " + myTabela);
             myDB.execSQL("DELETE FROM " + myTabela + ";");
+            myDB.beginTransaction();
             for (int i = 0; i < Lista.size(); i++) {
                 App2Dokumenti myDok2 = Lista.get(i);
                 int myZavrsen = 0;
@@ -1251,11 +1290,13 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                         myDok2.getVipsId() + ",'" +
                         myDok2.getOpaska() + "'," + myZavrsen + ");");
 
-                Log.d(TAG, "UpisiDokumente2UBazu: DATUM DOKUMENTA UPISAN U BAZU JE :::" + myDok2.getDatumDokumentaString());
+                //Log.d(TAG, "UpisiDokumente2UBazu: DATUM DOKUMENTA UPISAN U BAZU JE :::" + myDok2.getDatumDokumentaString());
 
 
             }
             Log.d(TAG, "Gotovo " + myTabela);
+            myDB.setTransactionSuccessful();
+            myDB.endTransaction();
             myDB.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1272,6 +1313,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
             }
         }
     }
+
     private void UpisiNacinPlacanjaUBazu(ArrayList<NacinPlacanja> Lista) {
         boolean greska=false;
         String greskaStr="";
@@ -1288,6 +1330,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             Log.d(TAG, "Brišem sve iz tabele " +myTabela);
             myDB.execSQL("DELETE FROM "+ myTabela +";");
+            myDB.beginTransaction();
             for (int i = 0; i < Lista.size(); i++) {
                 NacinPlacanja myNacinPlacanja = Lista.get(i);
                 myDB.execSQL("INSERT INTO " + myTabela +" (_id, naziv ) VALUES (" +
@@ -1296,6 +1339,8 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             }
             Log.d(TAG, "Gotovo " + myTabela);
+            myDB.setTransactionSuccessful();
+            myDB.endTransaction();
             myDB.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1330,6 +1375,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             Log.d(TAG, "Brišem sve iz tabele " +myTabela);
             myDB.execSQL("DELETE FROM "+ myTabela +";");
+            myDB.beginTransaction();
             for (int i = 0; i < Lista.size(); i++) {
                 GrupaArtikala myGrupa = Lista.get(i);
                 myDB.execSQL("INSERT INTO " + myTabela +" (_id, naziv,rid ) VALUES (" +
@@ -1338,6 +1384,8 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             }
             Log.d(TAG, "Gotovo " + myTabela);
+            myDB.setTransactionSuccessful();
+            myDB.endTransaction();
             myDB.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1372,6 +1420,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             Log.d(TAG, "Brišem sve iz tabele " +myTabela);
             myDB.execSQL("DELETE FROM "+ myTabela +";");
+            myDB.beginTransaction();
             for (int i = 0; i < Lista.size(); i++) {
                 PodgrupaArtikala myPodgrupa = Lista.get(i);
                 myDB.execSQL("INSERT INTO " + myTabela +" (_id, naziv,rid ) VALUES (" +
@@ -1380,6 +1429,8 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             }
             Log.d(TAG, "Gotovo " + myTabela);
+            myDB.setTransactionSuccessful();
+            myDB.endTransaction();
             myDB.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1414,6 +1465,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             Log.d(TAG, "Brišem sve iz tabele " +myTabela);
             myDB.execSQL("DELETE FROM "+ myTabela +";");
+            myDB.beginTransaction();
             for (int i = 0; i < Lista.size(); i++) {
                 PjKomitent myPjKom = Lista.get(i);
                 myDB.execSQL("INSERT INTO " + myTabela +" (_id, naziv,rid ) VALUES (" +
@@ -1422,6 +1474,8 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
             }
             Log.d(TAG, "Gotovo " + myTabela);
+            myDB.setTransactionSuccessful();
+            myDB.endTransaction();
             myDB.close();
         } catch (SQLException e) {
             e.printStackTrace();

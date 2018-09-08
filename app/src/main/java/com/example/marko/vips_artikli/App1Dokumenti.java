@@ -106,6 +106,18 @@ public class App1Dokumenti {
         
     }
 
+    public int getBrojStavki(){
+        int broj=0;
+        broj=getSpisakStavki().size();
+        return broj;
+    }
+    public double getSumaStavki(){
+        double suma=0;
+        for (App1Stavke stv:spisakStavki) {
+            suma+=stv.getKolicina()*stv.getSumaVPC(); //sada ne vraćam dobro treba naći način da se vrati vpc ili mpc artikla;
+        }
+        return suma;
+    }
 
     public String getKomitentNaziv() {
         return KomitentNaziv;

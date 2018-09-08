@@ -379,6 +379,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
                             izabraniAtribut.getAtributNaziv1(),
                             izabraniAtribut.getAtributVrijednost1(),
                             myKolicina,
+                            izabraniArtikl.getVpc(),
+                            izabraniArtikl.getMpc(),
                             //txtNapomena.getText().toString());
                             "");
                 }else{
@@ -393,6 +395,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
                             null,
                             null,
                             myKolicina,
+                            izabraniArtikl.getVpc(),
+                            izabraniArtikl.getMpc(),
                             //txtNapomena.getText().toString());
                             "");
                 }
@@ -400,6 +404,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
                     //za aplikaciju 1
                     if (myPostavke.isBrziUnosArtikala()) {
                         MainActivity.snimiStavku(App1UnosStavkeActivity.this, idDokumenta, newStavka);
+
                         MainActivity.svirajOK(myPostavke);
                         recreate();
                         postaviZadanuKolicinu();

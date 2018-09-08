@@ -33,23 +33,41 @@
 
     <TextView
         android:id="@+id/kataloskiBroj"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sifraArtikla"
-        tools:text="Kataloški broj"
-        android:layout_marginLeft="16dp" />
+        tools:text="Kataloški broj" />
 
     <TextView
         android:id="@+id/proizvodac"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/kataloskiBroj"
-        app:layout_constraintTop_toBottomOf="@+id/nazivArtikla"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/kataloskiBroj"
         tools:text="Podravka" />
+
+    <TextView
+        android:id="@+id/ostaliPodaci"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/proizvodac"
+        tools:text="broj koleta / broj komada" />
 
 </android.support.constraint.ConstraintLayout>

@@ -22,6 +22,10 @@ public class App1Stavke implements Serializable {
     private double kolicina;
     private String napomena;
 
+    private double vpc;
+    private double mpc;
+
+
     private long vipsID;
     private int rbr;
 
@@ -42,7 +46,7 @@ public class App1Stavke implements Serializable {
     }
 
     public App1Stavke(long id, long zaglavljeId, long artiklId, String artiklNaziv, long jmjId, String jmjNaziv,
-                      boolean imaAtribut, long atributId, String atributNaziv, String atributVrijednost, double kolicina, String napomena) {
+                      boolean imaAtribut, long atributId, String atributNaziv, String atributVrijednost, double kolicina, double vpc,double mpc, String napomena) {
         this.id = id;
         this.zaglavljeId=zaglavljeId;
         this.artiklId = artiklId;
@@ -55,6 +59,22 @@ public class App1Stavke implements Serializable {
         this.atributVrijednost = atributVrijednost;
         this.kolicina = kolicina;
         this.napomena = napomena;
+        this.vpc=vpc;
+        this.mpc=mpc;
+    }
+
+    public  double getVpc(){
+        return vpc;
+    }
+    public  double getMpc(){
+        return mpc;
+    }
+
+    public double getSumaVPC(){
+        return kolicina*vpc;
+    }
+    public double getSumaMPC(){
+        return kolicina*mpc;
     }
 
     public long getId() {

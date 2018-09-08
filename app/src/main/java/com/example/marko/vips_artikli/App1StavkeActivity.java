@@ -152,4 +152,14 @@ public class App1StavkeActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        Bundle bundle = new Bundle();
+        bundle.putLong("IdDokumenta", IdDokumenta);
+        Intent mIntent = new Intent();
+        mIntent.putExtras(bundle);
+        setResult(RESULT_OK, mIntent);
+        super.onBackPressed();
+    }
+
 }

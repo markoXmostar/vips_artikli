@@ -843,12 +843,15 @@ public class MainActivity extends AppCompatActivity
             tbl.ZavrsenaSyncronizacija = false;
 
             brojac += 1;
-            new JSON_recive(this, tbl, "", rbrLOG) {
-                @Override
-                public void onResponseReceived(int result) {
 
-                }
-            }.execute(tbl.urlTabele, tbl.Akcija);
+
+                new JSON_recive(this, tbl, "", rbrLOG) {
+                    @Override
+                    public void onResponseReceived(int result) {
+
+                    }
+                }.execute(tbl.urlTabele, tbl.Akcija);
+
         }
 
 
@@ -1338,13 +1341,15 @@ public class MainActivity extends AppCompatActivity
         return rezultat;
     }
 
-    public static App1Stavke pretvoriApp2Stv_App1Stv(App2Stavke stv2) {
+    public static App1Stavke pretvoriApp2Stv_App1Stv(Activity a,App2Stavke stv2) {
         boolean imaAtribut = false;
         if (stv2.getVrijednostId1() > 0) {
             imaAtribut = true;
         }
+        Artikl art=getArtiklById(a,stv2.getArtiklId(),0,false);
+
         App1Stavke rezultat = new App1Stavke(stv2.getId(), stv2.getZaglavljeId(), stv2.getArtiklId(), stv2.getArtiklNaziv(), stv2.getJmjId(),
-                stv2.getJmjNaziv(), imaAtribut, stv2.getVrijednostId1(), stv2.getAtributNaziv(), stv2.getVrijednostNaziv(), stv2.getKolicina(), stv2.getOpaska());
+                stv2.getJmjNaziv(), imaAtribut, stv2.getVrijednostId1(), stv2.getAtributNaziv(), stv2.getVrijednostNaziv(), stv2.getKolicina(),art.getVpc(),art.getMpc(), stv2.getOpaska());
 
         return rezultat;
     }
@@ -1404,8 +1409,9 @@ public class MainActivity extends AppCompatActivity
             nazivJmj = c.getString(nazivJmjIndex);
             napomena = c.getString(napomenaIndex);
 
+            Artikl art=getArtiklById(a,idArtikla,0,false);
 
-            App1Stavke myObj = new App1Stavke(idStavke, IdDokumenta, idArtikla, nazivArtikla, idJmj, nazivJmj, imaAtribut, idAtributa, vrijednostAtributa, nazivAtributa, kolicina, napomena);
+            App1Stavke myObj = new App1Stavke(idStavke, IdDokumenta, idArtikla, nazivArtikla, idJmj, nazivJmj, imaAtribut, idAtributa, vrijednostAtributa, nazivAtributa, kolicina,art.getVpc(),art.getMpc(), napomena);
             listaStavki.add(myObj);
 
             brojac++;
@@ -1504,6 +1510,95 @@ public class MainActivity extends AppCompatActivity
         return listaStavki;
     }
 
+
+    public static  App1Dokumenti getDokumentApp1_ByID(Activity a,Long idDok){
+        if (idDok==0){
+            return null;
+        }
+
+        String tabelaApp1 = "dokumenti1";
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
+        Cursor c;
+        c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " WHERE _id = " + idDok + ";", null);
+
+        SimpleDateFormat SQLLite_dateFormat = new SimpleDateFormat(MainActivity.SqlLiteDateFormat);
+
+        long id;
+        long idTip;
+        long idPodtip;
+        long idKomitent;
+        long idPjKomitenta;
+        long idNacinPlacanja;
+
+        String datumDokumentaString;
+        String datumSinkronizacijeString;
+        String napomena;
+        String komitentNaziv;
+        String komitentPjNaziv;
+        String tipNaziv;
+        String podtipNaziv;
+        String nacinPlacanjaNaziv;
+
+        Date datumDokumenta = new Date();
+        Date datumSinkronizacije = new Date();
+
+        int idIndex = c.getColumnIndex("_id");
+        int idTipIndex = c.getColumnIndex("idTip");
+        int idPodipIndex = c.getColumnIndex("idPodtip");
+        int idKomitentIndex = c.getColumnIndex("idKomitent");
+        int idPjKomitentaIndex = c.getColumnIndex("idPjKomitenta");
+        int idDatumDokumentaIndex = c.getColumnIndex("datumDokumenta");
+        int idDatumSinkronizacijeIndex = c.getColumnIndex("datumSinkronizacije");
+        int idNapomenaIndex = c.getColumnIndex("napomena");
+
+        int idKomitentNaziv = c.getColumnIndex("KomitentNaziv");
+        int idKomitentPjIndex = c.getColumnIndex("PjKomitentaNaziv");
+        int idTipNazivIndex = c.getColumnIndex("TipDokumentaNaziv");
+        int idPodtpNazivIndex = c.getColumnIndex("PodipDokumentaNaziv");
+        int idNacinPlacanjaIndex = c.getColumnIndex("idVrstaPlacanja");
+        int nacinPlacanjaNazivIndex = c.getColumnIndex("VrstaPlacanjaNaziv");
+
+        c.moveToFirst();
+
+            id = c.getLong(idIndex);
+            idTip = c.getLong(idTipIndex);
+            tipNaziv = c.getString(idTipNazivIndex);
+            idPodtip = c.getLong(idPodipIndex);
+            podtipNaziv = c.getString(idPodtpNazivIndex);
+            idKomitent = c.getLong(idKomitentIndex);
+            idNacinPlacanja = c.getLong(idNacinPlacanjaIndex);
+            komitentNaziv = c.getString(idKomitentNaziv);
+            idPjKomitenta = c.getLong(idPjKomitentaIndex);
+            komitentPjNaziv = c.getString(idKomitentPjIndex);
+            datumDokumentaString = c.getString(idDatumDokumentaIndex);
+            datumSinkronizacijeString = c.getString(idDatumSinkronizacijeIndex);
+            napomena = c.getString(idNapomenaIndex);
+            nacinPlacanjaNaziv = c.getString(nacinPlacanjaNazivIndex);
+
+            try {
+                datumDokumenta = (Date) SQLLite_dateFormat.parse(datumDokumentaString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return null;
+            }
+            try {
+                if (datumSinkronizacijeString==null){
+                    datumSinkronizacije=null;
+                }else{
+                    datumSinkronizacije = (Date) SQLLite_dateFormat.parse(datumSinkronizacijeString);
+                }
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            Log.d(TAG, "getListaDokumenta: DOKUMENT: _id=" + id +"/ datumSinkronizacije=" + datumSinkronizacijeString);
+         App1Dokumenti myObj = new App1Dokumenti(id, idTip, idPodtip, idKomitent, idPjKomitenta, datumDokumenta, datumSinkronizacije,
+                 napomena, komitentNaziv, komitentPjNaziv, tipNaziv, podtipNaziv, idNacinPlacanja, nacinPlacanjaNaziv);
+         return  myObj;
+
+        }
     public static List<App1Dokumenti> getListaDokumenta(Activity a, int vrstaAplikacije) {
 
         List<App1Dokumenti> listaDokumenta=new ArrayList<App1Dokumenti>();

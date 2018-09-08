@@ -107,7 +107,7 @@ public class App2DokumentiActivity extends AppCompatActivity {
                                     d1.izbrisiSveStavke();
                                     spisak.add(d1);
                                     for (App2Stavke stv : dok.getSpisakStavki()) {
-                                        App1Stavke s1 = MainActivity.pretvoriApp2Stv_App1Stv(stv);
+                                        App1Stavke s1 = MainActivity.pretvoriApp2Stv_App1Stv(App2DokumentiActivity.this,stv);
                                         s1.setVipsID(stv.getVipsId());
                                         s1.setRbr(stv.getRbr());
                                         d1.doadajStavku(s1);

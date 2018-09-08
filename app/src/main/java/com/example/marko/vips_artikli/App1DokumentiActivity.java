@@ -120,7 +120,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
                     isSync = true;
                 }
                 intent.putExtra("isSync", isSync);
-                startActivity(intent);
+                startActivityForResult(intent,21); //21 označava završen unos stavki
 
             }
         });
@@ -279,6 +279,11 @@ public class App1DokumentiActivity extends AppCompatActivity {
 
             }
         }
+        if (requestCode == 21) {
+            //treba osvježiti stavke na zadanom dokumentu (vraćanje sa actovotoja za stavke
+
+            ucitajDokumente();
+        }
     }
 
 
@@ -293,6 +298,12 @@ public class App1DokumentiActivity extends AppCompatActivity {
         List<App1Dokumenti> spisakDok = MainActivity.getListaDokumenta(App1DokumentiActivity.this, vrstaAplikacije);
         for (App1Dokumenti dok:spisakDok) {
             listaDokumenta.add(dok);
+            //sada svakom dokumetu pridruži njegove stavke kako bi mogli ispisati broj i sumu stavki
+            dok.izbrisiSveStavke();
+            List<App1Stavke> mojeStavke = MainActivity.getListaStavki(dok.getId(), App1DokumentiActivity.this);
+            for (App1Stavke stv : mojeStavke) {
+                dok.doadajStavku(stv);
+            }
         }
     }
 

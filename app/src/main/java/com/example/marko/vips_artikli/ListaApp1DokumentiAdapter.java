@@ -31,7 +31,7 @@ public class ListaApp1DokumentiAdapter extends ArrayAdapter{
 
     static class LayoutHandler {
 
-        TextView DatumDokumenta, Komitent, PjKomitenta, TipDkumenta,PodtipDokumenta;
+        TextView DatumDokumenta,  PjKomitenta, PodtipDokumenta;
         ImageView Slika;
     }
 
@@ -61,14 +61,12 @@ public class ListaApp1DokumentiAdapter extends ArrayAdapter{
         if (row == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            row = layoutInflater.inflate(R.layout.row_app1_zaglavlje, parent, false);
+            row = layoutInflater.inflate(R.layout.row_app1_zaglavlje_v2, parent, false);
             layoutHandler = new ListaApp1DokumentiAdapter.LayoutHandler();
-            layoutHandler.DatumDokumenta = (TextView) row.findViewById(R.id.txtDatumDokumenta_App1);
-            layoutHandler.Komitent = (TextView) row.findViewById(R.id.txtKomitent_App1);
-            layoutHandler.PjKomitenta = (TextView) row.findViewById(R.id.txtPjKOmitenta_App1);
-            layoutHandler.TipDkumenta = (TextView) row.findViewById(R.id.txtTipDokumenta_App1);
-            layoutHandler.PodtipDokumenta = (TextView) row.findViewById(R.id.txtPodtipDokumenta_App1);
-            layoutHandler.Slika=(ImageView)row.findViewById(R.id.imgDokumentSinkroniziran_App1);
+            layoutHandler.DatumDokumenta = (TextView) row.findViewById(R.id.tvDaatum_rowApp1Zaglavlje);
+            layoutHandler.PjKomitenta = (TextView) row.findViewById(R.id.tvPjKomitenta_rowApp1Zaglavlje);
+            layoutHandler.PodtipDokumenta = (TextView) row.findViewById(R.id.tvPodtipDokumenta_rowApp1Zaglavlje);
+            layoutHandler.Slika=(ImageView)row.findViewById(R.id.imgDokumentSinkroniziran_rowApp1Zaglavlje);
 
             row.setTag(layoutHandler);
         } else {
@@ -85,11 +83,14 @@ public class ListaApp1DokumentiAdapter extends ArrayAdapter{
         //alternate row color end
         App1Dokumenti myObject = (App1Dokumenti) this.getItem(position);
         //layoutHandler.ID.setText(komitent.getId());
-        layoutHandler.DatumDokumenta.setText(myObject.getDatumDokumentaString());
-        layoutHandler.Komitent.setText(myObject.getKomitentNaziv());
-        layoutHandler.PjKomitenta.setText(myObject.getPjKomitentNaziv());
-        layoutHandler.TipDkumenta.setText(myObject.getTipDokumentaNaziv());
-        layoutHandler.PodtipDokumenta.setText(myObject.getPodtipDokumentaNaziv());
+
+        //treba ovdje sada pozvati f-ju koja će vratiti broj stavki i ukupan iznos Para!
+
+        layoutHandler.DatumDokumenta.setText(myObject.getDatumDokumentaString() + " Broj stavki: " + myObject.getBrojStavki() + " - " + myObject.getSumaStavki() + "KM");
+
+        layoutHandler.PjKomitenta.setText(myObject.getKomitentNaziv() + " / " + myObject.getPjKomitentNaziv());
+
+        layoutHandler.PodtipDokumenta.setText(myObject.getTipDokumentaNaziv() + " / " + myObject.getPodtipDokumentaNaziv());
         if (myObject.getDatumSinkronizacije()==null){
             layoutHandler.Slika.setImageResource(R.drawable.img_error);
         }
