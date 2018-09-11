@@ -6,9 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <TextView
-        android:id="@+id/tvDaatum_rowApp1Zaglavlje"
+    <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -16,16 +15,59 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:breakStrategy="simple"
-        android:textStyle="bold"
+        android:orientation="vertical"
         app:layout_constraintEnd_toStartOf="@+id/imgDokumentSinkroniziran_rowApp1Zaglavlje"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="DATUM broj stavki " />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvDaatum_rowApp1Zaglavlje"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:breakStrategy="simple"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/imgDokumentSinkroniziran_rowApp1Zaglavlje"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="DATUM broj stavki " />
+
+
+        <TextView
+            android:id="@+id/tvPodtipDokumenta_rowApp1Zaglavlje"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:breakStrategy="simple"
+            android:ellipsize="end"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvDaatum_rowApp1Zaglavlje"
+            tools:text="proba 1 proba 2 proba 3" />
+
+        <TextView
+            android:id="@+id/tvPjKomitenta_rowApp1Zaglavlje"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:breakStrategy="simple"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvPodtipDokumenta_rowApp1Zaglavlje"
+            tools:text="proba 2 proba 3 proba ajsfhkjafhkajshfkajhsf " />
+
+    </LinearLayout>
+
 
     <ImageView
         android:id="@+id/imgDokumentSinkroniziran_rowApp1Zaglavlje"
-        android:layout_width="wrap_content"
+        android:layout_width="40dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
@@ -34,34 +76,7 @@
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:src="@drawable/img_error"
-        app:layout_constraintBottom_toBottomOf="@+id/tvPjKomitenta_rowApp1Zaglavlje"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvDaatum_rowApp1Zaglavlje" />
-
-    <TextView
-        android:id="@+id/tvPodtipDokumenta_rowApp1Zaglavlje"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:ellipsize="end"
-        android:breakStrategy="simple"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDaatum_rowApp1Zaglavlje"
-        tools:text="proba 1 proba 2 proba 3" />
-
-    <TextView
-        android:id="@+id/tvPjKomitenta_rowApp1Zaglavlje"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:breakStrategy="simple"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvPodtipDokumenta_rowApp1Zaglavlje"
-        tools:text="proba 2 proba 3 proba ajsfhkjafhkajshfkajhsf " />
-
-
+        app:layout_constraintTop_toTopOf="@+id/linearLayout2" />
 </android.support.constraint.ConstraintLayout>
