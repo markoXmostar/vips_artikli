@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.marko.vips_artikli.MainActivity.myDATABASE;
@@ -707,6 +708,13 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
             myDB.beginTransaction();
             for (int i = 0; i < Lista.size(); i++) {
                 Artikl myArt = Lista.get(i);
+                if (myArt.getVpc()==0 && myArt.getMpc()==0){
+                    //ovo mi treba za simulaciju cijena poslije izbriši
+                    Random r = new Random();
+                    double randomValue = 0.0 + (1000.0 - 0.0) * r.nextDouble();
+                    myArt.setVpc(randomValue);
+                    myArt.setMpc(myArt.getVpc()*1.17);
+                }
                 myDB.execSQL("INSERT INTO " + myTabela + " (_id, sifra , " +
                         "naziv ,kataloskiBroj , jmjId, jmjNaziv, kratkiOpis , proizvodjac , dugiOpis , vrstaAmbalaze, brojKoleta, brojKoletaNaPaleti,stanje,vpc,mpc,netto,brutto,imaRokTrajanja,podgrupaID ) VALUES ('" +
                         myArt.getId() + "','" +

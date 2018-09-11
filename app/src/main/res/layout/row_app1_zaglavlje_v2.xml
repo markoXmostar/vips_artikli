@@ -11,10 +11,14 @@
         android:id="@+id/tvDaatum_rowApp1Zaglavlje"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:breakStrategy="simple"
         android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/imgDokumentSinkroniziran_rowApp1Zaglavlje"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="DATUM broj stavki " />
@@ -42,6 +46,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ellipsize="end"
+        android:breakStrategy="simple"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvDaatum_rowApp1Zaglavlje"
         tools:text="proba 1 proba 2 proba 3" />
@@ -53,8 +58,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:ellipsize="end"
-        android:maxLines="1"
+        android:breakStrategy="simple"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvPodtipDokumenta_rowApp1Zaglavlje"
         tools:text="proba 2 proba 3 proba ajsfhkjafhkajshfkajhsf " />
