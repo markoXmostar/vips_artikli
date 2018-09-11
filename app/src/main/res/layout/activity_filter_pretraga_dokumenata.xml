@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".filterPretragaDokumenataActivity">
+
+    <TextView
+        android:id="@+id/lblDatum1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Datum od:"
+        app:layout_constraintBottom_toBottomOf="@+id/txtDatumOd_filterDokumenata"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txtDatumOd_filterDokumenata" />
+
+    <TextView
+        android:id="@+id/txtDatumOd_filterDokumenata"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/mojTextStyleZaIzbor"
+        android:textSize="@dimen/velicinaTeksta"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/lblDatum1"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="01.01.2018." />
+
+    <TextView
+        android:id="@+id/lblDatumDo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Datum do:"
+        app:layout_constraintBottom_toBottomOf="@+id/txtDatumDo_filterDokumenata"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txtDatumDo_filterDokumenata" />
+
+    <TextView
+        android:id="@+id/txtDatumDo_filterDokumenata"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/mojTextStyleZaIzbor"
+        android:textSize="@dimen/velicinaTeksta"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/lblDatumDo"
+        app:layout_constraintTop_toBottomOf="@+id/txtDatumOd_filterDokumenata"
+        tools:text="31.12.2018." />
+
+    <TextView
+        android:id="@+id/lblKomitent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:text="Komitent:"
+        app:layout_constraintBottom_toBottomOf="@+id/txtKomitent_filterDokumenata"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txtKomitent_filterDokumenata" />
+
+    <TextView
+        android:id="@+id/txtKomitent_filterDokumenata"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:textAppearance="@style/mojTextStyleZaIzbor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/lblKomitent"
+        app:layout_constraintTop_toBottomOf="@+id/txtDatumDo_filterDokumenata"
+        tools:text="KOMITENT" />
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/btnCancel_filterDokumenti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:focusable="false"
+            android:text="@string/ponistiFilter" />
+
+        <Button
+            android:id="@+id/btnOK_filterDokumenti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:focusable="false"
+            android:text="@string/OKtext" />
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

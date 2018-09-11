@@ -3,13 +3,11 @@ package com.example.marko.vips_artikli;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,13 +18,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.ParseException;
@@ -420,7 +414,7 @@ public class MainActivity extends AppCompatActivity
                         dd=getDateFromSQLLiteDBFormat(timestamp);
 
                         //String myDatum=mojDateFormat.format(dd);
-                        String myDatum=parseDateFromSQLLiteDBFormatToMyFormat(dd);
+                        String myDatum= parseDateFromSQLLiteDBFormatToMyFormat_DateTime(dd);
                         setZadnjaSinkronizacijaVrijeme(dd);
                         greska = z.getInt(greskaIndex);
                         dbLog myLog = new dbLog(id, myDatum, greska, naziv, rbr, tabela);
@@ -432,7 +426,7 @@ public class MainActivity extends AppCompatActivity
                         }
                     }
                     if (getZadnjaSinkronizacijaVrijeme() != null) {
-                        //txtLastSyncDate.setText(parseDateFromSQLLiteDBFormatToMyFormat(getZadnjaSinkronizacijaVrijeme()));
+                        //txtLastSyncDate.setText(parseDateFromSQLLiteDBFormatToMyFormat_DateTime(getZadnjaSinkronizacijaVrijeme()));
                     }
                     z.close();
                 }
@@ -910,16 +904,7 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "rekreirajLogTabelu: KREIRANA LOG TABELA!");
     }
 
-    public static String danMjesecGodinaToFormatString(int dan,int mjesec,int godina){
-        SimpleDateFormat dateFormat=new SimpleDateFormat(MainActivity.DatumFormat);
-        //SimpleDateFormat dateFormat=new SimpleDateFormat("dd.MM.yyyy");
-        Calendar c=Calendar.getInstance();
-        c.set(godina,mjesec,dan,0,0);
-        Date datum=c.getTime();
 
-        String datumStr=dateFormat.format(datum);
-        return datumStr;
-    }
 
     public static void dropTable(Activity a, String myTable){
         SQLiteDatabase myDB = null;
@@ -947,6 +932,40 @@ public class MainActivity extends AppCompatActivity
         myDB.close();
     }
 
+    //datumi
+
+    public static String danMjesecGodinaToFormatString(int dan,int mjesec,int godina){
+        SimpleDateFormat dateFormat=new SimpleDateFormat(MainActivity.DatumFormat);
+        //SimpleDateFormat dateFormat=new SimpleDateFormat("dd.MM.yyyy");
+        Calendar c=Calendar.getInstance();
+        c.set(godina,mjesec,dan,0,0);
+        Date datum=c.getTime();
+
+        String datumStr=dateFormat.format(datum);
+        return datumStr;
+    }
+    public static String danMjesecGodinaToSQLLiteFormatString(int dan,int mjesec,int godina,int sat,int min,int sec){
+        SimpleDateFormat dateFormat=new SimpleDateFormat(MainActivity.SqlLiteDateFormat);
+        //SQLLIte format datuma je:     yyyy-MM-dd HH:mm:ss
+        Calendar c=Calendar.getInstance();
+        c.set(godina,mjesec,dan,sat,min,sec);
+        Date datum=c.getTime();
+
+        String datumStr=dateFormat.format(datum);
+        return datumStr;
+    }
+
+    public static Date SQLLiteStringToDate(String datum){
+
+        SimpleDateFormat format = new SimpleDateFormat(MainActivity.SqlLiteDateFormat);
+        try {
+            Date date = format.parse(datum);
+            return date;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     public static Date getDateFromSQLLiteDBFormat(String dateFromSqlLiteAsString){
         Date date=new Date();
         SimpleDateFormat simpleSqlDateFormat = new SimpleDateFormat(SqlLiteDateFormat);
@@ -957,9 +976,27 @@ public class MainActivity extends AppCompatActivity
         }
         return date;
     }
-    public static String parseDateFromSQLLiteDBFormatToMyFormat(Date date){
+    public static Date getDateFromMojString(String dateFromString){
+        Date date=new Date();
+        SimpleDateFormat simpleSqlDateFormat = new SimpleDateFormat(DatumFormat);
+        try {
+            date=(Date)simpleSqlDateFormat.parse(dateFromString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+    public static String parseDateFromSQLLiteDBFormatToMyFormat_DateTime(Date date){
 
         SimpleDateFormat mojDateFormat=new SimpleDateFormat(DatumVrijemeFormat);
+        String myDateString=mojDateFormat.format(date);
+        return myDateString;
+
+    }
+
+    public static String parseDateFromSQLLiteDBFormatToMyOnlyDateFormat(Date date){
+
+        SimpleDateFormat mojDateFormat=new SimpleDateFormat(DatumFormat);
         String myDateString=mojDateFormat.format(date);
         return myDateString;
 
@@ -994,6 +1031,8 @@ public class MainActivity extends AppCompatActivity
         }
         return date;
     }
+
+    //kraj datuma
 
     public static Artikl getArtiklByBarcode(Activity a, String barcode, boolean asortimanKupca, long pjKmtId) {
         Artikl artikl = null;
@@ -1599,14 +1638,24 @@ public class MainActivity extends AppCompatActivity
          return  myObj;
 
         }
-    public static List<App1Dokumenti> getListaDokumenta(Activity a, int vrstaAplikacije) {
+    public static List<App1Dokumenti> getListaDokumenta(Activity a, int vrstaAplikacije, Long filterKomitentID,String filterDatumOd,String filterDatumDo) {
 
         List<App1Dokumenti> listaDokumenta=new ArrayList<App1Dokumenti>();
         String tabelaApp1 = "dokumenti1";
 
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
         Cursor c;
-        c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " WHERE vrstaAplikacije = " + vrstaAplikacije + " ORDER BY datumUpisa DESC", null);
+        if ( TextUtils.isEmpty(filterDatumOd) && TextUtils.isEmpty(filterDatumDo)){
+            c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " WHERE vrstaAplikacije = " + vrstaAplikacije + " ORDER BY datumUpisa DESC", null);
+        }else{
+            if (filterKomitentID==0){
+                c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " WHERE vrstaAplikacije = " + vrstaAplikacije + " AND datumDokumenta BETWEEN '" + filterDatumOd + "' AND '" + filterDatumDo + "' ORDER BY datumUpisa DESC", null);
+            }else{
+                c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " WHERE vrstaAplikacije = " + vrstaAplikacije + " AND idKomitent = " + filterKomitentID + " AND datumDokumenta BETWEEN '" + filterDatumOd + "' AND '" + filterDatumDo + "' ORDER BY datumUpisa DESC", null);
+            }
+        }
+
+
 
         SimpleDateFormat simpleDateTimeFormat = new SimpleDateFormat(DatumVrijemeFormat);
         SimpleDateFormat SQLLite_dateFormat = new SimpleDateFormat(MainActivity.SqlLiteDateFormat);
@@ -2060,7 +2109,7 @@ public class MainActivity extends AppCompatActivity
         pd.show();
 
         boolean odgovor = false;
-        List<App1Dokumenti> spisakSvihDokumenta = MainActivity.getListaDokumenta(a, vrstaAplikacije);
+        List<App1Dokumenti> spisakSvihDokumenta = MainActivity.getListaDokumenta(a, vrstaAplikacije,0L, "","");
         List<App1Dokumenti> spisakDokumentaZaSync = new ArrayList<App1Dokumenti>();
         for (App1Dokumenti dok : spisakSvihDokumenta) {
             if (dok.getDatumSinkronizacije() == null) {

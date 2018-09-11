@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/txtNazivArtikla_App1Stavke"
-        style="@style/TextVievStyl_Stavke"
+
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -20,11 +20,12 @@
 
     <TextView
         android:id="@+id/txtKolicina_App1Stavke"
-        style="@style/TextVievStyl_Stavke"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="229,00" />
@@ -44,13 +45,26 @@
 
     <TextView
         android:id="@+id/txtJmj_App1Stavke"
-        style="@style/TextVievStyl_Stavke"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:text="TextView"
+        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/txtKolicina_App1Stavke"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="KOM" />
+
+    <TextView
+        android:id="@+id/txtOstaliPodaci_App1Stavke"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtOpisAtributa_App1Stavke"
+        tools:text="VPC=25,36 / MPC = 33,56 / STANJE = 21,00" />
 </android.support.constraint.ConstraintLayout>

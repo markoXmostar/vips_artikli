@@ -199,13 +199,9 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
         }
 
         kalendar=Calendar.getInstance();
-
         dan=kalendar.get(Calendar.DAY_OF_MONTH);
         mjesec=kalendar.get(Calendar.MONTH);
-        //mjesec=mjesec+1;
         godina=kalendar.get(Calendar.YEAR);
-
-
         izabraniDatum=MainActivity.danMjesecGodinaToFormatString(dan,mjesec,godina);
         txtDatumDokumenta.setText(izabraniDatum);
 

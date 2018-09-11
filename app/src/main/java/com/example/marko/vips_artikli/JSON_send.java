@@ -101,6 +101,8 @@ public class JSON_send extends AsyncTask<String, String, String> {
     private JSONObject mojJson() {
         JSONObject jsonObject = new JSONObject();
         try {
+            postavkeAplikacije pa=new postavkeAplikacije(myActivity);
+
             jsonObject.put("UredjajId", MainActivity.UREDJAJ);
             jsonObject.put("DjelatnikId", MainActivity.DJELATNIK);
             jsonObject.put("VrstaAplikacije", vrstaAplikacije);
@@ -109,12 +111,12 @@ public class JSON_send extends AsyncTask<String, String, String> {
             for (App1Dokumenti dokument : spisakDokumenta) {
                 JSONObject jsonDokument = new JSONObject();
                 jsonDokument.put("ID", dokument.getId());
-                jsonDokument.put("KasaID", 0);
+                jsonDokument.put("KasaID", pa.getKasaId());
                 jsonDokument.put("PodtipId", dokument.getIdPodtip());
-                jsonDokument.put("PjFrmId", 0);
+                jsonDokument.put("PjFrmId", pa.getPjFrmId());
                 jsonDokument.put("PjKmtId", dokument.getIdPjKomitenta());
                 jsonDokument.put("DatumDokumenta", dokument.getDatumDokumentaJSONString());
-                jsonDokument.put("KomercijalistID", 0);
+                jsonDokument.put("KomercijalistID", MainActivity.DJELATNIK);
                 jsonDokument.put("NacinPlacanjaId", dokument.getIdNacinPlacanja());
                 jsonDokument.put("Opaska", dokument.getNapomena());
                 if (sendVipsID) {

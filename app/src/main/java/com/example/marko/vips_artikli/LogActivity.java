@@ -21,7 +21,7 @@ public class LogActivity extends Activity {
         listSyncLog = (ListView) findViewById(R.id.listSyncLog_main);
         listSyncLog.setAdapter(MainActivity.getListaZadnjiLog());
         Date lastSync = MainActivity.getZadnjaSinkronizacijaVrijeme();
-        txtLastSync.setText(MainActivity.parseDateFromSQLLiteDBFormatToMyFormat(lastSync));
+        txtLastSync.setText(MainActivity.parseDateFromSQLLiteDBFormatToMyFormat_DateTime(lastSync));
 
 
     }

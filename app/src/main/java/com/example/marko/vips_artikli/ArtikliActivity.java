@@ -78,7 +78,7 @@ public class ArtikliActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artikli);
-
+        getSupportActionBar().setTitle("ARTIKLI");
         NoDataText = (TextView) findViewById(R.id.noDataText);
         NoDataText.setVisibility(View.INVISIBLE);
 

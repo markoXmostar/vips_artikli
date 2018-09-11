@@ -25,9 +25,9 @@ import com.google.android.gms.vision.barcode.Barcode;
 
 import java.util.List;
 
-import info.androidhive.barcode.BarcodeReader;
-
-public class App1UnosStavkeActivity extends AppCompatActivity implements BarcodeReader.BarcodeReaderListener {
+//import info.androidhive.barcode.BarcodeReader;
+//public class App1UnosStavkeActivity extends AppCompatActivity implements BarcodeReader.BarcodeReaderListener {
+public class App1UnosStavkeActivity extends AppCompatActivity {
     static final String TAG = "UNOS STAVKE";
     private int varijantaPretrageArtikala;
     /*
@@ -35,7 +35,9 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
     1-Pretraga po barcodu, BEZ TIPKOVNICE
     2-Kamera, čitanje barcoda
      */
-    private BarcodeReader barcodeReader;
+
+
+    //private BarcodeReader barcodeReader;
 
     TextView txtArtikl;
     TextView txtRokTrajanja;
@@ -154,7 +156,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
         txtKolicina=(EditText)findViewById(R.id.txtKolicina_App1UnosStavke);
         postaviZadanuKolicinu();
         //txtNapomena=(EditText) findViewById(R.id.etxtNapomena_App1UnosStavke);
-        barcodeReader = (BarcodeReader) getSupportFragmentManager().findFragmentById(R.id.barcode_fragment);
+
+        //barcodeReader = (BarcodeReader) getSupportFragmentManager().findFragmentById(R.id.barcode_fragment);
 
         txtBarcode = (myEditTextNoKeyboard) findViewById(R.id.txtBarcode_App1UnosStavke);
 
@@ -188,7 +191,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
                 //pretraga normalna
                 txtBarcode.setVisibility(View.GONE);
                 tvBarcode.setVisibility(View.GONE);
-                barcodeReader.getView().setVisibility(View.INVISIBLE);
+                //barcodeReader.getView().setVisibility(View.INVISIBLE);
                 txtArtikl.setEnabled(true);
                 break;
             case 1:
@@ -196,11 +199,11 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
                 txtBarcode.setVisibility(View.VISIBLE);
                 tvBarcode.setVisibility(View.VISIBLE);
                 txtArtikl.setEnabled(false);
-                barcodeReader.getView().setVisibility(View.INVISIBLE);
+                //barcodeReader.getView().setVisibility(View.INVISIBLE);
                 break;
             case 2:
                 //ZA KAMERU NAMIJENJENO
-                barcodeReader.getView().setVisibility(View.VISIBLE);
+                //barcodeReader.getView().setVisibility(View.VISIBLE);
                 txtBarcode.setVisibility(View.GONE);
                 tvBarcode.setVisibility(View.GONE);
                 txtArtikl.setEnabled(false);
@@ -476,6 +479,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
         }
     }
 
+    /*
     @Override
     public void onScanned(final Barcode barcode) {
         Log.e(TAG, "onScanned: " + barcode.displayValue);
@@ -534,4 +538,5 @@ public class App1UnosStavkeActivity extends AppCompatActivity implements Barcode
     public void onCameraPermissionDenied() {
         Toast.makeText(getApplicationContext(), "Camera permission denied!", Toast.LENGTH_LONG).show();
     }
+    */
 }

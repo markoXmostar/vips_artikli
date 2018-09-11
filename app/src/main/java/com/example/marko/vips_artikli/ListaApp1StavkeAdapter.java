@@ -29,7 +29,7 @@ public class ListaApp1StavkeAdapter extends ArrayAdapter {
 
     static class LayoutHandler {
 
-        TextView NazivArtikla, Jmj, Kolicina, OpisAtributa;
+        TextView NazivArtikla, Jmj, Kolicina, OpisAtributa, OstaliPodaci;
 
     }
 
@@ -65,7 +65,7 @@ public class ListaApp1StavkeAdapter extends ArrayAdapter {
             layoutHandler.Jmj = (TextView) row.findViewById(R.id.txtJmj_App1Stavke);
             layoutHandler.Kolicina = (TextView) row.findViewById(R.id.txtKolicina_App1Stavke);
             layoutHandler.OpisAtributa = (TextView) row.findViewById(R.id.txtOpisAtributa_App1Stavke);
-
+            layoutHandler.OstaliPodaci = (TextView) row.findViewById(R.id.txtOstaliPodaci_App1Stavke);
             row.setTag(layoutHandler);
         } else {
             layoutHandler = (ListaApp1StavkeAdapter.LayoutHandler) row.getTag();
@@ -87,6 +87,9 @@ public class ListaApp1StavkeAdapter extends ArrayAdapter {
         layoutHandler.NazivArtikla.setText(myObject.getArtiklNaziv());
         layoutHandler.Jmj.setText(myObject.getJmjNaziv());
         layoutHandler.Kolicina.setText(Double.toString(myObject.getKolicina()));
+        String ostaliPodaci="VPC = " + String.format("%.2f",myObject.getVpc()) + "KM / MPC = " + String.format("%.2f",myObject.getMpc()) +"KM";
+        layoutHandler.OstaliPodaci.setText(ostaliPodaci);
+
         if (myObject.isImaAtribut()){
             layoutHandler.OpisAtributa.setText(myObject.getAtributNaziv() + " : " +myObject.getAtributVrijednost());
         }else{

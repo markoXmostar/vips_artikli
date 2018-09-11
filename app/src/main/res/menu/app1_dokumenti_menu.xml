@@ -10,9 +10,16 @@
         app:showAsAction="always|withText" />
 
     <item
-        android:id="@+id/mainActivity"
+        android:id="@+id/settingsActivity"
         android:icon="@drawable/ic_settings_white_24dp"
         android:orderInCategory="100"
         android:title="Administracija"
+        app:showAsAction="always|withText" />
+
+    <item
+        android:id="@+id/pretragaDokument1"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:orderInCategory="200"
+        android:title="Pretraga"
         app:showAsAction="always|withText" />
 </menu>

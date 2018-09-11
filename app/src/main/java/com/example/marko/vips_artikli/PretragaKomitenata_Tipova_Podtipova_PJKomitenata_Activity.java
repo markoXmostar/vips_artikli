@@ -32,6 +32,7 @@ public class PretragaKomitenata_Tipova_Podtipova_PJKomitenata_Activity extends A
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pretraga_komitenata);
+        getSupportActionBar().setTitle("Pretraga");
         varijantaPretrage="";
         txtFilter =(EditText)findViewById(R.id.etxtFilter_PretragaKomitenata);
 

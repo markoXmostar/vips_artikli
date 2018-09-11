@@ -52,7 +52,8 @@
         <activity android:name=".App2UnosKolicine" />
         <activity
             android:name=".LogActivity"
-            android:label="@string/title_activity_log"></activity>
+            android:label="@string/title_activity_log" />
+        <activity android:name=".filterPretragaDokumenataActivity"></activity>
     </application>
 
 </manifest>
