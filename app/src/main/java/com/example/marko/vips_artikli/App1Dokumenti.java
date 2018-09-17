@@ -21,6 +21,7 @@ public class App1Dokumenti {
     private String napomena;
     private long idNacinPlacanja;
     private String nacinPlacanjaNaziv;
+    private boolean zakljucen;
 
 
     public long getIdNacinPlacanja() {
@@ -86,7 +87,7 @@ public class App1Dokumenti {
     }
 
     public App1Dokumenti(long id, long idTip, long idPodtip, long idKomitent, long idPjKomitenta, Date datumDokumenta, Date datumSinkronizacije, String napomena,
-                         String komitentNaziv, String pjKomitentNaziv, String tipDokumentaNaziv, String podtipDokumentaNaziv, long idNacinPlacanja, String nacinPlacanjaNAziv) {
+                         String komitentNaziv, String pjKomitentNaziv, String tipDokumentaNaziv, String podtipDokumentaNaziv, long idNacinPlacanja, String nacinPlacanjaNAziv, boolean zakljucen) {
         this.id = id;
         this.idTip = idTip;
         this.idPodtip = idPodtip;
@@ -101,6 +102,7 @@ public class App1Dokumenti {
         this.PodtipDokumentaNaziv = podtipDokumentaNaziv;
         this.idNacinPlacanja = idNacinPlacanja;
         this.nacinPlacanjaNaziv = nacinPlacanjaNAziv;
+        this.zakljucen=zakljucen;
 
         spisakStavki=new ArrayList<App1Stavke>();
         
@@ -117,6 +119,14 @@ public class App1Dokumenti {
             suma+=stv.getKolicina()*stv.getSumaVPC(); //sada ne vraćam dobro treba naći način da se vrati vpc ili mpc artikla;
         }
         return suma;
+    }
+
+    public boolean isZakljucen() {
+        return zakljucen;
+    }
+
+    public void setZakljucen(boolean zakljucen) {
+        this.zakljucen = zakljucen;
     }
 
     public String getKomitentNaziv() {

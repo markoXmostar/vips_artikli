@@ -87,7 +87,11 @@ public class ListaApp1DokumentiAdapter extends ArrayAdapter{
         //treba ovdje sada pozvati f-ju koja će vratiti broj stavki i ukupan iznos Para!
 
         layoutHandler.DatumDokumenta.setText(myObject.getDatumDokumentaString() + " Broj stavki: " + myObject.getBrojStavki() + " - " + String.format("%.2f", myObject.getSumaStavki()) + "KM");
-
+        if (myObject.isZakljucen()){
+            layoutHandler.DatumDokumenta.setTextColor(ContextCompat.getColor(this.getContext(), R.color.myCrna));
+        }else{
+            layoutHandler.DatumDokumenta.setTextColor(ContextCompat.getColor(this.getContext(), R.color.myCrvena));
+        }
         layoutHandler.PjKomitenta.setText(myObject.getKomitentNaziv() + " / " + myObject.getPjKomitentNaziv() + " / " +myObject.getNacinPlacanjaNaziv());
 
         layoutHandler.PodtipDokumenta.setText(myObject.getTipDokumentaNaziv() + " / " + myObject.getPodtipDokumentaNaziv());

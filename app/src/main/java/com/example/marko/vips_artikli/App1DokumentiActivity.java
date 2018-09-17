@@ -209,11 +209,22 @@ public class App1DokumentiActivity extends AppCompatActivity {
 
                 final App1Dokumenti selektiranDok=(App1Dokumenti) adapterView.getItemAtPosition(i);
                 final CharSequence akcije[];
-                if (selektiranDok.getDatumSinkronizacije() == null) {
-                    akcije = new CharSequence[]{"Izbriši dokument!", "Sinkroniziraj", "Ispis / detalji dokumenta"};
-                } else {
-                    akcije = new CharSequence[]{"Izbriši dokument!", "Ispis / detalji dokumenta"};
+                final String zakljucenString;
+                if (selektiranDok.isZakljucen()){
+                    zakljucenString="OTKLJUČAJ";
+                }else {
+                    zakljucenString="ZAKLJUČI";
                 }
+                if (selektiranDok.getDatumSinkronizacije() == null) {
+                    if (selektiranDok.isZakljucen()){
+                        akcije = new CharSequence[]{"Izbriši dokument!", zakljucenString, "Sinkroniziraj", "Ispis / detalji dokumenta"};
+                    }else{
+                        akcije = new CharSequence[]{"Izbriši dokument!", zakljucenString,  "Ispis / detalji dokumenta"};
+                    }
+                } else {
+                    akcije = new CharSequence[]{"Izbriši dokument!", zakljucenString,  "Ispis / detalji dokumenta"};
+                }
+
                 //final CharSequence akcije[] = new CharSequence[] {"Izbriši", "Sinkroniziraj", "Prikaži detalje"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(App1DokumentiActivity.this);
                 builder.setTitle("Opcije dokumenta");
@@ -221,47 +232,45 @@ public class App1DokumentiActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // the user clicked on colors[which]
-                        switch (which){
-                            case 0:
-                                //izbrisiRedakIzTabele
+                        switch (akcije[which].toString()){
+                            case "Izbriši dokument!":
                                 MainActivity.izbrisiRedakIzTabele(App1DokumentiActivity.this,tabelaApp1,"_id", selektiranDok.getId());
                                 ucitajDokumente();
                                 break;
-                            case 1:
-                                //Sinkronizraj
-
-                                List<App1Dokumenti> spisakDokZaSync = getDokumentZaSyncIliPrintanje(selektiranDok);
-
-                                try {
-                                    String rezultat = new JSON_send(App1DokumentiActivity.this, spisakDokZaSync, false, vrstaAplikacije).execute().get();
-                                    Log.d(TAG, "onClick: REZULTAT ASYNCTASKA JE=>" + rezultat);
-                                    if (TextUtils.isEmpty(rezultat)) {
-                                        Toast.makeText(App1DokumentiActivity.this, "Nije moguće poslati podatke! Provjerite internet konekciju i dostupnost servera!", Toast.LENGTH_LONG).show();
-
-
-                                    } else {
-                                        if (rezultat.equals("OK")) {
-                                            //ucitajDokumente();
-                                            MainActivity.updateZaglavljaPoslijeSinkronizacije(App1DokumentiActivity.this, spisakDokZaSync);
-                                            ucitajDokumente();
-                                        }
-                                    }
-
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                } catch (ExecutionException e) {
-                                    e.printStackTrace();
-                                }
-                                //ucitajDokumente();
-                                //Toast.makeText(App1DokumentiActivity.this,akcije[which].toString(),Toast.LENGTH_LONG).show();
+                            case "ZAKLJUČI":
+                            case "OTKLJUČAJ":
+                                MainActivity.setZakljuciDokument_Dokumenti1(App1DokumentiActivity.this, selektiranDok.getId(),!selektiranDok.isZakljucen());
+                                ucitajDokumente();
                                 break;
+                            case "Sinkroniziraj":
+                                if (selektiranDok.isZakljucen()){
+                                    List<App1Dokumenti> spisakDokZaSync = getDokumentZaSyncIliPrintanje(selektiranDok);
+                                    try {
+                                        String rezultat = new JSON_send(App1DokumentiActivity.this, spisakDokZaSync, false, vrstaAplikacije).execute().get();
+                                        Log.d(TAG, "onClick: REZULTAT ASYNCTASKA JE=>" + rezultat);
+                                        if (TextUtils.isEmpty(rezultat)) {
+                                            Toast.makeText(App1DokumentiActivity.this, "Nije moguće poslati podatke! Provjerite internet konekciju i dostupnost servera!", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            if (rezultat.equals("OK")) {
+                                                //ucitajDokumente();
+                                                MainActivity.updateZaglavljaPoslijeSinkronizacije(App1DokumentiActivity.this, spisakDokZaSync);
+                                                ucitajDokumente();
+                                            }
+                                        }
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    } catch (ExecutionException e) {
+                                        e.printStackTrace();
+                                    }
+                                }else {
+                                    Toast.makeText(App1DokumentiActivity.this,"Samo zaključeni dokumenti se mogu sinkronizirati!",Toast.LENGTH_LONG).show();
+                                }
 
-
-                            case 2:
-                                //printaj
-
+                                break;
+                            case "Ispis / detalji dokumenta":
                                 List<App1Dokumenti> spisakDokZaPrint = getDokumentZaSyncIliPrintanje(selektiranDok);
                                 doPrint(spisakDokZaPrint.get(0));
+                                break;
                         }
                     }
                 });

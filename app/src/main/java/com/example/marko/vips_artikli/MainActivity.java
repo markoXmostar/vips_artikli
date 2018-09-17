@@ -925,6 +925,17 @@ public class MainActivity extends AppCompatActivity
         myDB.close();
     }
 
+    public static void setZakljuciDokument_Dokumenti1(Activity a, Long id, boolean zakljuci){
+        SQLiteDatabase myDB = null;
+        int myZakljuci=0;
+        if (zakljuci){
+            myZakljuci=1;
+        }
+        myDB = a.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+        myDB.execSQL("UPDATE dokumenti1 SET zakljucen = " + myZakljuci + " WHERE  _id=" + id + ";" );
+        myDB.close();
+    }
+
     public static void updateOstalihRBR(Activity a, Long myID, int izbrisaniRBR) {
         SQLiteDatabase myDB = null;
         myDB = a.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
@@ -1376,7 +1387,7 @@ public class MainActivity extends AppCompatActivity
     public static App1Dokumenti pretvoriApp2Dok_App1Dok(App2Dokumenti dok2) {
 
         App1Dokumenti rezultat = new App1Dokumenti(dok2.getId(), 0, dok2.getPodtipId(), 0, dok2.getPjKmtId(),
-                dok2.getDatumDokumenta(), null, dok2.getOpaska(), dok2.getKmtNaziv(), dok2.getPjKmtNaziv(), "", dok2.getPodtipNaziv(), 0, "");
+                dok2.getDatumDokumenta(), null, dok2.getOpaska(), dok2.getKmtNaziv(), dok2.getPjKmtNaziv(), "", dok2.getPodtipNaziv(), 0, "", dok2.isZakljucen());
         return rezultat;
     }
 
@@ -1569,6 +1580,8 @@ public class MainActivity extends AppCompatActivity
         long idPjKomitenta;
         long idNacinPlacanja;
 
+        Boolean zakljucen;
+
         String datumDokumentaString;
         String datumSinkronizacijeString;
         String napomena;
@@ -1596,6 +1609,7 @@ public class MainActivity extends AppCompatActivity
         int idPodtpNazivIndex = c.getColumnIndex("PodipDokumentaNaziv");
         int idNacinPlacanjaIndex = c.getColumnIndex("idVrstaPlacanja");
         int nacinPlacanjaNazivIndex = c.getColumnIndex("VrstaPlacanjaNaziv");
+        int zakljucenIndex=c.getColumnIndex("zakljucen");
 
         c.moveToFirst();
 
@@ -1613,6 +1627,7 @@ public class MainActivity extends AppCompatActivity
             datumSinkronizacijeString = c.getString(idDatumSinkronizacijeIndex);
             napomena = c.getString(idNapomenaIndex);
             nacinPlacanjaNaziv = c.getString(nacinPlacanjaNazivIndex);
+            zakljucen=(c.getInt(zakljucenIndex)== 1);
 
             try {
                 datumDokumenta = (Date) SQLLite_dateFormat.parse(datumDokumentaString);
@@ -1632,9 +1647,10 @@ public class MainActivity extends AppCompatActivity
                 return null;
             }
 
+
             Log.d(TAG, "getListaDokumenta: DOKUMENT: _id=" + id +"/ datumSinkronizacije=" + datumSinkronizacijeString);
          App1Dokumenti myObj = new App1Dokumenti(id, idTip, idPodtip, idKomitent, idPjKomitenta, datumDokumenta, datumSinkronizacije,
-                 napomena, komitentNaziv, komitentPjNaziv, tipNaziv, podtipNaziv, idNacinPlacanja, nacinPlacanjaNaziv);
+                 napomena, komitentNaziv, komitentPjNaziv, tipNaziv, podtipNaziv, idNacinPlacanja, nacinPlacanjaNaziv,zakljucen);
          return  myObj;
 
         }
@@ -1667,6 +1683,8 @@ public class MainActivity extends AppCompatActivity
         long idPjKomitenta;
         long idNacinPlacanja;
 
+        boolean zakljucen;
+
         String datumDokumentaString;
         String datumSinkronizacijeString;
         String napomena;
@@ -1695,6 +1713,8 @@ public class MainActivity extends AppCompatActivity
         int idNacinPlacanjaIndex = c.getColumnIndex("idVrstaPlacanja");
         int nacinPlacanjaNazivIndex = c.getColumnIndex("VrstaPlacanjaNaziv");
 
+        int zakljucenIndex=c.getColumnIndex("zakljucen");
+
         c.moveToFirst();
         int brojac = 0;
         for (int j = 0; j < c.getCount(); j++) {
@@ -1712,6 +1732,7 @@ public class MainActivity extends AppCompatActivity
             datumSinkronizacijeString = c.getString(idDatumSinkronizacijeIndex);
             napomena = c.getString(idNapomenaIndex);
             nacinPlacanjaNaziv = c.getString(nacinPlacanjaNazivIndex);
+            zakljucen=c.getInt(zakljucenIndex)==1;
 
             try {
                 datumDokumenta = (Date) SQLLite_dateFormat.parse(datumDokumentaString);
@@ -1731,7 +1752,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             Log.d(TAG, "getListaDokumenta: DOKUMENT: _id=" + id +"/ datumSinkronizacije=" + datumSinkronizacijeString);
-            App1Dokumenti myObj = new App1Dokumenti(id, idTip, idPodtip, idKomitent, idPjKomitenta, datumDokumenta, datumSinkronizacije, napomena, komitentNaziv, komitentPjNaziv, tipNaziv, podtipNaziv, idNacinPlacanja, nacinPlacanjaNaziv);
+            App1Dokumenti myObj = new App1Dokumenti(id, idTip, idPodtip, idKomitent, idPjKomitenta, datumDokumenta, datumSinkronizacije, napomena, komitentNaziv, komitentPjNaziv, tipNaziv, podtipNaziv, idNacinPlacanja, nacinPlacanjaNaziv,zakljucen);
             listaDokumenta.add(myObj);
 
             brojac++;
@@ -1776,6 +1797,7 @@ public class MainActivity extends AppCompatActivity
         String datumDokumentaString;
         String datumSinkronizacijeString;
         boolean zavrsen;
+        boolean zakljucen;
 
         int idIndex = c.getColumnIndex("_id");
         int idkasaIdIndex = c.getColumnIndex("kasaId");
@@ -1795,6 +1817,7 @@ public class MainActivity extends AppCompatActivity
         int idvipsIdIndex = c.getColumnIndex("vipsId");
         int idopaskaIndex = c.getColumnIndex("opaska");
         int idzavrsenIndex = c.getColumnIndex("zavrsen");
+        int zakljucenIndex=c.getColumnIndex("zakljucen");
 
         c.moveToFirst();
         int brojac = 0;
@@ -1815,8 +1838,8 @@ public class MainActivity extends AppCompatActivity
             vipsId = c.getLong(idvipsIdIndex);
             opaska = c.getString(idopaskaIndex);
             zavrsen = (c.getInt(idzavrsenIndex) == 1);
+            zakljucen=c.getInt(zakljucenIndex)==1;
 
-            Log.d(TAG, "getListaDokumenta2: ČITAM DATUM");
 
             datumDokumentaString = c.getString(iddatumDokumentaIndex);
             Date datumDokumenta = null;
@@ -1845,7 +1868,7 @@ public class MainActivity extends AppCompatActivity
 
             App2Dokumenti myObj = new App2Dokumenti(id, kasaId, podtipId, podtipNaziv, pjFrmId, pjFrmNaziv, pjKmtId, pjKmtNaziv, kmtNaziv,
                     datumDokumenta, datumSinkronizacijeDokumenta, komercijalistaId, komercijalistaNaziv,
-                    nacinPlacanjaId, nacinPlacanjaNaziv, opaska, vipsId, zavrsen);
+                    nacinPlacanjaId, nacinPlacanjaNaziv, opaska, vipsId, zavrsen,zakljucen);
             Log.d(TAG, "BAZA getListaDokumenta2: DOKUMENT2 = " + myObj.toString());
             listaDokumenta.add(myObj);
 
@@ -2113,7 +2136,9 @@ public class MainActivity extends AppCompatActivity
         List<App1Dokumenti> spisakDokumentaZaSync = new ArrayList<App1Dokumenti>();
         for (App1Dokumenti dok : spisakSvihDokumenta) {
             if (dok.getDatumSinkronizacije() == null) {
-                spisakDokumentaZaSync.add(dok);
+                if (dok.isZakljucen()){
+                    spisakDokumentaZaSync.add(dok);
+                }
             }
         }
 
@@ -2193,7 +2218,8 @@ public class MainActivity extends AppCompatActivity
                 "datumDokumenta datetime, " +
                 "datumSinkronizacije datetime," +
                 "datumUpisa datetime default current_timestamp," +
-                "vrstaAplikacije Integer, " +
+                "vrstaAplikacije INTEGER, " +
+                "zakljucen INTEGER DEFAULT 0," +
                 "napomena VARCHAR);");
         myDB.close();
 

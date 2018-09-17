@@ -24,9 +24,10 @@ public class App2Dokumenti {
     private String opaska, podtipNaziv, pjFrmNaziv, pjKmtNaziv, KmtNaziv, komercijalistNaziv, nacinPlacanjaNaziv;
     private boolean zavrsen;
     private List<App2Stavke> spisakStavki;
+    private boolean zakljucen;
 
     public App2Dokumenti(int id, long kasaId, long podtipId, String podtipNaziv, long pjFrmId, String pjFrmNaziv, long pjKmtId, String pjKmtNaziv, String kmtNaziv, Date DatumDokumenta, Date DatumSinkronizacije,
-                         long komercijalistaId, String komercijalistNaziv, long nacinPlacanjaId, String nacinPlacanjaNaziv, String opaska, long vipsId, boolean zavrsen) {
+                         long komercijalistaId, String komercijalistNaziv, long nacinPlacanjaId, String nacinPlacanjaNaziv, String opaska, long vipsId, boolean zavrsen,boolean zakljucen) {
         this.id = id;
         this.podtipId = podtipId;
         this.kasaId = kasaId;
@@ -47,8 +48,17 @@ public class App2Dokumenti {
         this.datumSinkronizacije = DatumSinkronizacije;
         this.opaska = opaska;
         this.zavrsen = zavrsen;
+        this.zakljucen=zakljucen;
 
         spisakStavki = new ArrayList<App2Stavke>();
+    }
+
+    public boolean isZakljucen() {
+        return zakljucen;
+    }
+
+    public void setZakljucen(boolean zakljucen) {
+        this.zakljucen = zakljucen;
     }
 
     public List<App2Stavke> getSpisakStavki() {

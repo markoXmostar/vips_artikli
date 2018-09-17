@@ -9,6 +9,7 @@
     <color name="prozirno">@android:color/transparent</color>
     <color name="myCrvena">#e68d8e</color>
     <color name="myZelena">#b4e4af</color>
+    <color name="myCrna">#000</color>
     <color name="bojaZaIzborClick">#63a0f1</color>
     <color name="bojaDrugogReda">#dfe9d8</color>
 </resources>
