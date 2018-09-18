@@ -1,5 +1,7 @@
 package com.example.marko.vips_artikli;
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
 
 /**
@@ -80,7 +82,14 @@ public class Artikl  implements Serializable{
     }
 
     public String getKataloskiBroj() {
-        return kataloskiBroj;
+        String pro="";
+        if (TextUtils.isEmpty(proizvodjac)){
+            pro="N/A";
+        }else
+        {
+            pro=kataloskiBroj;
+        }
+        return pro;
     }
 
     public void setKataloskiBroj(String kataloskiBroj) {
@@ -104,7 +113,14 @@ public class Artikl  implements Serializable{
     }
 
     public String getProizvodjac() {
-        return proizvodjac;
+        String pro="";
+        if (TextUtils.isEmpty(proizvodjac)){
+            pro="N/A";
+        }else
+        {
+            pro=proizvodjac;
+        }
+        return pro;
     }
 
     public void setProizvodjac(String proizvodjac) {
