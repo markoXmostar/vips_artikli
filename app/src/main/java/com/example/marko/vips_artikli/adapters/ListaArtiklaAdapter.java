@@ -94,8 +94,8 @@ public class ListaArtiklaAdapter extends ArrayAdapter {
 
         String vpc,mpc,stanje,brojKoleta,brojKomadaNaPaleti;
 
-        vpc="VPC=" + artikl.getVpc();
-        mpc="MPC=" +artikl.getMpc();
+        vpc="VPC=" + String.format("%.2f",artikl.getVpc());
+        mpc="MPC=" + String.format("%.2f",artikl.getMpc());
         stanje="STANJE=" + artikl.getStanje();
 
         layoutHandler.PROIZVODJAC.setText(stanje + " / " + vpc + " / " +mpc);
