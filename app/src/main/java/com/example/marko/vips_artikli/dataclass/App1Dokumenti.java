@@ -116,9 +116,11 @@ public class App1Dokumenti {
         return broj;
     }
     public double getSumaStavki(){
-        double suma=0;
+        double suma=0d;
         for (App1Stavke stv:spisakStavki) {
-            suma+=stv.getKolicina()*stv.getSumaVPC(); //sada ne vraćam dobro treba naći način da se vrati vpc ili mpc artikla;
+            double kol=stv.getKolicina();
+            double cijena=stv.getVpc();
+            suma+=kol*cijena; //sada ne vraćam dobro treba naći način da se vrati vpc ili mpc artikla;
         }
         return suma;
     }
