@@ -1,22 +1,17 @@
 package com.example.marko.vips_artikli;
 
-public enum VrstaAplikacije {
-    Sve("Sve"),
-    App1("Aplikacija 1"),
-    App2("Aplikacija 2"),
-    App3("Aplikacija 3");
-
+public enum TipDokumentaFilter{
+    SVI("SVI"),
+    Zakljuceni("Zaključeni"),
+    Nezakljucen("Nezaključeni");
 
     private String friendlyName;
-
-    private VrstaAplikacije(String friendlyName) {
+    private TipDokumentaFilter(String friendlyName) {
         this.friendlyName = friendlyName;
     }
-
     @Override
     public String toString() {
         return friendlyName;
     }
 
 }
-

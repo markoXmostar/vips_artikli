@@ -167,13 +167,18 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         tbtnAsortimanKupca = (ToggleButton) findViewById(R.id.btnAsortimanKupca_App1UnosStavke);
         int brojArtikalaInAsortiman = MainActivity.getBrojArtikalaInAsortimanKupca(App1UnosStavkeActivity.this, pjKmtID);
 
-        String off = tbtnAsortimanKupca.getTextOff().toString();
-        String on = tbtnAsortimanKupca.getTextOn().toString();
+        //String off = tbtnAsortimanKupca.getTextOff().toString();
+        //String on = tbtnAsortimanKupca.getTextOn().toString();
+        String off = "isključen";
+        String on = "uključen";
         off = "Asortiman kupca (" + String.valueOf(brojArtikalaInAsortiman) + ") " + off;
         on = "Asortiman kupca (" + String.valueOf(brojArtikalaInAsortiman) + ") " + on;
-        tbtnAsortimanKupca.setTextOff(off);
+
         tbtnAsortimanKupca.setTextOn(on);
+        tbtnAsortimanKupca.setTextOff(off);
         tbtnAsortimanKupca.toggle();
+        tbtnAsortimanKupca.toggle();
+
 
         btnOk=(Button)findViewById(R.id.btnOK_App1UnosStavke);
         btnCancel =(Button)findViewById(R.id.btnCancel_App1UnosStavke);
