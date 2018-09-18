@@ -92,6 +92,12 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                 txtJmj.setEnabled(true);
                 txtJmj.setText(getString(R.string.Izaberi));
                 MainActivity.svirajUpozorenje(myPostavke);
+                for (ArtiklJmj mySpisak:spisakJMJ) {
+                    if(mySpisak.getJmjID()==_izabraniArtikl.getJmjId()){
+                        setIzabranaJMJ(mySpisak);
+                    }
+                }
+
             } else {
                 txtJmj.setEnabled(false);
                 ArtiklJmj jmj = (ArtiklJmj) spisakJMJ.get(0);
