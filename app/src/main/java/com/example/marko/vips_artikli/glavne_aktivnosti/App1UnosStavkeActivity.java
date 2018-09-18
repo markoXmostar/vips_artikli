@@ -44,6 +44,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
     TextView tvRokTrajanja;
     TextView txtJmj;
     EditText txtKolicina;
+    TextView txtDodatniOpisArtikla;
     //EditText txtNapomena;
     myEditTextNoKeyboard txtBarcode;
     TextView tvBarcode;
@@ -68,12 +69,16 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             txtJmj.setEnabled(false);
             txtRokTrajanja.setVisibility(View.GONE);
             tvRokTrajanja.setVisibility(View.GONE);
+            txtDodatniOpisArtikla.setText("");
 
         }
         else {
             txtArtikl.setText(izabraniArtikl.getNaziv());
             Log.d(TAG, "setIzabraniArtikl: greška1" + izabraniArtikl.getNaziv() + "/ ima atribut =" + izabraniArtikl.isImaRokTrajanja());
             txtKolicina.setEnabled(true);
+            String opisArtikla="Proizvođač="+izabraniArtikl.getProizvodjac() + ", Kat.broj=" +izabraniArtikl.getKataloskiBroj() + ", Stanje=" + izabraniArtikl.getStanje() +
+                    ", VPC=" + String.format("%.2f",izabraniArtikl.getVpc()) + ", MPC=" + String.format("%.2f",izabraniArtikl.getMpc());
+            txtDodatniOpisArtikla.setText(opisArtikla);
             //txtNapomena.setEnabled(true);
 
             if(izabraniArtikl.isImaRokTrajanja()){
@@ -160,6 +165,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         tvRokTrajanja = (TextView) findViewById(R.id.tvRokTrajanja_App1UnosStavke);
         txtJmj=(TextView)findViewById(R.id.txtJmj_App1UnosStavke);
         txtKolicina=(EditText)findViewById(R.id.txtKolicina_App1UnosStavke);
+        txtDodatniOpisArtikla=(TextView)findViewById(R.id.txtOpisArtikla_App1UnosStavke);
+
         postaviZadanuKolicinu();
         //txtNapomena=(EditText) findViewById(R.id.etxtNapomena_App1UnosStavke);
 
