@@ -1,4 +1,4 @@
-package com.example.marko.vips_artikli;
+package com.example.marko.vips_artikli.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,6 +11,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.marko.vips_artikli.R;
+import com.example.marko.vips_artikli.dataclass.App2Dokumenti;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +23,7 @@ import java.util.List;
 
 public class ListaApp2DokumentiAdapter extends ArrayAdapter {
     private static String TAG = "LISTA DOKUMENATA2 ADAPTER: ";
-    List list = new ArrayList();
+    public List list = new ArrayList();
 
     public ListaApp2DokumentiAdapter(@NonNull Context context, int resource) {
         super(context, resource);

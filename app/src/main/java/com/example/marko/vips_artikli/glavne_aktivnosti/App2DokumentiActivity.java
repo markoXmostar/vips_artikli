@@ -1,4 +1,4 @@
-package com.example.marko.vips_artikli;
+package com.example.marko.vips_artikli.glavne_aktivnosti;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -14,10 +14,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.marko.vips_artikli.dataclass.App2Dokumenti;
+import com.example.marko.vips_artikli.dataclass.App2Stavke;
+import com.example.marko.vips_artikli.JSON_send;
+import com.example.marko.vips_artikli.adapters.ListaApp2DokumentiAdapter;
+import com.example.marko.vips_artikli.R;
 import com.example.marko.vips_artikli.dataclass.App1Dokumenti;
 import com.example.marko.vips_artikli.dataclass.App1Stavke;
-import com.example.marko.vips_artikli.glavne_aktivnosti.App2StavkeActivity;
-import com.example.marko.vips_artikli.glavne_aktivnosti.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -25,9 +25,8 @@ import android.widget.Toast;
 
 import com.example.marko.vips_artikli.dataclass.App1Dokumenti;
 import com.example.marko.vips_artikli.dataclass.App1Stavke;
-import com.example.marko.vips_artikli.App2Dokumenti;
-import com.example.marko.vips_artikli.App2DokumentiActivity;
-import com.example.marko.vips_artikli.App2Stavke;
+import com.example.marko.vips_artikli.dataclass.App2Dokumenti;
+import com.example.marko.vips_artikli.dataclass.App2Stavke;
 import com.example.marko.vips_artikli.dataclass.Artikl;
 import com.example.marko.vips_artikli.dataclass.ArtiklAtributStanje;
 import com.example.marko.vips_artikli.dataclass.ArtiklJmj;

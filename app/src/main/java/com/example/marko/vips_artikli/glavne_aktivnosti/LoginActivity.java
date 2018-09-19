@@ -2,16 +2,23 @@ package com.example.marko.vips_artikli.glavne_aktivnosti;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.marko.vips_artikli.JSON_recive;
 import com.example.marko.vips_artikli.R;
 
 public class LoginActivity extends AppCompatActivity {
+
+    boolean doubleBackToExitPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +28,16 @@ public class LoginActivity extends AppCompatActivity {
         final EditText txtPass = (EditText) findViewById(R.id.txtLozinka_Prijava);
 
         final Button btnPrijava = (Button) findViewById(R.id.btnPrijava_Prijava);
+
+        txtPass.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    btnPrijava.callOnClick();
+                }
+                return false;
+            }
+        });
+
         btnPrijava.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -50,5 +67,25 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+    // čeka na dvostruki klik nazad da ne bi bilo slučajnih izlaza iz aplikacije
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            // finishAffinity(); gasi sve prethodne aktivnosti pored trenutne tako da ne vraća na unos pina ako korisnik nije prijavljen
+            finishAffinity();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Još jednom pritisnite natrag da bi ste izišli iz aplikacije", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
     }
 }

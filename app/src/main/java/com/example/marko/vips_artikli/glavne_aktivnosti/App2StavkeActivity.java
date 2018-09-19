@@ -14,10 +14,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.marko.vips_artikli.dataclass.App1Stavke;
-import com.example.marko.vips_artikli.App2Stavke;
-import com.example.marko.vips_artikli.App2UnosKolicine;
+import com.example.marko.vips_artikli.dataclass.App2Stavke;
 import com.example.marko.vips_artikli.dataclass.Artikl;
-import com.example.marko.vips_artikli.ListaApp2StavkeAdapter;
+import com.example.marko.vips_artikli.adapters.ListaApp2StavkeAdapter;
 import com.example.marko.vips_artikli.R;
 
 import java.util.List;

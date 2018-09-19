@@ -1,4 +1,4 @@
-package com.example.marko.vips_artikli;
+package com.example.marko.vips_artikli.dataclass;
 
 public enum VrstaPretrageArtikala {
     PretragaPoArtiklu("Pretraga po artiklu"),
@@ -8,7 +8,7 @@ public enum VrstaPretrageArtikala {
 
     private String friendlyName;
 
-    private VrstaPretrageArtikala(String friendlyName) {
+    VrstaPretrageArtikala(String friendlyName) {
         this.friendlyName = friendlyName;
     }
 

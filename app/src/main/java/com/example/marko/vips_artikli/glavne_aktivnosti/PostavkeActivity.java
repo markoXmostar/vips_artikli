@@ -16,8 +16,8 @@ import android.widget.TextView;
 import com.example.marko.vips_artikli.dataclass.PodtipDokumenta;
 import com.example.marko.vips_artikli.R;
 import com.example.marko.vips_artikli.dataclass.TipDokumenta;
-import com.example.marko.vips_artikli.VrstaAplikacije;
-import com.example.marko.vips_artikli.VrstaPretrageArtikala;
+import com.example.marko.vips_artikli.dataclass.VrstaAplikacije;
+import com.example.marko.vips_artikli.dataclass.VrstaPretrageArtikala;
 import com.example.marko.vips_artikli.postavkeAplikacije;
 
 import java.util.List;

@@ -47,9 +47,9 @@
             android:label="@string/PostavkeNaslov" />
         <activity android:name=".glavne_aktivnosti.LoginActivity" />
         <activity android:name=".glavne_aktivnosti.PinActivity" />
-        <activity android:name=".App2DokumentiActivity" />
+        <activity android:name=".glavne_aktivnosti.App2DokumentiActivity" />
         <activity android:name=".glavne_aktivnosti.App2StavkeActivity" />
-        <activity android:name=".App2UnosKolicine" />
+        <activity android:name=".glavne_aktivnosti.App2UnosKolicine" />
         <activity
             android:name=".glavne_aktivnosti.LogActivity"
             android:label="@string/title_activity_log" />

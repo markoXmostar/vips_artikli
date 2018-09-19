@@ -1,18 +1,19 @@
-package com.example.marko.vips_artikli;
+package com.example.marko.vips_artikli.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.marko.vips_artikli.R;
+import com.example.marko.vips_artikli.dataclass.App2Stavke;
 
 import java.util.ArrayList;
 import java.util.List;

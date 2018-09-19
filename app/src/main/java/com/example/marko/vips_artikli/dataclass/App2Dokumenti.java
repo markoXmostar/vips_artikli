@@ -1,4 +1,4 @@
-package com.example.marko.vips_artikli;
+package com.example.marko.vips_artikli.dataclass;
 
 import android.text.format.DateFormat;
 

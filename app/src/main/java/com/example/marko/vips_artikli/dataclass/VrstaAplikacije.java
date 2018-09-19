@@ -1,4 +1,4 @@
-package com.example.marko.vips_artikli;
+package com.example.marko.vips_artikli.dataclass;
 
 public enum VrstaAplikacije {
     Sve("Sve"),
@@ -9,7 +9,7 @@ public enum VrstaAplikacije {
 
     private String friendlyName;
 
-    private VrstaAplikacije(String friendlyName) {
+    VrstaAplikacije(String friendlyName) {
         this.friendlyName = friendlyName;
     }
 

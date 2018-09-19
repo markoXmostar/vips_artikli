@@ -1,4 +1,4 @@
-package com.example.marko.vips_artikli;
+package com.example.marko.vips_artikli.glavne_aktivnosti;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,6 +9,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.example.marko.vips_artikli.R;
+import com.example.marko.vips_artikli.dataclass.App2Stavke;
 
 
 public class App2UnosKolicine extends AppCompatActivity {

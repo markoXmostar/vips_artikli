@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.marko.vips_artikli.dataclass.App2Dokumenti;
+import com.example.marko.vips_artikli.dataclass.App2Stavke;
 import com.example.marko.vips_artikli.dataclass.Artikl;
 import com.example.marko.vips_artikli.dataclass.ArtiklAtributStanje;
 import com.example.marko.vips_artikli.dataclass.ArtiklJmj;
