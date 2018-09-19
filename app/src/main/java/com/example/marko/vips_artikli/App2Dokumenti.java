@@ -1,10 +1,9 @@
 package com.example.marko.vips_artikli;
 
 import android.text.format.DateFormat;
-import android.util.Log;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import com.example.marko.vips_artikli.glavne_aktivnosti.MainActivity;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

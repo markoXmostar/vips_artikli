@@ -1,6 +1,5 @@
 package com.example.marko.vips_artikli;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,10 +11,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.example.marko.vips_artikli.dataclass.App1Dokumenti;
+import com.example.marko.vips_artikli.dataclass.App1Stavke;
+import com.example.marko.vips_artikli.glavne_aktivnosti.App2StavkeActivity;
+import com.example.marko.vips_artikli.glavne_aktivnosti.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;

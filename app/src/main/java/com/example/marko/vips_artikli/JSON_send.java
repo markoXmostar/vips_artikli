@@ -3,9 +3,12 @@ package com.example.marko.vips_artikli;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.example.marko.vips_artikli.dataclass.App1Dokumenti;
+import com.example.marko.vips_artikli.dataclass.App1Stavke;
+import com.example.marko.vips_artikli.glavne_aktivnosti.MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
