@@ -90,9 +90,9 @@ public class ListaArtiklaAdapter extends ArrayAdapter {
         layoutHandler.KATALOSKIBROJ.setText("Kat. broj: " + katbroj + " Proizvođač: " + prozvodac);
 
         String vpc,mpc,stanje,brojKoleta,brojKomadaNaPaleti;
-
-        vpc="VPC=" + String.format("%.2f",artikl.getVpc());
-        mpc="MPC=" + String.format("%.2f",artikl.getMpc());
+        String formatString=MainActivity.formatDecimalbyPostavke();
+        vpc="VPC=" + String.format(formatString,artikl.getVpc());
+        mpc="MPC=" + String.format(formatString,artikl.getMpc());
         stanje="STANJE=" + artikl.getStanje();
 
         layoutHandler.PROIZVODJAC.setText(stanje + " / " + vpc + " / " +mpc);

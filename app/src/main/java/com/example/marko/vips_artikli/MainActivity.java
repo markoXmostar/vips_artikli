@@ -585,8 +585,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private static postavkeAplikacije myStaticPostavke;
+
     private void procitajPostavke() {
         myPostavke = new postavkeAplikacije(MainActivity.this);
+        myStaticPostavke=myPostavke;
         //postaviVidljivostFabKontrola(lastPotrebnaSyncVisible, lastVidljiveTxtKontrole);
     }
 
@@ -1000,7 +1003,7 @@ public class MainActivity extends AppCompatActivity
     public static Date getDateFromJSONFormat(String dateFromWEB_String) {
         SimpleDateFormat dateformat2 = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
         Date newdate = new Date();
-        ;
+
         String strdate2 = "01-01-1990 00:00:00";
         try {
             newdate = dateformat2.parse(strdate2);
@@ -1205,6 +1208,10 @@ public class MainActivity extends AppCompatActivity
         c.close();
         myDB.close();
         return naziv;
+    }
+
+    public static String formatDecimalbyPostavke(){
+        return "%." + myStaticPostavke.getBrojDecimala() + "f";
     }
 
     public static List<ArtiklAtributStanje> getListaAtributa(Activity a, long artiklID, String filter) {

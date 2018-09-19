@@ -709,11 +709,15 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
             for (int i = 0; i < Lista.size(); i++) {
                 Artikl myArt = Lista.get(i);
                 if (myArt.getVpc()==0 && myArt.getMpc()==0){
+                    
                     //ovo mi treba za simulaciju cijena poslije izbriši
+                    /*
                     Random r = new Random();
                     double randomValue = 0.0 + (1000.0 - 0.0) * r.nextDouble();
                     myArt.setVpc(randomValue);
                     myArt.setMpc(myArt.getVpc()*1.17);
+                    */
+
                 }
                 myDB.execSQL("INSERT INTO " + myTabela + " (_id, sifra , " +
                         "naziv ,kataloskiBroj , jmjId, jmjNaziv, kratkiOpis , proizvodjac , dugiOpis , vrstaAmbalaze, brojKoleta, brojKoletaNaPaleti,stanje,vpc,mpc,netto,brutto,imaRokTrajanja,podgrupaID ) VALUES ('" +
