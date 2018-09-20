@@ -9,6 +9,7 @@
     <EditText
         android:id="@+id/txtUserName_Prijava"
         android:layout_width="0dp"
+        android:autofillHints="username"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
@@ -23,6 +24,7 @@
     <EditText
         android:id="@+id/txtLozinka_Prijava"
         android:layout_width="0dp"
+        android:autofillHints="password"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
