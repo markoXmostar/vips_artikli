@@ -75,7 +75,7 @@
         android:layout_marginTop="8dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
-        android:src="@drawable/img_error"
+        app:srcCompat="@drawable/ic_baseline_error_outline_24px"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/linearLayout2" />

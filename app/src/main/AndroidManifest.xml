@@ -5,6 +5,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission
+        android:name="android.permission.USE_FINGERPRINT"
+        android:required="false" />
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -16,7 +19,7 @@
         android:allowBackup="true">
 
         <activity
-            android:name=".glavne_aktivnosti.MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -26,34 +29,34 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".glavne_aktivnosti.ArtikliActivity" />
-        <activity android:name=".glavne_aktivnosti.RegistriActivity" />
-        <activity android:name=".glavne_aktivnosti.KomitentiActivity" />
+        <activity android:name=".activities.ArtikliActivity" />
+        <activity android:name=".activities.RegistriActivity" />
+        <activity android:name=".activities.KomitentiActivity" />
         <activity
-            android:name=".glavne_aktivnosti.App1DokumentiActivity"
+            android:name=".activities.App1DokumentiActivity"
             android:label="@string/NaslovApp1Dokumenti" />
         <activity
-            android:name=".glavne_aktivnosti.App1UnosZaglavljaActivity"
+            android:name=".activities.App1UnosZaglavljaActivity"
             android:label="@string/NoviDokument" />
-        <activity android:name=".glavne_aktivnosti.PretragaKomitenata_Tipova_Podtipova_PJKomitenata_Activity" />
+        <activity android:name=".activities.PretragaKomitenata_Tipova_Podtipova_PJKomitenata_Activity" />
         <activity
-            android:name=".glavne_aktivnosti.App1UnosStavkeActivity"
+            android:name=".activities.App1UnosStavkeActivity"
             android:label="@string/NovaStavka" />
         <activity
-            android:name=".glavne_aktivnosti.App1StavkeActivity"
+            android:name=".activities.App1StavkeActivity"
             android:label="@string/NaslovApp1Stavke" />
         <activity
-            android:name=".glavne_aktivnosti.PostavkeActivity"
+            android:name=".activities.PostavkeActivity"
             android:label="@string/PostavkeNaslov" />
-        <activity android:name=".glavne_aktivnosti.LoginActivity" />
-        <activity android:name=".glavne_aktivnosti.PinActivity" />
-        <activity android:name=".glavne_aktivnosti.App2DokumentiActivity" />
-        <activity android:name=".glavne_aktivnosti.App2StavkeActivity" />
-        <activity android:name=".glavne_aktivnosti.App2UnosKolicine" />
+        <activity android:name=".activities.LoginActivity" />
+        <activity android:name=".activities.PinActivity" />
+        <activity android:name=".activities.App2DokumentiActivity" />
+        <activity android:name=".activities.App2StavkeActivity" />
+        <activity android:name=".activities.App2UnosKolicine" />
         <activity
-            android:name=".glavne_aktivnosti.LogActivity"
+            android:name=".activities.LogActivity"
             android:label="@string/title_activity_log" />
-        <activity android:name=".glavne_aktivnosti.filterPretragaDokumenataActivity"/>
+        <activity android:name=".activities.filterPretragaDokumenataActivity"/>
     </application>
 
 </manifest>

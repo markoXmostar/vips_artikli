@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.marko.vips_artikli.R;
-import com.example.marko.vips_artikli.dataclass.dbLog;
+import com.example.marko.vips_artikli.models.dbLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,11 +73,11 @@ public class ListaDbLogAdapter extends ArrayAdapter {
         layoutHandler.TABELA.setTag(myLOG.getGreska());
         if (myLOG.getGreska() == 0) {
 
-            layoutHandler.myOK.setImageResource(R.drawable.img_ok);
+            layoutHandler.myOK.setImageResource(R.drawable.ic_baseline_check_circle_outline_24px);
             //layoutHandler.TABELA.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.myCrvena));
         }
         else{
-            layoutHandler.myOK.setImageResource(R.drawable.img_error);
+            layoutHandler.myOK.setImageResource(R.drawable.ic_baseline_error_outline_24px);
             //layoutHandler.TABELA.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.myZelena));
         }
         layoutHandler.NAZIV.setText(myLOG.getGreskaMsg());

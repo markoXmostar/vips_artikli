@@ -58,4 +58,5 @@
     <string name="postavke_aplikacije">Postavke aplikacije</string>
     <string name="title_activity_log">LogActivity</string>
     <string name="ponistiFilter">Poništi filter</string>
+    <string name="pritisnite_natrag_još_jednom_exit">Još jednom pritisnite natrag da bi ste izišli iz aplikacije</string>
 </resources>

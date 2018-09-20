@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.marko.vips_artikli.R;
-import com.example.marko.vips_artikli.dataclass.App2Dokumenti;
+import com.example.marko.vips_artikli.models.App2Dokumenti;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,9 +88,9 @@ public class ListaApp2DokumentiAdapter extends ArrayAdapter {
         layoutHandler.Komitent.setText(myObject.getKmtNaziv() + " / " + myObject.getPjKmtNaziv());
         layoutHandler.NacinPlacanja.setText(myObject.getNacinPlacanjaNaziv());
         if (myObject.isZavrsen()) {
-            layoutHandler.Slika.setImageResource(R.drawable.img_ok);
+            layoutHandler.Slika.setImageResource(R.drawable.ic_baseline_check_circle_outline_24px);
         } else {
-            layoutHandler.Slika.setImageResource(R.drawable.img_error);
+            layoutHandler.Slika.setImageResource(R.drawable.ic_baseline_error_outline_24px);
         }
         return row;
 

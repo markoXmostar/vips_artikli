@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.marko.vips_artikli.glavne_aktivnosti.LoginActivity">
+    tools:context="com.example.marko.vips_artikli.activities.LoginActivity">
 
     <EditText
         android:id="@+id/txtUserName_Prijava"
         android:layout_width="0dp"
+        android:autofillHints="username"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
@@ -23,6 +24,7 @@
     <EditText
         android:id="@+id/txtLozinka_Prijava"
         android:layout_width="0dp"
+        android:autofillHints="password"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"

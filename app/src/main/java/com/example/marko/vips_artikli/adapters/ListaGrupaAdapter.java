@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.marko.vips_artikli.R;
-import com.example.marko.vips_artikli.dataclass.GrupaArtikala;
+import com.example.marko.vips_artikli.models.GrupaArtikala;
 
 import java.util.ArrayList;
 import java.util.List;
