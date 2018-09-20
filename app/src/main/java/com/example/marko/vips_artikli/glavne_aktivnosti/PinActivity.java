@@ -2,6 +2,7 @@ package com.example.marko.vips_artikli.glavne_aktivnosti;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,12 +10,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.marko.vips_artikli.R;
 import com.example.marko.vips_artikli.postavkeAplikacije;
 
 public class PinActivity extends AppCompatActivity {
     private EditText txtPin;
+    boolean doubleBackToExitPressedOnce = false;
     int brojPokusaja = 1;
     private String TAG = "PIN_ACTIVITY";
     Button btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btnDellAll, btnDell1;
@@ -148,5 +151,24 @@ public class PinActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    // čeka na dvostruki klik nazad da ne bi bilo slučajnih izlaza iz aplikacije
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            finishAffinity();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, R.string.pritisnite_natrag_još_jednom_exit, Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
     }
 }

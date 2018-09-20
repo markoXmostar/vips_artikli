@@ -1,15 +1,13 @@
 package com.example.marko.vips_artikli.glavne_aktivnosti;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.autofill.AutofillManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,10 +25,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        final EditText txtName = (EditText) findViewById(R.id.txtUserName_Prijava);
-        final EditText txtPass = (EditText) findViewById(R.id.txtLozinka_Prijava);
+        final EditText txtName = findViewById(R.id.txtUserName_Prijava);
+        final EditText txtPass = findViewById(R.id.txtLozinka_Prijava);
 
-        final Button btnPrijava = (Button) findViewById(R.id.btnPrijava_Prijava);
+        final Button btnPrijava = findViewById(R.id.btnPrijava_Prijava);
 
         txtPass.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -54,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
                 Activity a = LoginActivity.this;
                 int rbrLOG = MainActivity.getZadnjiID_log("log", a);
 
-                JSON_recive newJSON = (JSON_recive) new JSON_recive(LoginActivity.this, newUrl, "", rbrLOG) {
+                @SuppressLint("StaticFieldLeak") JSON_recive newJSON = (JSON_recive) new JSON_recive(LoginActivity.this, newUrl, "", rbrLOG) {
                     @Override
                     public void onResponseReceived(int result) {
                         //btnPrijava.setText(Integer.toString(result));
@@ -75,13 +73,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
-            // finishAffinity(); gasi sve prethodne aktivnosti pored trenutne tako da ne vraća na unos pina ako korisnik nije prijavljen
             finishAffinity();
             return;
         }
 
         this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Još jednom pritisnite natrag da bi ste izišli iz aplikacije", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.pritisnite_natrag_još_jednom_exit, Toast.LENGTH_SHORT).show();
 
         new Handler().postDelayed(new Runnable() {
 
