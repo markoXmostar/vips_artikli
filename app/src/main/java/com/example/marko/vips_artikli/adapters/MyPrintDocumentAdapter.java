@@ -22,9 +22,9 @@ import android.graphics.Paint;
 import android.graphics.Color;
 import android.util.Log;
 
-import com.example.marko.vips_artikli.dataclass.App1Dokumenti;
-import com.example.marko.vips_artikli.dataclass.App1Stavke;
-import com.example.marko.vips_artikli.postavkeAplikacije;
+import com.example.marko.vips_artikli.models.App1Dokumenti;
+import com.example.marko.vips_artikli.models.App1Stavke;
+import com.example.marko.vips_artikli.utils.postavkeAplikacije;
 
 /**
  * Created by rac157 on 20.2.2018.

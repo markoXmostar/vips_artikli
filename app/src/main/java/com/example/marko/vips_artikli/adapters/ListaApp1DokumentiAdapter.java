@@ -12,8 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.marko.vips_artikli.R;
-import com.example.marko.vips_artikli.dataclass.App1Dokumenti;
-import com.example.marko.vips_artikli.glavne_aktivnosti.MainActivity;
+import com.example.marko.vips_artikli.models.App1Dokumenti;
+import com.example.marko.vips_artikli.activities.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
