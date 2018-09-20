@@ -53,7 +53,8 @@ public class filterPretragaDokumenataActivity extends AppCompatActivity {
 
         spinnerVrstaAplikacije = (Spinner) findViewById(R.id.spinTipDokumenta_filterDokumenata);
 
-        spinnerVrstaAplikacije.setAdapter(new ArrayAdapter<TipDokumentaFilter>(this, android.R.layout.simple_spinner_item, TipDokumentaFilter.values()));
+        spinnerVrstaAplikacije.setAdapter(new ArrayAdapter<TipDokumentaFilter>(this, R.layout.moj_spinner_za_izbor, TipDokumentaFilter.values()));
+
 
 
 

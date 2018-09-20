@@ -50,5 +50,9 @@
         <item name="android:fontFamily">serif-monospace</item>
     </style>
 
+    <style name="mySpinnerItemStyle" parent="Base.Widget.AppCompat.Spinner">
+        <item name="android:textColor">@color/bojaZaIzborClick</item>
+        <item name="android:textSize">@dimen/velicinaTeksta</item>
+    </style>
         
 </resources>
