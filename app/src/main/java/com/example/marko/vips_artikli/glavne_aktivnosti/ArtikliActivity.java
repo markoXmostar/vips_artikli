@@ -3,7 +3,6 @@ package com.example.marko.vips_artikli.glavne_aktivnosti;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.support.v7.widget.SearchView;
 import android.widget.Switch;
@@ -42,8 +40,8 @@ public class ArtikliActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.activity_artikli_menu, menu);
 
 
-        MenuItem searchItem=menu.findItem(R.id.artikli_pretraga);
-        SearchView searchView= (SearchView) MenuItemCompat.getActionView(searchItem);
+        MenuItem searchItem = menu.findItem(R.id.artikli_pretraga);
+        SearchView searchView = (SearchView) searchItem.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -62,7 +60,7 @@ public class ArtikliActivity extends AppCompatActivity {
 
         MenuItem checkable = menu.findItem(R.id.asortiman_kupca_switch);
         checkable.setChecked(false); //početno je iskjučen asortiman kupca
-        final Switch sw=(Switch) menu.findItem(R.id.asortiman_kupca_switch).getActionView().findViewById(R.id.asortiman_kupca_switch);
+        final Switch sw= menu.findItem(R.id.asortiman_kupca_switch).getActionView().findViewById(R.id.asortiman_kupca_switch);
         sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -105,10 +103,10 @@ public class ArtikliActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artikli);
         getSupportActionBar().setTitle("ARTIKLI");
-        NoDataText = (TextView) findViewById(R.id.noDataText);
+        NoDataText = findViewById(R.id.noDataText);
         NoDataText.setVisibility(View.INVISIBLE);
 
-        artiklListView = (ListView) findViewById(R.id.artikliListView);
+        artiklListView = findViewById(R.id.artikliListView);
         artiklListView.setItemsCanFocus(false);
 
         Bundle b = getIntent().getExtras();
