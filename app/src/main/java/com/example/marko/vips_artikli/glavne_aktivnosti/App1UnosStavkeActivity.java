@@ -2,6 +2,7 @@ package com.example.marko.vips_artikli.glavne_aktivnosti;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -349,106 +351,24 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         });
 
 
+        txtKolicina.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    //do what you want on the press of 'done'
+                    View view = getWindow().getCurrentFocus();
+                    snimi(view);
+
+
+                }
+                return false;
+            }
+        });
+
+
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent returnIntent = new Intent();
-                App1Stavke newStavka=null;
-                Log.d(TAG, "onClick: PRITISNUTO OK DUGME!!!!!!");
-                if(izabraniArtikl==null) {
-                    ispisiPorukuNisteUnijeliPotrebnePodatke(view);
-                    return;
-                } else {
-                    if (izabraniArtikl.isImaRokTrajanja()) {
-                        if (izabraniAtribut == null) {
-                            ispisiPorukuNisteUnijeliPotrebnePodatke(view);
-                            return;
-                        }
-                    }
-                }
-                if (izabranaJMJ == null) {
-                    ispisiPorukuNisteUnijeliPotrebnePodatke(view);
-                    return;
-                }
-                double myKolicina=0;
-                String text =txtKolicina.getText().toString();
-                if(!text.isEmpty()){
-                    try
-                    {
-                        myKolicina= Double.parseDouble(text);
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                        Snackbar.make(view, e1.getMessage()  , Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                        return;
-                    }
-                }
-                Log.d(TAG, "onClick: myKolicina=" + myKolicina);
-                if(myKolicina==0){
-                    String poruka= getResources().getString(R.string.NedozvoljenaNula);
-                    Snackbar.make(view, poruka  , Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    return;
-                }
-
-
-                if (izabraniArtikl.isImaRokTrajanja()){
-                    Log.d(TAG, "onClick: IMA ROK TRAJANJA TRUE");
-                    newStavka = new App1Stavke(-1, idDokumenta,
-                            izabraniArtikl.getId(),
-                            izabraniArtikl.getNaziv(),
-                            izabranaJMJ.getJmjID(),
-                            izabranaJMJ.getNazivJMJ(),
-                            izabraniArtikl.isImaRokTrajanja(),
-                            izabraniAtribut.getAtributId1(),
-                            izabraniAtribut.getAtributNaziv1(),
-                            izabraniAtribut.getAtributVrijednost1(),
-                            myKolicina,
-                            izabraniArtikl.getVpc(),
-                            izabraniArtikl.getMpc(),
-                            //txtNapomena.getText().toString());
-                            "");
-                }else{
-                    Log.d(TAG, "onClick: IMA ROK TRAJANJA FALSE");
-                    newStavka = new App1Stavke(-1, idDokumenta,
-                            izabraniArtikl.getId(),
-                            izabraniArtikl.getNaziv(),
-                            izabranaJMJ.getJmjID(),
-                            izabranaJMJ.getNazivJMJ(),
-                            izabraniArtikl.isImaRokTrajanja(),
-                            -1,
-                            null,
-                            null,
-                            myKolicina,
-                            izabraniArtikl.getVpc(),
-                            izabraniArtikl.getMpc(),
-                            //txtNapomena.getText().toString());
-                            "");
-                }
-                if (unosStavke == 0) {
-                    //za aplikaciju 1
-                    if (myPostavke.isBrziUnosArtikala()) {
-                        MainActivity.snimiStavku(App1UnosStavkeActivity.this, idDokumenta, newStavka);
-
-                        MainActivity.svirajOK(myPostavke);
-                        recreate();
-                        postaviZadanuKolicinu();
-                        txtBarcode.setText("");
-                        txtBarcode.requestFocus();
-
-                    } else {
-                        returnIntent.putExtra("stavka", newStavka);
-                        setResult(Activity.RESULT_OK, returnIntent);
-                        finish();
-                    }
-                } else {
-                    //za aplikaciju 2 NEMA BRZOG UNOSA!!
-                    returnIntent.putExtra("stavka", newStavka);
-                    setResult(Activity.RESULT_OK, returnIntent);
-                    finish();
-                }
-
-
+                snimi(view);
             }
         });
 
@@ -457,7 +377,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent returnIntent = new Intent();
-                setResult(Activity.RESULT_CANCELED,returnIntent);
+                setResult(Activity.RESULT_CANCELED, returnIntent);
                 finish();
             }
         });
@@ -481,6 +401,105 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         }
 
     */
+    private void snimi(View view) {
+
+        Intent returnIntent = new Intent();
+        App1Stavke newStavka = null;
+        Log.d(TAG, "onClick: PRITISNUTO OK DUGME!!!!!!");
+        if (izabraniArtikl == null) {
+            ispisiPorukuNisteUnijeliPotrebnePodatke(view);
+            return;
+        } else {
+            if (izabraniArtikl.isImaRokTrajanja()) {
+                if (izabraniAtribut == null) {
+                    ispisiPorukuNisteUnijeliPotrebnePodatke(view);
+                    return;
+                }
+            }
+        }
+        if (izabranaJMJ == null) {
+            ispisiPorukuNisteUnijeliPotrebnePodatke(view);
+            return;
+        }
+        double myKolicina = 0;
+        String text = txtKolicina.getText().toString();
+        if (!text.isEmpty()) {
+            try {
+                myKolicina = Double.parseDouble(text);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                Snackbar.make(view, e1.getMessage(), Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                return;
+            }
+        }
+        Log.d(TAG, "onClick: myKolicina=" + myKolicina);
+        if (myKolicina == 0) {
+            String poruka = getResources().getString(R.string.NedozvoljenaNula);
+            Snackbar.make(view, poruka, Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+            return;
+        }
+
+
+        if (izabraniArtikl.isImaRokTrajanja()) {
+            Log.d(TAG, "onClick: IMA ROK TRAJANJA TRUE");
+            newStavka = new App1Stavke(-1, idDokumenta,
+                    izabraniArtikl.getId(),
+                    izabraniArtikl.getNaziv(),
+                    izabranaJMJ.getJmjID(),
+                    izabranaJMJ.getNazivJMJ(),
+                    izabraniArtikl.isImaRokTrajanja(),
+                    izabraniAtribut.getAtributId1(),
+                    izabraniAtribut.getAtributNaziv1(),
+                    izabraniAtribut.getAtributVrijednost1(),
+                    myKolicina,
+                    izabraniArtikl.getVpc(),
+                    izabraniArtikl.getMpc(),
+                    //txtNapomena.getText().toString());
+                    "");
+        } else {
+            Log.d(TAG, "onClick: IMA ROK TRAJANJA FALSE");
+            newStavka = new App1Stavke(-1, idDokumenta,
+                    izabraniArtikl.getId(),
+                    izabraniArtikl.getNaziv(),
+                    izabranaJMJ.getJmjID(),
+                    izabranaJMJ.getNazivJMJ(),
+                    izabraniArtikl.isImaRokTrajanja(),
+                    -1,
+                    null,
+                    null,
+                    myKolicina,
+                    izabraniArtikl.getVpc(),
+                    izabraniArtikl.getMpc(),
+                    //txtNapomena.getText().toString());
+                    "");
+        }
+        if (unosStavke == 0) {
+            //za aplikaciju 1
+            if (myPostavke.isBrziUnosArtikala()) {
+                MainActivity.snimiStavku(App1UnosStavkeActivity.this, idDokumenta, newStavka);
+
+                MainActivity.svirajOK(myPostavke);
+                recreate();
+                postaviZadanuKolicinu();
+                txtBarcode.setText("");
+                txtBarcode.requestFocus();
+
+            } else {
+                returnIntent.putExtra("stavka", newStavka);
+                setResult(Activity.RESULT_OK, returnIntent);
+                finish();
+            }
+        } else {
+            //za aplikaciju 2 NEMA BRZOG UNOSA!!
+            returnIntent.putExtra("stavka", newStavka);
+            setResult(Activity.RESULT_OK, returnIntent);
+            finish();
+        }
+
+
+    }
     private void ispisiPorukuNisteUnijeliPotrebnePodatke(View view) {
 
         String poruka = getResources().getString(R.string.NepotpunUnos);
