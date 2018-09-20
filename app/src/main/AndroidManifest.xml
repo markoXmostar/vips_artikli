@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.marko.vips_artikli">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.BIND_PRINT_SERVICE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera" />
 
     <application
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:allowBackup="true">
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -30,7 +32,6 @@
         <activity
             android:name=".App1DokumentiActivity"
             android:label="@string/NaslovApp1Dokumenti" />
-        "@androi
         <activity
             android:name=".App1UnosZaglavljaActivity"
             android:label="@string/NoviDokument" />
@@ -38,7 +39,6 @@
         <activity
             android:name=".App1UnosStavkeActivity"
             android:label="@string/NovaStavka" />
-        />
         <activity
             android:name=".App1StavkeActivity"
             android:label="@string/NaslovApp1Stavke" />
@@ -53,7 +53,7 @@
         <activity
             android:name=".LogActivity"
             android:label="@string/title_activity_log" />
-        <activity android:name=".filterPretragaDokumenataActivity"></activity>
+        <activity android:name=".filterPretragaDokumenataActivity"/>
     </application>
 
 </manifest>
