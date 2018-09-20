@@ -136,6 +136,11 @@ public class filterPretragaDokumenataActivity extends AppCompatActivity {
             setIzabranaPJKomitenta(myPjKom);
         }
 
+        if (filterPjKomitentaID!=0){
+            PjKomitent myPjKom=MainActivity.getPjKomitentByID(filterPretragaDokumenataActivity.this,filterPjKomitentaID);
+            setIzabranaPJKomitenta(myPjKom);
+        }
+
         txtKomitent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -2,6 +2,8 @@ package com.example.marko.vips_artikli.dataclass;
 
 import android.text.TextUtils;
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
 
 /**
