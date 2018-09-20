@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.marko.vips_artikli.glavne_aktivnosti.App1UnosStavkeActivity">
+    tools:context="com.example.marko.vips_artikli.activities.App1UnosStavkeActivity">
 
     <TextView
         android:id="@+id/tvBarcode_App1UnosStavke"
@@ -15,10 +15,9 @@
         android:layout_marginTop="8dp"
         android:text="Barcode:"
         android:textSize="@dimen/velicinaTeksta"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnAsortimanKupca_App1UnosStavke" />
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <com.example.marko.vips_artikli.myEditTextNoKeyboard
+    <com.example.marko.vips_artikli.models.myEditTextNoKeyboard
         android:id="@+id/txtBarcode_App1UnosStavke"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -30,8 +29,7 @@
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tvBarcode_App1UnosStavke"
-        app:layout_constraintTop_toBottomOf="@+id/btnAsortimanKupca_App1UnosStavke" />
+        app:layout_constraintStart_toEndOf="@+id/tvBarcode_App1UnosStavke" />
 
     <TextView
         android:id="@+id/tvArtikl_App1UnosStavke"

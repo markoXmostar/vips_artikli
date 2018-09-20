@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.marko.vips_artikli.R;
-import com.example.marko.vips_artikli.dataclass.jmj;
+import com.example.marko.vips_artikli.models.jmj;
 
 import java.util.ArrayList;
 import java.util.List;

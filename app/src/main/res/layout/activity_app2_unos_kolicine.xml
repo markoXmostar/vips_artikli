@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.marko.vips_artikli.glavne_aktivnosti.App2UnosKolicine">
+    tools:context="com.example.marko.vips_artikli.activities.App2UnosKolicine">
 
     <TextView
         android:id="@+id/txtNazivArtikla_App2UnosKolicine"

@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.marko.vips_artikli.R;
-import com.example.marko.vips_artikli.dataclass.dbLog;
+import com.example.marko.vips_artikli.models.dbLog;
 
 import java.util.ArrayList;
 import java.util.List;
