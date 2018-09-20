@@ -64,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:text="Jedinca mjere"
+        android:text="Jedinica mjere"
         android:textSize="@dimen/velicinaTeksta"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtRokTrajanja_App1UnosStavke" />
@@ -194,17 +194,18 @@
             android:text="@string/OKtext" />
     </LinearLayout>
 
-    <ToggleButton
-        android:id="@+id/btnAsortimanKupca_App1UnosStavke"
+    <TextView
+        android:id="@+id/txtOpisArtikla_App1UnosStavke"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="ToggleButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/txtKolicina_App1UnosStavke" />
 
 
 </android.support.constraint.ConstraintLayout>

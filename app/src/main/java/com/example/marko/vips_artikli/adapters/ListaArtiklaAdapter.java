@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.marko.vips_artikli.R;
 import com.example.marko.vips_artikli.dataclass.Artikl;
+import com.example.marko.vips_artikli.glavne_aktivnosti.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,9 +94,9 @@ public class ListaArtiklaAdapter extends ArrayAdapter {
         layoutHandler.KATALOSKIBROJ.setText("Kat. broj: " + katbroj + " Proizvođač: " + prozvodac);
 
         String vpc,mpc,stanje,brojKoleta,brojKomadaNaPaleti;
-
-        vpc="VPC=" + artikl.getVpc();
-        mpc="MPC=" +artikl.getMpc();
+        String formatString=MainActivity.formatDecimalbyPostavke();
+        vpc="VPC=" + String.format(formatString,artikl.getVpc());
+        mpc="MPC=" + String.format(formatString,artikl.getMpc());
         stanje="STANJE=" + artikl.getStanje();
 
         layoutHandler.PROIZVODJAC.setText(stanje + " / " + vpc + " / " +mpc);

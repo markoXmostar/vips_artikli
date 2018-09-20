@@ -11,13 +11,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.support.v7.widget.SearchView;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.marko.vips_artikli.dataclass.Artikl;
-import com.example.marko.vips_artikli.adapters.ListaArtiklaAdapter;
 import com.example.marko.vips_artikli.R;
+import com.example.marko.vips_artikli.adapters.ListaArtiklaAdapter;
+import com.example.marko.vips_artikli.dataclass.Artikl;
 
 public class ArtikliActivity extends AppCompatActivity {
 
@@ -28,6 +32,10 @@ public class ArtikliActivity extends AppCompatActivity {
 
     ListView artiklListView;
     TextView NoDataText;
+
+
+
+    String myFilter="";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -40,22 +48,34 @@ public class ArtikliActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String sFilter) {
-                /*
-                if(sFilter.equals("")){
-                    UcitajListuIzBaze("");
-                    //this.onQueryTextSubmit("");
-                }
-                UcitajListuIzBaze(sFilter);
-                */
+
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String sFilter) {
-                UcitajListuIzBaze(sFilter);
+                myFilter=sFilter;
+                UcitajListuIzBaze(myFilter);
                 return false;
             }
         });
+
+        MenuItem checkable = menu.findItem(R.id.asortiman_kupca_switch);
+        checkable.setChecked(false); //početno je iskjučen asortiman kupca
+        final Switch sw=(Switch) menu.findItem(R.id.asortiman_kupca_switch).getActionView().findViewById(R.id.asortiman_kupca_switch);
+        sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b){
+                    Toast.makeText(getBaseContext(),"ASORTIMAN KUPCA UKLJUČEN!", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getBaseContext(),"ASORTIMAN KUPCA ISKLJUČEN!", Toast.LENGTH_SHORT).show();
+                }
+                asortimanKupca=b;
+                UcitajListuIzBaze(myFilter);
+            }
+        });
+
         return true;
     }
 
@@ -67,9 +87,13 @@ public class ArtikliActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.artikli_pretraga) {
-
             return true;
         }
+
+        if (id==R.id.asortiman_kupca_switch){
+            return true;
+        }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -90,7 +114,7 @@ public class ArtikliActivity extends AppCompatActivity {
         Bundle b = getIntent().getExtras();
         if (b != null) {
             varijantaForme = b.getInt("varijanta");
-            asortimanKupca = b.getBoolean("asortimanKupca", false);
+            //asortimanKupca = b.getBoolean("asortimanKupca", false);
             pjKmtID = b.getLong("pjKmtID", 0);
         }
 

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.marko.vips_artikli.R;
 import com.example.marko.vips_artikli.dataclass.App1Stavke;
+import com.example.marko.vips_artikli.glavne_aktivnosti.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +89,8 @@ public class ListaApp1StavkeAdapter extends ArrayAdapter {
         layoutHandler.NazivArtikla.setText(myObject.getArtiklNaziv());
         layoutHandler.Jmj.setText(myObject.getJmjNaziv());
         layoutHandler.Kolicina.setText(Double.toString(myObject.getKolicina()));
-        String ostaliPodaci="VPC = " + String.format("%.2f",myObject.getVpc()) + "KM / MPC = " + String.format("%.2f",myObject.getMpc()) +"KM";
+        String formatString=MainActivity.formatDecimalbyPostavke();
+        String ostaliPodaci="VPC = " + String.format(formatString,myObject.getVpc()) + "KM / MPC = " + String.format(formatString,myObject.getMpc()) +"KM";
         layoutHandler.OstaliPodaci.setText(ostaliPodaci);
 
         if (myObject.isImaAtribut()){

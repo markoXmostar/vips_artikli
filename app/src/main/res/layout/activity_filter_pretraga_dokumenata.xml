@@ -14,6 +14,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:textSize="@dimen/velicinaTeksta"
         android:text="Datum od:"
         app:layout_constraintBottom_toBottomOf="@+id/txtDatumOd_filterDokumenata"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,6 +42,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:textSize="@dimen/velicinaTeksta"
         android:text="Datum do:"
         app:layout_constraintBottom_toBottomOf="@+id/txtDatumDo_filterDokumenata"
         app:layout_constraintStart_toStartOf="parent"
@@ -67,6 +69,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
+        android:textSize="@dimen/velicinaTeksta"
         android:text="Komitent:"
         app:layout_constraintBottom_toBottomOf="@+id/txtKomitent_filterDokumenata"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,6 +84,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
+        android:textSize="@dimen/velicinaTeksta"
         android:textAppearance="@style/mojTextStyleZaIzbor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -117,4 +121,58 @@
             android:focusable="false"
             android:text="@string/OKtext" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/lblpjKomitenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textSize="@dimen/velicinaTeksta"
+        android:text="PJ komitenta"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtKomitent_filterDokumenata" />
+
+    <TextView
+        android:id="@+id/txtPjKomitenta_filterDokumenata"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textSize="@dimen/velicinaTeksta"
+        android:textAppearance="@style/mojTextStyleZaIzbor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/lblpjKomitenta"
+        app:layout_constraintTop_toBottomOf="@+id/txtKomitent_filterDokumenata"
+        tools:text="Poslovna jedinica" />
+
+    <TextView
+        android:id="@+id/lblStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textSize="@dimen/velicinaTeksta"
+        android:text="Status: "
+        app:layout_constraintBottom_toBottomOf="@+id/spinTipDokumenta_filterDokumenata"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/spinTipDokumenta_filterDokumenata" />
+
+    <Spinner
+        android:id="@+id/spinTipDokumenta_filterDokumenata"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:textSize="@dimen/velicinaTeksta"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/lblStatus"
+        app:layout_constraintTop_toBottomOf="@+id/txtPjKomitenta_filterDokumenata" />
 </android.support.constraint.ConstraintLayout>

@@ -46,10 +46,11 @@ public class App1DokumentiActivity extends AppCompatActivity {
     private static String TAG = "App1Dokumenti";
     private static String tabelaApp1 = "dokumenti1";
 
-    private Long filterKomitentID;
-    private String filterKomitentNaziv;
+    private Long filterKomitentID,filterPjKomitentID;
+    private String filterKomitentNaziv,filterPjKomitentNaziv;
     private String filterDatumOd;
     private String filterDatumDo;
+    private int filterZakljucen;
 
 
     private ListView listSpisakDokumenata;
@@ -92,6 +93,9 @@ public class App1DokumentiActivity extends AppCompatActivity {
             intent.putExtra("datumDo", filterDatumDo);
             intent.putExtra("komitentID", filterKomitentID);
             intent.putExtra("komitentNaziv", filterKomitentNaziv);
+            intent.putExtra("filterPjKomitentID", filterPjKomitentID);
+            intent.putExtra("filterPjKomitentNaziv", filterPjKomitentNaziv);
+            intent.putExtra("filterZakljucen",filterZakljucen);
 
             startActivityForResult(intent,31); //21 označava završen unos stavki
 
@@ -110,7 +114,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
 
         DateFormat dateFormat =new SimpleDateFormat(MainActivity.SqlLiteDateFormat);
         Calendar calOd = Calendar.getInstance();
-        calOd.add(Calendar.DATE, -1);
+        calOd.add(Calendar.DATE, 0);
         int dan=calOd.get(Calendar.DAY_OF_MONTH);
         int mjesec=calOd.get(Calendar.MONTH);
         int godina=calOd.get(Calendar.YEAR);
@@ -120,21 +124,24 @@ public class App1DokumentiActivity extends AppCompatActivity {
         filterDatumOd=MainActivity.danMjesecGodinaToSQLLiteFormatString(dan,mjesec,godina,sat,min,sec);
 
         Calendar calDo = Calendar.getInstance();
-        calDo.add(Calendar.DATE, +1);
+        calDo.add(Calendar.DATE, 0);
         dan=calDo.get(Calendar.DAY_OF_MONTH);
         mjesec=calDo.get(Calendar.MONTH);
         godina=calDo.get(Calendar.YEAR);
-        sat=0;
-        min=0;
-        sec=0;
+        sat=23;
+        min=59;
+        sec=59;
         filterDatumDo=MainActivity.danMjesecGodinaToSQLLiteFormatString(dan,mjesec,godina,sat,min,sec);
 
         filterKomitentID=0L;
         filterKomitentNaziv="";
+        filterPjKomitentID=0L;
+        filterPjKomitentNaziv="";
+        filterZakljucen=0;
 
     }
 
-    private void setFilterPostavke(String datum1,String datum2, Long komID, String komNaziv){
+    private void setFilterPostavke(String datum1,String datum2, Long komID, String komNaziv, int zakljucen, Long pjKomId, String pjKomNaziv){
         Date datumOd=MainActivity.getDateFromMojString(datum1);
         Date datumDo=MainActivity.getDateFromMojString(datum2);
         Calendar calOd=Calendar.getInstance();
@@ -160,6 +167,9 @@ public class App1DokumentiActivity extends AppCompatActivity {
 
         filterKomitentID=komID;
         filterKomitentNaziv=komNaziv;
+        filterPjKomitentNaziv=pjKomNaziv;
+        filterZakljucen=zakljucen;
+        filterPjKomitentID=pjKomId;
     }
 
     @Override
@@ -385,7 +395,11 @@ public class App1DokumentiActivity extends AppCompatActivity {
                 String filterNazKom=data.getStringExtra("filterKomitentNaziv");
                 String dat1=data.getStringExtra("filterDatumOd");
                 String dat2=data.getStringExtra("filterDatumDo");
-                setFilterPostavke(dat1,dat2,filterIdKom,filterNazKom);
+                long filterIdPjKom=data.getLongExtra("filterPjKomitentaID",-1);
+                String filterNazPjKom=data.getStringExtra("filterPjKOmitentaNaziv");
+                int filterZakljucen=data.getIntExtra("filterZakjucen",0);
+
+                setFilterPostavke(dat1,dat2,filterIdKom,filterNazKom,filterZakljucen,filterIdPjKom,filterNazPjKom);
                 ucitajDokumente();
             }
             if (resultCode==Activity.RESULT_CANCELED){
@@ -404,7 +418,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
     private void ucitajDokumente() {
         ListaApp1DokumentiAdapter listaDokumenta = new ListaApp1DokumentiAdapter(this, R.layout.row_app1_zaglavlje);
         listSpisakDokumenata.setAdapter(listaDokumenta);
-        List<App1Dokumenti> spisakDok = MainActivity.getListaDokumenta(App1DokumentiActivity.this, vrstaAplikacije,filterKomitentID,filterDatumOd,filterDatumDo);
+        List<App1Dokumenti> spisakDok = MainActivity.getListaDokumenta(App1DokumentiActivity.this, vrstaAplikacije,filterKomitentID,filterDatumOd,filterDatumDo,filterPjKomitentID,filterZakljucen);
         for (App1Dokumenti dok:spisakDok) {
             listaDokumenta.add(dok);
             //sada svakom dokumetu pridruži njegove stavke kako bi mogli ispisati broj i sumu stavki

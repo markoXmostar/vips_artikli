@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.marko.vips_artikli.R;
 import com.example.marko.vips_artikli.dataclass.App1Dokumenti;
+import com.example.marko.vips_artikli.glavne_aktivnosti.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,8 +87,8 @@ public class ListaApp1DokumentiAdapter extends ArrayAdapter{
         //layoutHandler.ID.setText(komitent.getId());
 
         //treba ovdje sada pozvati f-ju koja će vratiti broj stavki i ukupan iznos Para!
-
-        layoutHandler.DatumDokumenta.setText(myObject.getDatumDokumentaString() + " Broj stavki: " + myObject.getBrojStavki() + " - " + String.format("%.2f", myObject.getSumaStavki()) + "KM");
+        String formatString=MainActivity.formatDecimalbyPostavke();
+        layoutHandler.DatumDokumenta.setText(myObject.getDatumDokumentaString() + " Broj stavki: " + myObject.getBrojStavki() + " - " + String.format(formatString, myObject.getSumaStavki()) + "KM");
         if (myObject.isZakljucen()){
             layoutHandler.DatumDokumenta.setTextColor(ContextCompat.getColor(this.getContext(), R.color.myCrna));
         }else{

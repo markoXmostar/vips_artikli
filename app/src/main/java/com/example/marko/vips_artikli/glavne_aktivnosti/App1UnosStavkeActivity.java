@@ -44,12 +44,13 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
     TextView tvRokTrajanja;
     TextView txtJmj;
     EditText txtKolicina;
+    TextView txtDodatniOpisArtikla;
     //EditText txtNapomena;
     myEditTextNoKeyboard txtBarcode;
     TextView tvBarcode;
 
     Button btnOk, btnCancel;
-    ToggleButton tbtnAsortimanKupca;
+    //ToggleButton tbtnAsortimanKupca;
 
     private Artikl izabraniArtikl;
 
@@ -68,12 +69,17 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             txtJmj.setEnabled(false);
             txtRokTrajanja.setVisibility(View.GONE);
             tvRokTrajanja.setVisibility(View.GONE);
+            txtDodatniOpisArtikla.setText("");
 
         }
         else {
             txtArtikl.setText(izabraniArtikl.getNaziv());
             Log.d(TAG, "setIzabraniArtikl: greška1" + izabraniArtikl.getNaziv() + "/ ima atribut =" + izabraniArtikl.isImaRokTrajanja());
             txtKolicina.setEnabled(true);
+            String formatString=MainActivity.formatDecimalbyPostavke();
+            String opisArtikla="Proizvođač="+izabraniArtikl.getProizvodjac() + ", Kat.broj=" +izabraniArtikl.getKataloskiBroj() + ", Stanje=" + izabraniArtikl.getStanje() +
+                    ", VPC=" + String.format( formatString,izabraniArtikl.getVpc()) + ", MPC=" + String.format(formatString,izabraniArtikl.getMpc());
+            txtDodatniOpisArtikla.setText(opisArtikla);
             //txtNapomena.setEnabled(true);
 
             if(izabraniArtikl.isImaRokTrajanja()){
@@ -92,6 +98,12 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                 txtJmj.setEnabled(true);
                 txtJmj.setText(getString(R.string.Izaberi));
                 MainActivity.svirajUpozorenje(myPostavke);
+                for (ArtiklJmj mySpisak:spisakJMJ) {
+                    if(mySpisak.getJmjID()==_izabraniArtikl.getJmjId()){
+                        setIzabranaJMJ(mySpisak);
+                    }
+                }
+
             } else {
                 txtJmj.setEnabled(false);
                 ArtiklJmj jmj = (ArtiklJmj) spisakJMJ.get(0);
@@ -154,6 +166,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         tvRokTrajanja = (TextView) findViewById(R.id.tvRokTrajanja_App1UnosStavke);
         txtJmj=(TextView)findViewById(R.id.txtJmj_App1UnosStavke);
         txtKolicina=(EditText)findViewById(R.id.txtKolicina_App1UnosStavke);
+        txtDodatniOpisArtikla=(TextView)findViewById(R.id.txtOpisArtikla_App1UnosStavke);
+
         postaviZadanuKolicinu();
         //txtNapomena=(EditText) findViewById(R.id.etxtNapomena_App1UnosStavke);
 
@@ -164,16 +178,23 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         tvBarcode = (TextView) findViewById(R.id.tvBarcode_App1UnosStavke);
 
 
-        tbtnAsortimanKupca = (ToggleButton) findViewById(R.id.btnAsortimanKupca_App1UnosStavke);
+        //tbtnAsortimanKupca = (ToggleButton) findViewById(R.id.btnAsortimanKupca_App1UnosStavke);
         int brojArtikalaInAsortiman = MainActivity.getBrojArtikalaInAsortimanKupca(App1UnosStavkeActivity.this, pjKmtID);
 
-        String off = tbtnAsortimanKupca.getTextOff().toString();
-        String on = tbtnAsortimanKupca.getTextOn().toString();
+        //String off = tbtnAsortimanKupca.getTextOff().toString();
+        //String on = tbtnAsortimanKupca.getTextOn().toString();
+        String off = "isključen";
+        String on = "uključen";
         off = "Asortiman kupca (" + String.valueOf(brojArtikalaInAsortiman) + ") " + off;
         on = "Asortiman kupca (" + String.valueOf(brojArtikalaInAsortiman) + ") " + on;
-        tbtnAsortimanKupca.setTextOff(off);
+
+        /*
         tbtnAsortimanKupca.setTextOn(on);
+        tbtnAsortimanKupca.setTextOff(off);
         tbtnAsortimanKupca.toggle();
+        tbtnAsortimanKupca.toggle();
+        */
+
 
         btnOk=(Button)findViewById(R.id.btnOK_App1UnosStavke);
         btnCancel =(Button)findViewById(R.id.btnCancel_App1UnosStavke);
@@ -220,7 +241,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                 if ((keyCode == KeyEvent.KEYCODE_ENTER) && (keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
                     String barcodeStr = txtBarcode.getText().toString();
                     Log.d(TAG, "onKey: BARCODE=" + barcodeStr);
-                    Artikl myArt = MainActivity.getArtiklByBarcode(App1UnosStavkeActivity.this, barcodeStr, tbtnAsortimanKupca.isChecked(), pjKmtID);
+                    //Artikl myArt = MainActivity.getArtiklByBarcode(App1UnosStavkeActivity.this, barcodeStr, tbtnAsortimanKupca.isChecked(), pjKmtID);
+                    Artikl myArt = MainActivity.getArtiklByBarcode(App1UnosStavkeActivity.this, barcodeStr, false, pjKmtID);
                     if (myArt != null) {
                         Log.d(TAG, "onKey: ARTIKL NAĐEN!!");
                         txtBarcode.setOkBackgroundColor();
@@ -263,7 +285,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
 
                         Intent intent = new Intent(App1UnosStavkeActivity.this, ArtikliActivity.class);
                         intent.putExtra("varijanta", 0);
-                        intent.putExtra("asortimanKupca", tbtnAsortimanKupca.isChecked());
+                        //intent.putExtra("asortimanKupca", tbtnAsortimanKupca.isChecked());
                         intent.putExtra("pjKmtID", pjKmtID);
                         startActivityForResult(intent,1);
                         break;

@@ -88,7 +88,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:textSize="@dimen/velicinaTeksta"
-        android:text="Tip dokumneta"
+        android:text="Tip dokumenta"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtPjKomitenta_App1Zaglavlje" />
 

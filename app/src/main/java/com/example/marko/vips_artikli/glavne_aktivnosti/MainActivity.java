@@ -33,7 +33,9 @@ import com.example.marko.vips_artikli.dataclass.ArtiklJmj;
 import com.example.marko.vips_artikli.JSON_recive;
 import com.example.marko.vips_artikli.JSON_send;
 import com.example.marko.vips_artikli.adapters.ListaDbLogAdapter;
+import com.example.marko.vips_artikli.dataclass.Komitent;
 import com.example.marko.vips_artikli.dataclass.NacinPlacanja;
+import com.example.marko.vips_artikli.dataclass.PjKomitent;
 import com.example.marko.vips_artikli.dataclass.PodtipDokumenta;
 import com.example.marko.vips_artikli.R;
 import com.example.marko.vips_artikli.dataclass.TipDokumenta;
@@ -547,31 +549,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent intent = new Intent(MainActivity.this, PostavkeActivity.class);
-            startActivityForResult(intent, 1);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-    */
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -627,8 +605,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private static postavkeAplikacije myStaticPostavke;
+
     private void procitajPostavke() {
         myPostavke = new postavkeAplikacije(MainActivity.this);
+        myStaticPostavke=myPostavke;
         //postaviVidljivostFabKontrola(lastPotrebnaSyncVisible, lastVidljiveTxtKontrole);
     }
 
@@ -1042,7 +1023,7 @@ public class MainActivity extends AppCompatActivity
     public static Date getDateFromJSONFormat(String dateFromWEB_String) {
         SimpleDateFormat dateformat2 = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
         Date newdate = new Date();
-        ;
+
         String strdate2 = "01-01-1990 00:00:00";
         try {
             newdate = dateformat2.parse(strdate2);
@@ -1247,6 +1228,10 @@ public class MainActivity extends AppCompatActivity
         c.close();
         myDB.close();
         return naziv;
+    }
+
+    public static String formatDecimalbyPostavke(){
+        return "%." + myStaticPostavke.getBrojDecimala() + "f";
     }
 
     public static List<ArtiklAtributStanje> getListaAtributa(Activity a, long artiklID, String filter) {
@@ -1672,20 +1657,56 @@ public class MainActivity extends AppCompatActivity
          return  myObj;
 
         }
-    public static List<App1Dokumenti> getListaDokumenta(Activity a, int vrstaAplikacije, Long filterKomitentID,String filterDatumOd,String filterDatumDo) {
+    public static List<App1Dokumenti> getListaDokumenta(Activity a, int vrstaAplikacije, Long filterKomitentID,String filterDatumOd,String filterDatumDo, Long filterPjKomitentID, int filterZakljucen) {
 
         List<App1Dokumenti> listaDokumenta=new ArrayList<App1Dokumenti>();
         String tabelaApp1 = "dokumenti1";
 
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
         Cursor c;
+        String whereUvijet="";
+        //pretvorba filteraZakljucen u boolean
+        int filterZ;
+        switch (filterZakljucen){
+            case 0:
+                //SVI
+                whereUvijet+=" AND 1 = 1";
+                break;
+            case 1:
+                //ZAKLJUČENI
+                whereUvijet+=" AND zakljucen = 1";
+                break;
+            case 2:
+                //NEZAKLJUČENI
+                whereUvijet+=" AND zakljucen = 0";
+                break;
+        }
+        if (filterPjKomitentID==0){
+
+        }else{
+            whereUvijet += " AND idPjKomitenta = " + filterPjKomitentID;
+        }
+        /*if (filterZakljucen==0){
+            if (filterPjKomitentID==0){
+                whereUvijet+=" AND 1 = 1";
+            }else{
+                whereUvijet+=" AND idPjKomitenta = " + filterPjKomitentID;
+            }
+        }else{
+            whereUvijet+=" AND zakljucen =" + filterZakljucen;
+            if (filterPjKomitentID==0){
+
+            }else{
+                whereUvijet += " AND idPjKomitenta = " + filterPjKomitentID;
+            }
+        }*/
         if ( TextUtils.isEmpty(filterDatumOd) && TextUtils.isEmpty(filterDatumDo)){
-            c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " WHERE vrstaAplikacije = " + vrstaAplikacije + " ORDER BY datumUpisa DESC", null);
+            c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " WHERE vrstaAplikacije = " + vrstaAplikacije + whereUvijet +  " ORDER BY datumUpisa DESC", null);
         }else{
             if (filterKomitentID==0){
-                c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " WHERE vrstaAplikacije = " + vrstaAplikacije + " AND datumDokumenta BETWEEN '" + filterDatumOd + "' AND '" + filterDatumDo + "' ORDER BY datumUpisa DESC", null);
+                c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " WHERE vrstaAplikacije = " + vrstaAplikacije + whereUvijet + " AND datumDokumenta BETWEEN '" + filterDatumOd + "' AND '" + filterDatumDo + "' ORDER BY datumUpisa DESC", null);
             }else{
-                c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " WHERE vrstaAplikacije = " + vrstaAplikacije + " AND idKomitent = " + filterKomitentID + " AND datumDokumenta BETWEEN '" + filterDatumOd + "' AND '" + filterDatumDo + "' ORDER BY datumUpisa DESC", null);
+                c = myDB.rawQuery("SELECT * FROM " + tabelaApp1 + " WHERE vrstaAplikacije = " + vrstaAplikacije + " AND idKomitent = " + filterKomitentID + whereUvijet + " AND datumDokumenta BETWEEN '" + filterDatumOd + "' AND '" + filterDatumDo + "' ORDER BY datumUpisa DESC", null);
             }
         }
 
@@ -1900,6 +1921,66 @@ public class MainActivity extends AppCompatActivity
         myDB.close();
 
         return listaDokumenta;
+    }
+
+    public static Komitent getKomitentByID(Activity a, long komID){
+        Komitent myKom=null;
+        String myTabela="komitenti";
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
+        Cursor c;
+        c = myDB.rawQuery("SELECT * FROM " + myTabela + " WHERE _id=" + komID + ";", null);
+        int IdIndex = c.getColumnIndex("_id");
+        int SifraIndex = c.getColumnIndex("sifra");
+        int NazivIndex = c.getColumnIndex("naziv");
+        int SaldoIndex = c.getColumnIndex("saldo");
+        int uRokuIndex = c.getColumnIndex("uroku");
+        int vanRokaIndex = c.getColumnIndex("vanroka");
+        c.moveToFirst();
+        for (int j = 0; j < c.getCount(); j++) {
+            long id;
+            String sifra, naziv;
+            double saldo, uroku, vanroka;
+
+            id = c.getLong(IdIndex);
+            sifra = c.getString(SifraIndex);
+            naziv = c.getString(NazivIndex);
+            saldo = c.getDouble(SaldoIndex);
+            uroku = c.getDouble(uRokuIndex);
+            vanroka = c.getDouble(vanRokaIndex);
+
+            myKom = new Komitent(id, naziv, sifra, saldo, uroku, vanroka);
+
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        return myKom;
+    }
+
+    public static PjKomitent getPjKomitentByID(Activity a, long pjKomID){
+        PjKomitent myPjKom=null;
+        String myTabela="komitenti";
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, MODE_PRIVATE, null);
+        Cursor c;
+        c = myDB.rawQuery("SELECT * FROM pjkomitenta where _id =" + pjKomID +";", null);
+        int IdIndex = c.getColumnIndex("_id");
+        int NazivIndex = c.getColumnIndex("naziv");
+        int ridIndex=c.getColumnIndex("rid");
+        c.moveToFirst();
+        for (int j = 0; j < c.getCount(); j++) {
+            long id,rid;
+            String  naziv;
+            id = c.getLong(IdIndex);
+            naziv = c.getString(NazivIndex);
+            rid=c.getLong(ridIndex);
+            myPjKom = new PjKomitent(id, naziv, rid);
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        return myPjKom;
     }
 
     public static TipDokumenta getTipDokumentaByID(Activity a, long idDokumenta) {
@@ -2150,7 +2231,7 @@ public class MainActivity extends AppCompatActivity
         pd.show();
 
         boolean odgovor = false;
-        List<App1Dokumenti> spisakSvihDokumenta = MainActivity.getListaDokumenta(a, vrstaAplikacije,0L, "","");
+        List<App1Dokumenti> spisakSvihDokumenta = MainActivity.getListaDokumenta(a, vrstaAplikacije,0L, "","",0L,0);
         List<App1Dokumenti> spisakDokumentaZaSync = new ArrayList<App1Dokumenti>();
         for (App1Dokumenti dok : spisakSvihDokumenta) {
             if (dok.getDatumSinkronizacije() == null) {
