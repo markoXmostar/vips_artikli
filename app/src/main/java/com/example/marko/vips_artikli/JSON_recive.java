@@ -7,6 +7,23 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.marko.vips_artikli.dataclass.App2Dokumenti;
+import com.example.marko.vips_artikli.dataclass.App2Stavke;
+import com.example.marko.vips_artikli.dataclass.Artikl;
+import com.example.marko.vips_artikli.dataclass.ArtiklAtributStanje;
+import com.example.marko.vips_artikli.dataclass.ArtiklJmj;
+import com.example.marko.vips_artikli.dataclass.AsortimanKupca;
+import com.example.marko.vips_artikli.dataclass.Barcode;
+import com.example.marko.vips_artikli.dataclass.GrupaArtikala;
+import com.example.marko.vips_artikli.dataclass.Komitent;
+import com.example.marko.vips_artikli.dataclass.NacinPlacanja;
+import com.example.marko.vips_artikli.dataclass.PjKomitent;
+import com.example.marko.vips_artikli.dataclass.PodgrupaArtikala;
+import com.example.marko.vips_artikli.dataclass.PodtipDokumenta;
+import com.example.marko.vips_artikli.dataclass.TipDokumenta;
+import com.example.marko.vips_artikli.dataclass.jmj;
+import com.example.marko.vips_artikli.glavne_aktivnosti.MainActivity;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,8 +40,7 @@ import java.util.Date;
 import java.util.Random;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.marko.vips_artikli.MainActivity.myDATABASE;
-import static com.example.marko.vips_artikli.MainActivity.zadnjaSinkronizacijaID;
+import static com.example.marko.vips_artikli.glavne_aktivnosti.MainActivity.myDATABASE;
 
 public abstract class JSON_recive extends AsyncTask<String, String, String> implements ClientIF {
 
@@ -272,7 +288,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                         jObject = new JSONObject(result);
                         String jmj = jObject.getString("Jmj");
                         JSONArray arr = new JSONArray(jmj);
-                        ArrayList<jmj> ListaJmj = new ArrayList<jmj>();
+                        ArrayList<com.example.marko.vips_artikli.dataclass.jmj> ListaJmj = new ArrayList<jmj>();
                         for (int i = 0; i < arr.length(); i++) {
                             JSONObject myJmj = arr.getJSONObject(i);
                             jmj _jmj = new jmj(myJmj.optLong("id", 0),

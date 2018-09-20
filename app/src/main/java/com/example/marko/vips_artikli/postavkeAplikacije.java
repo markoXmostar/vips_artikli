@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.example.marko.vips_artikli.glavne_aktivnosti.MainActivity;
+
 /**
  * Created by marko on 15.2.2018..
  */
