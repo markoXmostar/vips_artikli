@@ -14,8 +14,10 @@ import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.marko.vips_artikli.TipDokumentaFilter;
 import com.example.marko.vips_artikli.dataclass.Komitent;
 import com.example.marko.vips_artikli.R;
+import com.example.marko.vips_artikli.dataclass.PjKomitent;
 
 import java.util.Calendar;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package com.example.marko.vips_artikli;
+package com.example.marko.vips_artikli.glavne_aktivnosti;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -18,6 +18,10 @@ import android.support.v7.widget.SearchView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.marko.vips_artikli.R;
+import com.example.marko.vips_artikli.adapters.ListaArtiklaAdapter;
+import com.example.marko.vips_artikli.dataclass.Artikl;
 
 public class ArtikliActivity extends AppCompatActivity {
 
