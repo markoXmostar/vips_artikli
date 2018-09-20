@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -58,10 +58,11 @@
         <ImageView
             android:id="@+id/imgDokumentSinkroniziran_App2RowDokumenti"
             android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
             android:layout_weight="0.20"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/img_error" />
+            app:srcCompat="@drawable/ic_baseline_error_outline_24px" />
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
