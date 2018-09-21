@@ -112,6 +112,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                 setIzabranaJMJ(jmj);
             }
             txtKolicina.requestFocus();
+            txtKolicina.selectAll();
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         }
