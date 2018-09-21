@@ -48,7 +48,7 @@ public class JSON_send extends AsyncTask<String, String, String> {
     protected void onPreExecute() {
         progressDialog = new ProgressDialog(myActivity);
         progressDialog = new ProgressDialog(myActivity);
-        String poruka =(String) myActivity.getApplicationContext().getResources().getString(R.string.Poruka_app_molimPricekajte);
+        String poruka = myActivity.getApplicationContext().getResources().getString(R.string.Poruka_app_molimPricekajte);
         progressDialog.setMessage(poruka);
         progressDialog.setCancelable(false);
         progressDialog.show();

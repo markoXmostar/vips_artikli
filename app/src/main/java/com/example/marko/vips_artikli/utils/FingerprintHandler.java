@@ -18,9 +18,9 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
 
     // You should use the CancellationSignal method whenever your app can no longer process user input, for example when your app goes
     // into the background. If you don’t use this method, then other apps will be unable to access the touch sensor, including the lockscreen!//
-    public EditText txtPin;
-    public Button btnOK;
-    public String requiredPin;
+    private EditText txtPin;
+    private Button btnOK;
+    private String requiredPin;
     private Context context;
 
     public FingerprintHandler(Context mContext) {

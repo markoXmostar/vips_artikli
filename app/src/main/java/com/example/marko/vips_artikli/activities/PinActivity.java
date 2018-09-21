@@ -57,7 +57,7 @@ public class PinActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pin);
         requiredPin = new postavkeAplikacije(PinActivity.this).getPin();
-        txtPin = (EditText) findViewById(R.id.txtPass_pin);
+        txtPin = findViewById(R.id.txtPass_pin);
         postaviDugmice();
         Button btnOK = findViewById(R.id.btnOK_pin);
         btnOK.setOnClickListener(new View.OnClickListener() {
@@ -86,9 +86,13 @@ public class PinActivity extends AppCompatActivity {
 
             }
         });
+    }
 
-        // If you’ve set your app’s minSdkVersion to anything lower than 23, then you’ll need to verify that the device is running Marshmallow
-        // or higher before executing any fingerprint-related code
+    @Override
+    protected void onResume(){
+        super.onResume();
+        Button btnOK = findViewById(R.id.btnOK_pin);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //Get an instance of KeyguardManager and FingerprintManager//
             KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
@@ -135,6 +139,7 @@ public class PinActivity extends AppCompatActivity {
             }
         }
     }
+
     public static void fingerprintSuccessful(EditText txtPinField, Button enterButton, String pinToEnter){
         txtPinField.setText(pinToEnter);
         enterButton.callOnClick();

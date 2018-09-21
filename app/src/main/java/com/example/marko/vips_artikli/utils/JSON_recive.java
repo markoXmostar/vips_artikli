@@ -55,10 +55,10 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
     private boolean connectionGreska = false;
     private String connectionGreskaMessage = "";
 
-        private ProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
     private Activity myMainActivity;
 
-        Date vrijeme1,vrijeme2;
+    Date vrijeme1,vrijeme2;
 
     private int rbrLOG;
 
