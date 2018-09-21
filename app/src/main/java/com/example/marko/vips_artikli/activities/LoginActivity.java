@@ -6,10 +6,14 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +32,22 @@ public class LoginActivity extends AppCompatActivity {
         final EditText txtName = findViewById(R.id.txtUserName_Prijava);
         final EditText txtPass = findViewById(R.id.txtLozinka_Prijava);
 
+        CheckBox passwordVisibleCheck = findViewById(R.id.showPassword);
+
         final Button btnPrijava = findViewById(R.id.btnPrijava_Prijava);
+
+        passwordVisibleCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    // show password
+                    txtPass.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                } else {
+                    // hide password
+                    txtPass.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                }
+            }
+        });
 
         txtPass.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
