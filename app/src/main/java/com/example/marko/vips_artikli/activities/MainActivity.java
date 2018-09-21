@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         MainActivity ma=this;
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //fabUpdatePodataka = (FloatingActionButton) findViewById(R.id.fabUpdatePodataka);
@@ -110,14 +110,14 @@ public class MainActivity extends AppCompatActivity
         //fabApp2 = (FloatingActionButton) findViewById(R.id.fabApp2);
         //fabApp3 = (FloatingActionButton) findViewById(R.id.fabApp3);
 
-        btnViewLog = (Button) findViewById(R.id.btnViewLog);
-        btnApp1 = (Button) findViewById(R.id.btnApp1);
-        btnApp2 = (Button) findViewById(R.id.btnApp2);
-        btnApp3 = (Button) findViewById(R.id.btnApp3);
-        btnDownloadPodataka = (Button) findViewById(R.id.btnDownloadData);
-        btnPostavke = (Button) findViewById(R.id.btnPostavke);
+        btnViewLog = findViewById(R.id.btnViewLog);
+        btnApp1 = findViewById(R.id.btnApp1);
+        btnApp2 = findViewById(R.id.btnApp2);
+        btnApp3 = findViewById(R.id.btnApp3);
+        btnDownloadPodataka = findViewById(R.id.btnDownloadData);
+        btnPostavke = findViewById(R.id.btnPostavke);
 
-        spisakSyncTabela = new ArrayList<UrlTabele>();
+        spisakSyncTabela = new ArrayList<>();
 
 
         procitajPostavke();
