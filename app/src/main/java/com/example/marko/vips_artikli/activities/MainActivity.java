@@ -822,8 +822,8 @@ public class MainActivity extends AppCompatActivity
     private void napraviSinkronizacijuDownload(View view) {
 
 
-        Snackbar.make(view, "Radim download podataka molim pričekajte", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+        //Snackbar.make(view, "Radim download podataka molim pričekajte", Snackbar.LENGTH_LONG)
+        //        .setAction("Action", null).show();
         SQLiteDatabase myDB = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE, null);
         int rbrLOG = getZadnjiID_log("log", this);
         rbrLOG += 1;
