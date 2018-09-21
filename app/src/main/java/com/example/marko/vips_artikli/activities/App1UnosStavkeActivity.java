@@ -168,6 +168,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         txtKolicina=(EditText)findViewById(R.id.txtKolicina_App1UnosStavke);
         txtDodatniOpisArtikla=(TextView)findViewById(R.id.txtOpisArtikla_App1UnosStavke);
 
+        txtKolicina.setSelectAllOnFocus(true);
+
         postaviZadanuKolicinu();
         //txtNapomena=(EditText) findViewById(R.id.etxtNapomena_App1UnosStavke);
 
