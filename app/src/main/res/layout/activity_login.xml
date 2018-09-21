@@ -23,14 +23,16 @@
 
     <EditText
         android:id="@+id/txtLozinka_Prijava"
-        android:layout_width="304dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:autofillHints="password"
         android:ems="10"
         android:hint="Lozinka"
         android:inputType="textPassword"
+        app:layout_constraintEnd_toStartOf="@+id/showPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtUserName_Prijava" />
 
@@ -63,15 +65,12 @@
         android:id="@+id/showPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:text="Prikaži"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/txtLozinka_Prijava"
         app:layout_constraintTop_toBottomOf="@+id/txtUserName_Prijava" />
 
 </android.support.constraint.ConstraintLayout>
