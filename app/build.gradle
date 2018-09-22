@@ -1,13 +1,14 @@
 apply plugin: 'com.android.application'
-ext.supportLibraryVersion = "28.0.0-rc02"
+//ext.supportLibraryVersion = "28.0.0-rc02" fab ikona bude pre velika kad koristim build tools 28 i sdk 28
+ext.supportLibraryVersion = "27.1.1"
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 27
     buildToolsVersion '28.0.2'
     defaultConfig {
         applicationId "com.example.marko.vips_artikli"
         minSdkVersion 18
-        targetSdkVersion 28
+        targetSdkVersion 27
         versionCode 6
         versionName "0.1.6beta"
         multiDexEnabled true
