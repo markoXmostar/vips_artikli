@@ -25,19 +25,13 @@ public class App1StavkeActivity extends AppCompatActivity {
     private long IdDokumenta=0;
     private long pjKmtID = 0;
 
-    ListView listSpisakStavki;
+    private ListView listSpisakStavki;
     private FloatingActionButton fabNovaStavka;
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app1_stavke);
-
-
 
         Bundle b = getIntent().getExtras();
 
@@ -52,7 +46,7 @@ public class App1StavkeActivity extends AppCompatActivity {
             fabNovaStavka.setVisibility(View.INVISIBLE);
         }
 
-        listSpisakStavki=(ListView)findViewById(R.id.listSpisakStavki_App1);
+        listSpisakStavki = findViewById(R.id.listSpisakStavki_App1);
 
 
 
@@ -102,17 +96,14 @@ public class App1StavkeActivity extends AppCompatActivity {
         });
     }
 
-    private void ucitajStavke() {
-        ListaApp1StavkeAdapter listaStavki = new ListaApp1StavkeAdapter(this, R.layout.row_app1_stavke);
-        listSpisakStavki.setAdapter(listaStavki);
-        List<App1Stavke> lista=MainActivity.getListaStavki(IdDokumenta,App1StavkeActivity.this);
-        for (App1Stavke stavka:lista) {
-            listaStavki.add(stavka);
-        }
-    }
-
-    private void kreirajTabeluStavki() {
-        MainActivity.kreirajTabeluStavki(App1StavkeActivity.this);
+    @Override
+    public void onBackPressed() {
+        Bundle bundle = new Bundle();
+        bundle.putLong("IdDokumenta", IdDokumenta);
+        Intent mIntent = new Intent();
+        mIntent.putExtras(bundle);
+        setResult(RESULT_OK, mIntent);
+        super.onBackPressed();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -147,14 +138,17 @@ public class App1StavkeActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        Bundle bundle = new Bundle();
-        bundle.putLong("IdDokumenta", IdDokumenta);
-        Intent mIntent = new Intent();
-        mIntent.putExtras(bundle);
-        setResult(RESULT_OK, mIntent);
-        super.onBackPressed();
+    private void kreirajTabeluStavki() {
+        MainActivity.kreirajTabeluStavki(App1StavkeActivity.this);
+    }
+
+    private void ucitajStavke() {
+        ListaApp1StavkeAdapter listaStavki = new ListaApp1StavkeAdapter(this, R.layout.row_app1_stavke);
+        listSpisakStavki.setAdapter(listaStavki);
+        List<App1Stavke> lista=MainActivity.getListaStavki(IdDokumenta,App1StavkeActivity.this);
+        for (App1Stavke stavka:lista) {
+            listaStavki.add(stavka);
+        }
     }
 
 }

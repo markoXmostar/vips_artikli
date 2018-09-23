@@ -1,5 +1,7 @@
 package com.example.marko.vips_artikli.utils;
+
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
@@ -9,9 +11,8 @@ import android.os.CancellationSignal;
 import android.support.v4.app.ActivityCompat;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import com.example.marko.vips_artikli.activities.PinActivity;
 
 @TargetApi(Build.VERSION_CODES.M)
 public class FingerprintHandler extends FingerprintManager.AuthenticationCallback {
@@ -28,11 +29,11 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
     }
     //Implement the startAuth method, which is responsible for starting the fingerprint authentication process//
 
-    public void startAuth(FingerprintManager manager, FingerprintManager.CryptoObject cryptoObject, EditText txtPinPassed, Button btnOKpassed, String requiredPinpassed) {
+    public void startAuth(FingerprintManager manager, FingerprintManager.CryptoObject cryptoObject, EditText txtPinPassed, Button btnOKpassed, String requiredPinPassed) {
 
         txtPin = txtPinPassed;
         btnOK = btnOKpassed;
-        requiredPin = requiredPinpassed;
+        requiredPin = requiredPinPassed;
 
         CancellationSignal cancellationSignal = new CancellationSignal();
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
@@ -43,35 +44,32 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
 
     @Override
     //onAuthenticationError is called when a fatal error has occurred. It provides the error code and error message as its parameters//
-
     public void onAuthenticationError(int errMsgId, CharSequence errString) {
 
         //I’m going to display the results of fingerprint authentication as a series of toasts.
         //Here, I’m creating the message that’ll be displayed if an error occurs//
 
-        Toast.makeText(context, "Authentication error\n" + errString, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Authentication error\n" + errString, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-
     //onAuthenticationFailed is called when the fingerprint doesn’t match with any of the fingerprints registered on the device//
-
     public void onAuthenticationFailed() {
-        Toast.makeText(context, "Authentication failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Authentication failed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-
     //onAuthenticationHelp is called when a non-fatal error has occurred. This method provides additional information about the error,
     //so to provide the user with as much feedback as possible I’m incorporating this information into my toast//
     public void onAuthenticationHelp(int helpMsgId, CharSequence helpString) {
         Toast.makeText(context, "Authentication help\n" + helpString, Toast.LENGTH_LONG).show();
-    }@Override
+    }
 
+    @Override
     //onAuthenticationSucceeded is called when a fingerprint has been successfully matched to one of the fingerprints stored on the user’s device//
-    public void onAuthenticationSucceeded(
-            FingerprintManager.AuthenticationResult result) {
-        PinActivity.fingerprintSuccessful(txtPin, btnOK, requiredPin);
+    public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
+        txtPin.setText(requiredPin);
+        btnOK.callOnClick();
     }
 
 }

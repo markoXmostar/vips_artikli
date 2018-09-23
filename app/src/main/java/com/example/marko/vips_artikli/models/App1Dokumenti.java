@@ -25,6 +25,11 @@ public class App1Dokumenti {
     private String nacinPlacanjaNaziv;
     private boolean zakljucen;
 
+    private int vrstaAplikacije;
+    private long vipsId;
+    private String KomitentNaziv,PjKomitentNaziv,TipDokumentaNaziv,PodtipDokumentaNaziv;
+    private List<App1Stavke> spisakStavki;
+
 
     public long getIdNacinPlacanja() {
         return idNacinPlacanja;
@@ -42,8 +47,6 @@ public class App1Dokumenti {
         this.nacinPlacanjaNaziv = nacinPlacanjaNaziv;
     }
 
-    private int vrstaAplikacije;
-
     public int getVrstaAplikacije() {
         return vrstaAplikacije;
     }
@@ -51,8 +54,6 @@ public class App1Dokumenti {
     public void setVrstaAplikacije(int vrstaAplikacije) {
         this.vrstaAplikacije = vrstaAplikacije;
     }
-
-    private long vipsId;
 
     public long getVipsId() {
         return vipsId;
@@ -62,10 +63,6 @@ public class App1Dokumenti {
         this.vipsId = vipsId;
     }
 
-    private String KomitentNaziv,PjKomitentNaziv,TipDokumentaNaziv,PodtipDokumentaNaziv;
-    
-    private List<App1Stavke> spisakStavki;
-    
     public void doadajStavku(App1Stavke stavka){
         spisakStavki.add(stavka);
     }
@@ -115,6 +112,7 @@ public class App1Dokumenti {
         broj=getSpisakStavki().size();
         return broj;
     }
+
     public double getSumaStavki(){
         double suma=0d;
         for (App1Stavke stv:spisakStavki) {

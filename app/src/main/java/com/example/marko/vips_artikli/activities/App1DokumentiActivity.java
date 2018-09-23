@@ -52,125 +52,10 @@ public class App1DokumentiActivity extends AppCompatActivity {
     private String filterDatumDo;
     private int filterZakljucen;
 
+    int vrstaAplikacije = 0;
 
     private ListView listSpisakDokumenata;
     private FloatingActionButton fabNoviDokument;
-
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.app1_dokumenti_menu, menu);
-        return true;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        /*
-        if (id == R.id.drop_table_dokumenti1) {
-            MainActivity.dropTable(App1DokumentiActivity.this,tabelaApp1);
-            finish();
-            return true;
-        }
-        if (id == R.id.delete_all_dokumenti1) {
-            MainActivity.deleteAllTable(App1DokumentiActivity.this,tabelaApp1);
-            ucitajDokumente();
-            return true;
-        }
-        */
-        if (id == R.id.sinkroniziraj_dokumenti1) {
-            if (MainActivity.sendAllDokuments(App1DokumentiActivity.this, vrstaAplikacije)) {
-                ucitajDokumente();
-            }
-            return true;
-        }
-        if (id == R.id.pretragaDokument1) {
-            Intent intent=new Intent(App1DokumentiActivity.this, filterPretragaDokumenataActivity.class);
-            //intent.putExtra("idDokumenta", selektiranDok.getId());
-            intent.putExtra("datumOd", filterDatumOd);
-            intent.putExtra("datumDo", filterDatumDo);
-            intent.putExtra("komitentID", filterKomitentID);
-            intent.putExtra("komitentNaziv", filterKomitentNaziv);
-            intent.putExtra("filterPjKomitentID", filterPjKomitentID);
-            intent.putExtra("filterPjKomitentNaziv", filterPjKomitentNaziv);
-            intent.putExtra("filterZakljucen",filterZakljucen);
-
-            startActivityForResult(intent,31); //21 označava završen unos stavki
-
-            return true;
-        }
-        if (id == R.id.settingsActivity) {
-            finish();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    int vrstaAplikacije = 0;
-
-    private void setFilterPocetnePostavke(){
-
-        DateFormat dateFormat =new SimpleDateFormat(MainActivity.SqlLiteDateFormat);
-        Calendar calOd = Calendar.getInstance();
-        calOd.add(Calendar.DATE, 0);
-        int dan=calOd.get(Calendar.DAY_OF_MONTH);
-        int mjesec=calOd.get(Calendar.MONTH);
-        int godina=calOd.get(Calendar.YEAR);
-        int sat=0;
-        int min=0;
-        int sec=0;
-        filterDatumOd=MainActivity.danMjesecGodinaToSQLLiteFormatString(dan,mjesec,godina,sat,min,sec);
-
-        Calendar calDo = Calendar.getInstance();
-        calDo.add(Calendar.DATE, 0);
-        dan=calDo.get(Calendar.DAY_OF_MONTH);
-        mjesec=calDo.get(Calendar.MONTH);
-        godina=calDo.get(Calendar.YEAR);
-        sat=23;
-        min=59;
-        sec=59;
-        filterDatumDo=MainActivity.danMjesecGodinaToSQLLiteFormatString(dan,mjesec,godina,sat,min,sec);
-
-        filterKomitentID=0L;
-        filterKomitentNaziv="";
-        filterPjKomitentID=0L;
-        filterPjKomitentNaziv="";
-        filterZakljucen=0;
-
-    }
-
-    private void setFilterPostavke(String datum1,String datum2, Long komID, String komNaziv, int zakljucen, Long pjKomId, String pjKomNaziv){
-        Date datumOd=MainActivity.getDateFromMojString(datum1);
-        Date datumDo=MainActivity.getDateFromMojString(datum2);
-        Calendar calOd=Calendar.getInstance();
-        calOd.setTime(datumOd);
-        Calendar calDo=Calendar.getInstance();
-        calDo.setTime(datumDo);
-
-        int dan=calOd.get(Calendar.DAY_OF_MONTH);
-        int mjesec=calOd.get(Calendar.MONTH);
-        int godina=calOd.get(Calendar.YEAR);
-        int sat=0;
-        int min=0;
-        int sec=0;
-        filterDatumOd=MainActivity.danMjesecGodinaToSQLLiteFormatString(dan,mjesec,godina,sat,min,sec);
-
-        dan=calDo.get(Calendar.DAY_OF_MONTH);
-        mjesec=calDo.get(Calendar.MONTH);
-        godina=calDo.get(Calendar.YEAR);
-        sat=0;
-        min=0;
-        sec=0;
-        filterDatumDo=MainActivity.danMjesecGodinaToSQLLiteFormatString(dan,mjesec,godina,sat,min,sec);
-
-        filterKomitentID=komID;
-        filterKomitentNaziv=komNaziv;
-        filterPjKomitentNaziv=pjKomNaziv;
-        filterZakljucen=zakljucen;
-        filterPjKomitentID=pjKomId;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -297,36 +182,6 @@ public class App1DokumentiActivity extends AppCompatActivity {
         });
     }
 
-    private List<App1Dokumenti> getDokumentZaSyncIliPrintanje(App1Dokumenti selektiranDok) {
-        List<App1Dokumenti> spisakDokZaSync = new ArrayList<App1Dokumenti>();
-        spisakDokZaSync.add(selektiranDok);
-        selektiranDok.izbrisiSveStavke();
-        selektiranDok.setVrstaAplikacije(vrstaAplikacije);
-        List<App1Stavke> mojeStavke = MainActivity.getListaStavki(selektiranDok.getId(), App1DokumentiActivity.this);
-        for (App1Stavke stv : mojeStavke) {
-            selektiranDok.doadajStavku(stv);
-        }
-        return spisakDokZaSync;
-    }
-
-    private void doPrint(App1Dokumenti dokumentZaPrint) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
-            String jobName = "DocumentName.pdf";
-            PrintAttributes printAttrs = new PrintAttributes.Builder().
-                    setColorMode(PrintAttributes.COLOR_MODE_MONOCHROME).
-                    setMediaSize(PrintAttributes.MediaSize.ISO_A4.asPortrait()).
-                    setMinMargins(PrintAttributes.Margins.NO_MARGINS).
-                    build();
-
-            printManager.print(jobName, new MyPrintDocumentAdapter(this, dokumentZaPrint), printAttrs);
-        } else {
-            Toast.makeText(App1DokumentiActivity.this, "Nije podržano na ovome sistemu!!! (Android APIlevel > 19 - KitKat)", Toast.LENGTH_LONG).show();
-        }
-
-    }
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == 1) {
@@ -409,11 +264,165 @@ public class App1DokumentiActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (MainActivity.zadanaVrstaAplikacija == 0) {
+            super.onBackPressed();
+        } else {
+            Intent a = new Intent(Intent.ACTION_MAIN);
+            a.addCategory(Intent.CATEGORY_HOME);
+            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(a);
+        }
+
+    }
+
+    private List<App1Dokumenti> getDokumentZaSyncIliPrintanje(App1Dokumenti selektiranDok) {
+        List<App1Dokumenti> spisakDokZaSync = new ArrayList<App1Dokumenti>();
+        spisakDokZaSync.add(selektiranDok);
+        selektiranDok.izbrisiSveStavke();
+        selektiranDok.setVrstaAplikacije(vrstaAplikacije);
+        List<App1Stavke> mojeStavke = MainActivity.getListaStavki(selektiranDok.getId(), App1DokumentiActivity.this);
+        for (App1Stavke stv : mojeStavke) {
+            selektiranDok.doadajStavku(stv);
+        }
+        return spisakDokZaSync;
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.app1_dokumenti_menu, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        /*
+        if (id == R.id.drop_table_dokumenti1) {
+            MainActivity.dropTable(App1DokumentiActivity.this,tabelaApp1);
+            finish();
+            return true;
+        }
+        if (id == R.id.delete_all_dokumenti1) {
+            MainActivity.deleteAllTable(App1DokumentiActivity.this,tabelaApp1);
+            ucitajDokumente();
+            return true;
+        }
+        */
+        if (id == R.id.sinkroniziraj_dokumenti1) {
+            if (MainActivity.sendAllDokuments(App1DokumentiActivity.this, vrstaAplikacije)) {
+                ucitajDokumente();
+            }
+            return true;
+        }
+        if (id == R.id.pretragaDokument1) {
+            Intent intent=new Intent(App1DokumentiActivity.this, filterPretragaDokumenataActivity.class);
+            //intent.putExtra("idDokumenta", selektiranDok.getId());
+            intent.putExtra("datumOd", filterDatumOd);
+            intent.putExtra("datumDo", filterDatumDo);
+            intent.putExtra("komitentID", filterKomitentID);
+            intent.putExtra("komitentNaziv", filterKomitentNaziv);
+            intent.putExtra("filterPjKomitentID", filterPjKomitentID);
+            intent.putExtra("filterPjKomitentNaziv", filterPjKomitentNaziv);
+            intent.putExtra("filterZakljucen",filterZakljucen);
+
+            startActivityForResult(intent,31); //21 označava završen unos stavki
+
+            return true;
+        }
+        if (id == R.id.settingsActivity) {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void doPrint(App1Dokumenti dokumentZaPrint) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+            String jobName = "DocumentName.pdf";
+            PrintAttributes printAttrs = new PrintAttributes.Builder().
+                    setColorMode(PrintAttributes.COLOR_MODE_MONOCHROME).
+                    setMediaSize(PrintAttributes.MediaSize.ISO_A4.asPortrait()).
+                    setMinMargins(PrintAttributes.Margins.NO_MARGINS).
+                    build();
+
+            printManager.print(jobName, new MyPrintDocumentAdapter(this, dokumentZaPrint), printAttrs);
+        } else {
+            Toast.makeText(App1DokumentiActivity.this, "Nije podržano na ovome sistemu!!! (Android APIlevel > 19 - KitKat)", Toast.LENGTH_LONG).show();
+        }
+
+    }
 
     private void kreirajTabeluDokumenata() {
         MainActivity.kreirajTabeluDokumenata(App1DokumentiActivity.this);
     }
 
+    private void setFilterPocetnePostavke(){
+
+        DateFormat dateFormat =new SimpleDateFormat(MainActivity.SqlLiteDateFormat);
+        Calendar calOd = Calendar.getInstance();
+        calOd.add(Calendar.DATE, 0);
+        int dan=calOd.get(Calendar.DAY_OF_MONTH);
+        int mjesec=calOd.get(Calendar.MONTH);
+        int godina=calOd.get(Calendar.YEAR);
+        int sat=0;
+        int min=0;
+        int sec=0;
+        filterDatumOd=MainActivity.danMjesecGodinaToSQLLiteFormatString(dan,mjesec,godina,sat,min,sec);
+
+        Calendar calDo = Calendar.getInstance();
+        calDo.add(Calendar.DATE, 0);
+        dan=calDo.get(Calendar.DAY_OF_MONTH);
+        mjesec=calDo.get(Calendar.MONTH);
+        godina=calDo.get(Calendar.YEAR);
+        sat=23;
+        min=59;
+        sec=59;
+        filterDatumDo=MainActivity.danMjesecGodinaToSQLLiteFormatString(dan,mjesec,godina,sat,min,sec);
+
+        filterKomitentID=0L;
+        filterKomitentNaziv="";
+        filterPjKomitentID=0L;
+        filterPjKomitentNaziv="";
+        filterZakljucen=0;
+
+    }
+
+    private void setFilterPostavke(String datum1,String datum2, Long komID, String komNaziv, int zakljucen, Long pjKomId, String pjKomNaziv){
+        Date datumOd=MainActivity.getDateFromMojString(datum1);
+        Date datumDo=MainActivity.getDateFromMojString(datum2);
+        Calendar calOd=Calendar.getInstance();
+        calOd.setTime(datumOd);
+        Calendar calDo=Calendar.getInstance();
+        calDo.setTime(datumDo);
+
+        int dan=calOd.get(Calendar.DAY_OF_MONTH);
+        int mjesec=calOd.get(Calendar.MONTH);
+        int godina=calOd.get(Calendar.YEAR);
+        int sat=0;
+        int min=0;
+        int sec=0;
+        filterDatumOd=MainActivity.danMjesecGodinaToSQLLiteFormatString(dan,mjesec,godina,sat,min,sec);
+
+        dan=calDo.get(Calendar.DAY_OF_MONTH);
+        mjesec=calDo.get(Calendar.MONTH);
+        godina=calDo.get(Calendar.YEAR);
+        sat=0;
+        min=0;
+        sec=0;
+        filterDatumDo=MainActivity.danMjesecGodinaToSQLLiteFormatString(dan,mjesec,godina,sat,min,sec);
+
+        filterKomitentID=komID;
+        filterKomitentNaziv=komNaziv;
+        filterPjKomitentNaziv=pjKomNaziv;
+        filterZakljucen=zakljucen;
+        filterPjKomitentID=pjKomId;
+    }
 
     private void ucitajDokumente() {
         ListaApp1DokumentiAdapter listaDokumenta = new ListaApp1DokumentiAdapter(this, R.layout.row_app1_zaglavlje);
@@ -428,20 +437,6 @@ public class App1DokumentiActivity extends AppCompatActivity {
                 dok.doadajStavku(stv);
             }
         }
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        if (MainActivity.zadanaVrstaAplikacija == 0) {
-            super.onBackPressed();
-        } else {
-            Intent a = new Intent(Intent.ACTION_MAIN);
-            a.addCategory(Intent.CATEGORY_HOME);
-            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(a);
-        }
-
     }
 
 }

@@ -31,14 +31,51 @@ public class ArtikliActivity extends AppCompatActivity {
     ListView artiklListView;
     TextView NoDataText;
 
-
+    boolean asortimanKupca = false;
 
     String myFilter="";
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_artikli);
+
+        getSupportActionBar().setTitle("ARTIKLI");
+        NoDataText = findViewById(R.id.noDataText);
+        NoDataText.setVisibility(View.INVISIBLE);
+
+        artiklListView = findViewById(R.id.artikliListView);
+        artiklListView.setItemsCanFocus(false);
+
+        Bundle b = getIntent().getExtras();
+        if (b != null) {
+            varijantaForme = b.getInt("varijanta");
+            //asortimanKupca = b.getBoolean("asortimanKupca", false);
+            pjKmtID = b.getLong("pjKmtID", 0);
+        }
+
+        UcitajListuIzBaze("");
+
+        artiklListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                if (varijantaForme==0){
+
+                    Artikl selektiraniArtikl=(Artikl)adapterView.getItemAtPosition(position);
+                    Log.d(TAG, "greška1: " + selektiraniArtikl.getNaziv());
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("artikl",selektiraniArtikl);
+                    //Toast.makeText(ArtikliActivity.this,selektiraniArtikl.getImaRokTrajanja(),Toast.LENGTH_LONG).show();
+                    setResult(ArtikliActivity.this.RESULT_OK,returnIntent);
+                    finish();
+                }
+            }
+        });
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_artikli_menu, menu);
-
 
         MenuItem searchItem = menu.findItem(R.id.artikli_pretraga);
         SearchView searchView = (SearchView) searchItem.getActionView();
@@ -95,49 +132,6 @@ public class ArtikliActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    boolean asortimanKupca = false;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_artikli);
-        getSupportActionBar().setTitle("ARTIKLI");
-        NoDataText = findViewById(R.id.noDataText);
-        NoDataText.setVisibility(View.INVISIBLE);
-
-        artiklListView = findViewById(R.id.artikliListView);
-        artiklListView.setItemsCanFocus(false);
-
-        Bundle b = getIntent().getExtras();
-        if (b != null) {
-            varijantaForme = b.getInt("varijanta");
-            //asortimanKupca = b.getBoolean("asortimanKupca", false);
-            pjKmtID = b.getLong("pjKmtID", 0);
-        }
-
-
-        UcitajListuIzBaze("");
-
-        artiklListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                if (varijantaForme==0){
-
-                    Artikl selektiraniArtikl=(Artikl)adapterView.getItemAtPosition(position);
-                    Log.d(TAG, "greška1: " + selektiraniArtikl.getNaziv());
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra("artikl",selektiraniArtikl);
-                    //Toast.makeText(ArtikliActivity.this,selektiraniArtikl.getImaRokTrajanja(),Toast.LENGTH_LONG).show();
-                    setResult(ArtikliActivity.this.RESULT_OK,returnIntent);
-                    finish();
-
-
-                }
-            }
-        });
-    }
-
 
     private void UcitajListuIzBaze(String filter){
 

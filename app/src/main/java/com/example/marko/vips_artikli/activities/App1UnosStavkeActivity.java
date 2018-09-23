@@ -38,7 +38,6 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
     2-Kamera, čitanje barcoda
      */
 
-
     //private BarcodeReader barcodeReader;
 
     TextView txtArtikl;

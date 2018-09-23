@@ -3,6 +3,7 @@ package com.example.marko.vips_artikli.activities;
 import android.Manifest;
 import android.app.Activity;
 import android.app.KeyguardManager;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
@@ -65,8 +66,8 @@ public class PinActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String pin = txtPin.getText().toString();
                 postavkeAplikacije myPOstavke = new postavkeAplikacije(PinActivity.this);
-                Log.d(TAG, "onClick: UPSIAN JE PIN=" + pin);
-                Log.d(TAG, "onClick: TREBA BITI PIN=" + myPOstavke.getPin());
+                //Log.d(TAG, "onClick: UPSIAN JE PIN=" + pin);
+                //Log.d(TAG, "onClick: TREBA BITI PIN=" + myPOstavke.getPin());
                 if (pin.equals(myPOstavke.getPin())) {
                     Intent returnIntent = new Intent();
                     setResult(Activity.RESULT_OK, returnIntent);
@@ -74,7 +75,7 @@ public class PinActivity extends AppCompatActivity {
 
                 } else {
                     brojPokusaja += 1;
-                    TextView txtBrojPokusaja = (TextView) findViewById(R.id.txtBrojPokusaja);
+                    TextView txtBrojPokusaja = findViewById(R.id.txtBrojPokusaja);
                     txtPin.setText("");
                     if (brojPokusaja > 3) {
                         Intent returnIntent = new Intent();
@@ -138,11 +139,6 @@ public class PinActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    public static void fingerprintSuccessful(EditText txtPinField, Button enterButton, String pinToEnter){
-        txtPinField.setText(pinToEnter);
-        enterButton.callOnClick();
     }
 
     private void postaviDugmice() {
@@ -280,7 +276,6 @@ public class PinActivity extends AppCompatActivity {
         }
     }
 
-    //Create a new method that we’ll use to initialize our cipher//
     @RequiresApi(api = Build.VERSION_CODES.M)
     public boolean initCipher() {
         try {
