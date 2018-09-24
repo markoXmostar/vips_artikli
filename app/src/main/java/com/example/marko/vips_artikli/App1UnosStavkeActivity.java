@@ -10,6 +10,7 @@ import android.media.ToneGenerator;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.KeyEvent;
@@ -46,6 +47,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
     TextView txtJmj;
     EditText txtKolicina;
     TextView txtDodatniOpisArtikla;
+    EditText txtNapomena;
+
     //EditText txtNapomena;
     myEditTextNoKeyboard txtBarcode;
     TextView tvBarcode;
@@ -168,6 +171,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         txtJmj=(TextView)findViewById(R.id.txtJmj_App1UnosStavke);
         txtKolicina=(EditText)findViewById(R.id.txtKolicina_App1UnosStavke);
         txtDodatniOpisArtikla=(TextView)findViewById(R.id.txtOpisArtikla_App1UnosStavke);
+        txtNapomena=(EditText)findViewById(R.id.txtNapomena_App1UnosStavke);
 
         postaviZadanuKolicinu();
         //txtNapomena=(EditText) findViewById(R.id.etxtNapomena_App1UnosStavke);
@@ -459,6 +463,10 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                     "");
         } else {
             Log.d(TAG, "onClick: IMA ROK TRAJANJA FALSE");
+            String myNapomena=txtNapomena.getText().toString();
+            if (TextUtils.isEmpty(myNapomena)){
+                myNapomena="";
+            }
             newStavka = new App1Stavke(-1, idDokumenta,
                     izabraniArtikl.getId(),
                     izabraniArtikl.getNaziv(),
@@ -471,8 +479,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                     myKolicina,
                     izabraniArtikl.getVpc(),
                     izabraniArtikl.getMpc(),
-                    //txtNapomena.getText().toString());
-                    "");
+                    myNapomena);
         }
         if (unosStavke == 0) {
             //za aplikaciju 1
@@ -483,6 +490,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                 recreate();
                 postaviZadanuKolicinu();
                 txtBarcode.setText("");
+                txtNapomena.setText("");
                 txtBarcode.requestFocus();
 
             } else {

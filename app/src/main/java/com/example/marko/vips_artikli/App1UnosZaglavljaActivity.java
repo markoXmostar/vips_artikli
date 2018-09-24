@@ -34,6 +34,10 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
 
     private Komitent izabraniKomitent;
 
+    private int akcija=0;//defoltno novi akcije kao u vips-u
+    private long dokumentID=0;
+    private String napomena="";
+
 
     public Komitent getIzabraniKomitent() {
         return izabraniKomitent;
@@ -166,6 +170,9 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
 
         Bundle b = getIntent().getExtras();
         vrstaAplikacije = b.getInt("vrstaAplikacije", 1);
+        akcija=b.getInt("akcija",0);
+        dokumentID=b.getLong("dokumentID",0);
+        napomena=b.getString("napomena","");
 
         if (vrstaAplikacije != 3) {
             txtSaldoKupca.setVisibility(View.GONE);
@@ -198,13 +205,43 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
             setIzabranPodtip(podtipDokumenta);
         }
 
-        kalendar=Calendar.getInstance();
-        dan=kalendar.get(Calendar.DAY_OF_MONTH);
-        mjesec=kalendar.get(Calendar.MONTH);
-        godina=kalendar.get(Calendar.YEAR);
-        izabraniDatum=MainActivity.danMjesecGodinaToFormatString(dan,mjesec,godina);
-        txtDatumDokumenta.setText(izabraniDatum);
+        if (akcija==0){
+            kalendar=Calendar.getInstance();
+            dan=kalendar.get(Calendar.DAY_OF_MONTH);
+            mjesec=kalendar.get(Calendar.MONTH);
+            godina=kalendar.get(Calendar.YEAR);
+            izabraniDatum=MainActivity.danMjesecGodinaToFormatString(dan,mjesec,godina);
+            txtDatumDokumenta.setText(izabraniDatum);
+        }
 
+
+        //ovdje za izmejnu se upisuju podaci
+        if (akcija==1){
+            //izmjena
+            App1Dokumenti izabraniDokument=MainActivity.getDokumentApp1_ByID(this,dokumentID);
+
+            kalendar=Calendar.getInstance();
+            kalendar.setTime(izabraniDokument.getDatumDokumenta());
+            dan=kalendar.get(Calendar.DAY_OF_MONTH);
+            mjesec=kalendar.get(Calendar.MONTH);
+            godina=kalendar.get(Calendar.YEAR);
+            izabraniDatum=MainActivity.danMjesecGodinaToFormatString(dan,mjesec,godina);
+            txtDatumDokumenta.setText(izabraniDatum);
+            etxtNapomena.setText(napomena);
+
+            Komitent myKom=MainActivity.getKomitentByID(this,izabraniDokument.getIdKomitent());
+            setIzabraniKomitent(myKom);
+
+            PjKomitent myPjKom=MainActivity.getPjKomitentByID(this,izabraniDokument.getIdPjKomitenta());
+            setIzabranaPJKomitenta(myPjKom);
+
+            TipDokumenta myTip=MainActivity.getTipDokumentaByID(this,izabraniDokument.getIdTip());
+            setIzabraniTiP(myTip);
+
+            PodtipDokumenta myPodtip=MainActivity.getPodtipDokumentaByID(this,izabraniDokument.getIdPodtip());
+            setIzabranPodtip(myPodtip);
+
+        }
         txtDatumDokumenta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -277,6 +314,8 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
 
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("vrstaAplikacije", vrstaAplikacije);
+                returnIntent.putExtra("akcija", akcija);
+                returnIntent.putExtra("dokumentID", dokumentID);
                 returnIntent.putExtra("idKomitenta",getIzabraniKomitent().getId());
                 returnIntent.putExtra("idPjKomitenta",getIzabranaPJKomitenta().getId());
                 returnIntent.putExtra("idTipDokumenta",getIzabraniTiP().getId());

@@ -96,10 +96,15 @@ public class ListaApp1DokumentiAdapter extends ArrayAdapter{
 
         layoutHandler.PodtipDokumenta.setText(myObject.getTipDokumentaNaziv() + " / " + myObject.getPodtipDokumentaNaziv());
         if (myObject.getDatumSinkronizacije()==null){
-            layoutHandler.Slika.setImageResource(R.drawable.img_error);
+            if (myObject.isZakljucen()){
+                layoutHandler.Slika.setImageResource(R.drawable.img_dokument_zut);
+            }else {
+                layoutHandler.Slika.setImageResource(R.drawable.img_dokument_crven);
+            }
+
         }
         else{
-            layoutHandler.Slika.setImageResource(R.drawable.img_ok);
+            layoutHandler.Slika.setImageResource(R.drawable.img_dokument_zelen);
         }
         return row;
 

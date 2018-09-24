@@ -14,7 +14,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginRight="8dp"
         android:clickable="true"
-        android:src="@drawable/dodaj"
+        android:src="@drawable/dodaj_novi"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
