@@ -103,12 +103,12 @@ public class App1Dokumenti {
         this.nacinPlacanjaNaziv = nacinPlacanjaNAziv;
         this.zakljucen=zakljucen;
 
-        spisakStavki=new ArrayList<App1Stavke>();
+        spisakStavki=new ArrayList<>();
         
     }
 
     public int getBrojStavki(){
-        int broj=0;
+        int broj;
         broj=getSpisakStavki().size();
         return broj;
     }

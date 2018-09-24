@@ -5,6 +5,6 @@ package com.example.marko.vips_artikli.utils;
  */
 public interface ClientIF {
 
-    public void onResponseReceived(int result);
+    void onResponseReceived(int result);
 
 }

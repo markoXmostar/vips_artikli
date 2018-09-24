@@ -6,7 +6,7 @@ public enum TipDokumentaFilter{
     Nezakljucen("Nezaključeni");
 
     private String friendlyName;
-    private TipDokumentaFilter(String friendlyName) {
+    TipDokumentaFilter(String friendlyName) {
         this.friendlyName = friendlyName;
     }
     @Override
