@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -48,6 +49,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
     EditText txtKolicina;
     TextView txtDodatniOpisArtikla;
     EditText txtNapomena;
+
+    //TODO Vidit da li nakon unosa količine pri enteru odmah zaključuje artikl ili prelazi u napomenu
 
     //EditText txtNapomena;
     myEditTextNoKeyboard txtBarcode;
@@ -110,11 +113,13 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
 
             } else {
                 txtJmj.setEnabled(false);
-                ArtiklJmj jmj = (ArtiklJmj) spisakJMJ.get(0);
+                ArtiklJmj jmj = spisakJMJ.get(0);
                 setIzabranaJMJ(jmj);
             }
+
             txtKolicina.requestFocus();
             txtKolicina.selectAll();
+
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         }
