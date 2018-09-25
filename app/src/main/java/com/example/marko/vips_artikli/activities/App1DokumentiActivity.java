@@ -81,6 +81,8 @@ public class App1DokumentiActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(App1DokumentiActivity.this, App1UnosZaglavljaActivity.class);
                 intent.putExtra("vrstaAplikacije", vrstaAplikacije);
+                intent.putExtra("akcija", 0);
+                intent.putExtra("dokumentID", 0);
                 startActivityForResult(intent,1);
             }
         });
@@ -119,12 +121,12 @@ public class App1DokumentiActivity extends AppCompatActivity {
                 }
                 if (selektiranDok.getDatumSinkronizacije() == null) {
                     if (selektiranDok.isZakljucen()){
-                        akcije = new CharSequence[]{"Izbriši dokument!", zakljucenString, "Sinkroniziraj", "Ispis / detalji dokumenta"};
+                        akcije = new CharSequence[]{"Izbriši dokument!","Izmijeni dokument", zakljucenString, "Sinkroniziraj", "Ispis / detalji dokumenta"};
                     }else{
-                        akcije = new CharSequence[]{"Izbriši dokument!", zakljucenString,  "Ispis / detalji dokumenta"};
+                        akcije = new CharSequence[]{"Izbriši dokument!","Izmijeni dokument", zakljucenString,  "Ispis / detalji dokumenta"};
                     }
                 } else {
-                    akcije = new CharSequence[]{"Izbriši dokument!", zakljucenString,  "Ispis / detalji dokumenta"};
+                    akcije = new CharSequence[]{"Izbriši dokument!","Izmijeni dokument", zakljucenString,  "Ispis / detalji dokumenta"};
                 }
 
                 //final CharSequence akcije[] = new CharSequence[] {"Izbriši", "Sinkroniziraj", "Prikaži detalje"};
@@ -138,6 +140,14 @@ public class App1DokumentiActivity extends AppCompatActivity {
                             case "Izbriši dokument!":
                                 MainActivity.izbrisiRedakIzTabele(App1DokumentiActivity.this,tabelaApp1,"_id", selektiranDok.getId());
                                 ucitajDokumente();
+                                break;
+                            case "Izmijeni dokument":
+                                Intent intent = new Intent(App1DokumentiActivity.this, App1UnosZaglavljaActivity.class);
+                                intent.putExtra("vrstaAplikacije", vrstaAplikacije);
+                                intent.putExtra("akcija", 1);
+                                intent.putExtra("dokumentID", selektiranDok.getId());
+                                intent.putExtra("napomena", selektiranDok.getNapomena());
+                                startActivityForResult(intent,1);
                                 break;
                             case "ZAKLJUČI":
                             case "OTKLJUČAJ":
@@ -194,6 +204,9 @@ public class App1DokumentiActivity extends AppCompatActivity {
                 long idPodtipDokumenta = data.getLongExtra("idPodtipDokumenta", -1);
                 long idVrstaPlacanja = data.getLongExtra("idVrstaPlacanja", -1);
                 String datumDokumenta=data.getStringExtra("datumDokumenta");
+                long myDokumentID=data.getLongExtra("dokumentID",0);
+                int akcija=data.getIntExtra("akcija",0);
+
                 SimpleDateFormat dateFormat = new SimpleDateFormat(DatumFormat);
 
 
@@ -225,10 +238,28 @@ public class App1DokumentiActivity extends AppCompatActivity {
                 SQLiteDatabase myDB = null;
                 Log.d(TAG, "Otvaram bazu");
                 myDB = openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
-                myDB.execSQL("INSERT INTO " + tabelaApp1 +" (idTip, TipDokumentaNaziv, idPodtip, PodipDokumentaNaziv, idKomitent, KomitentNaziv, idPjKomitenta, PjKomitentaNaziv, " +
-                        "idVrstaPlacanja, VrstaPlacanjaNaziv, datumDokumenta, vrstaAplikacije , napomena) VALUES (" +
-                        idTipDokumenta + ",'" + nazivTipDokumenta + "', " + idPodtipDokumenta + ",'" + nazivPodtipDokumenta + "', " + IdKomitenta + ",'" + nazivKomitenta + "', " +
-                        IdPjKomitenta + ",'" + nazivPjKomitenta + "'," + idVrstaPlacanja + ",'" + nazivVrstaPlacanja + "','" + SQLDatum + "'," + vrstaAplikacije + ",'" + napomena + "');");
+                if (akcija==0){
+                    myDB.execSQL("INSERT INTO " + tabelaApp1 +" (idTip, TipDokumentaNaziv, idPodtip, PodipDokumentaNaziv, idKomitent, KomitentNaziv, idPjKomitenta, PjKomitentaNaziv, " +
+                            "idVrstaPlacanja, VrstaPlacanjaNaziv, datumDokumenta, vrstaAplikacije , napomena) VALUES (" +
+                            idTipDokumenta + ",'" + nazivTipDokumenta + "', " + idPodtipDokumenta + ",'" + nazivPodtipDokumenta + "', " + IdKomitenta + ",'" + nazivKomitenta + "', " +
+                            IdPjKomitenta + ",'" + nazivPjKomitenta + "'," + idVrstaPlacanja + ",'" + nazivVrstaPlacanja + "','" + SQLDatum + "'," + vrstaAplikacije + ",'" + napomena + "');");
+                }else{
+                    myDB.execSQL("UPDATE " + tabelaApp1 +" SET idTip=" + idTipDokumenta + ","
+                                                                +" TipDokumentaNaziv='" + nazivTipDokumenta +"',"
+                                                                +" idPodtip="+ idPodtipDokumenta +","
+                                                                +" PodipDokumentaNaziv='"+ nazivPodtipDokumenta+"',"
+                                                                +" idKomitent=" + IdKomitenta +","
+                                                                +" KomitentNaziv='"+ nazivKomitenta+"',"
+                                                                +" idPjKomitenta=" + IdPjKomitenta +","
+                                                                +" PjKomitentaNaziv='" + nazivPjKomitenta + "',"
+                                                                +" idVrstaPlacanja=" + idVrstaPlacanja + ","
+                                                                +" VrstaPlacanjaNaziv='" + nazivVrstaPlacanja + "',"
+                                                                +" datumDokumenta= '" +SQLDatum + "',"
+                                                                +" vrstaAplikacije=" + vrstaAplikacije + ","
+                                                                +" napomena='" + napomena +"'"
+                                                                +" WHERE _id=" + myDokumentID + ";");
+                }
+
                 myDB.close();
                 ucitajDokumente();
 

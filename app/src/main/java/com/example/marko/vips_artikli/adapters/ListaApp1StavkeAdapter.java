@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,7 +91,11 @@ public class ListaApp1StavkeAdapter extends ArrayAdapter {
         layoutHandler.Jmj.setText(myObject.getJmjNaziv());
         layoutHandler.Kolicina.setText(Double.toString(myObject.getKolicina()));
         String formatString=MainActivity.formatDecimalbyPostavke();
-        String ostaliPodaci="VPC = " + String.format(formatString,myObject.getVpc()) + "KM / MPC = " + String.format(formatString,myObject.getMpc()) +"KM";
+        String ostaliPodaci="VPC = " + String.format(formatString,myObject.getVpc()) + "KM / MPC = " + String.format(formatString,myObject.getMpc()) +"KM" ;
+        String napomena=myObject.getNapomena();
+        if (!TextUtils.isEmpty(napomena)){
+            ostaliPodaci+="\r\n" + "NAPOMENA : " + napomena;
+        }
         layoutHandler.OstaliPodaci.setText(ostaliPodaci);
 
         if (myObject.isImaAtribut()){

@@ -725,7 +725,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
             for (int i = 0; i < Lista.size(); i++) {
                 Artikl myArt = Lista.get(i);
                 if (myArt.getVpc()==0 && myArt.getMpc()==0){
-                    
+
                     //ovo mi treba za simulaciju cijena poslije izbriši
                     /*
                     Random r = new Random();
