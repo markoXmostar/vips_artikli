@@ -1,5 +1,6 @@
 package com.example.marko.vips_artikli.activities;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -8,16 +9,19 @@ import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.marko.vips_artikli.models.App1Stavke;
 import com.example.marko.vips_artikli.models.Artikl;
@@ -60,6 +64,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
     //ToggleButton tbtnAsortimanKupca;
 
     private Artikl izabraniArtikl;
+
+    private Menu myMenu;
 
     List<ArtiklJmj> spisakJMJ = null;
 
@@ -162,6 +168,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             txtKolicina.setText(Float.toString(myPostavke.getDefoltnaKolicina()));
         }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -183,6 +190,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         txtNapomena=(EditText)findViewById(R.id.txtNapomena_App1UnosStavke);
 
         txtKolicina.setSelectAllOnFocus(true);
+
+        ActionBar actionbar = getActionBar();
 
         postaviZadanuKolicinu();
         //txtNapomena=(EditText) findViewById(R.id.etxtNapomena_App1UnosStavke);
@@ -397,7 +406,26 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        myMenu = menu;
+        return true;
+    }
 
+    private Menu getMenu() {
+        return myMenu;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_ok_button:
+                btnOk.callOnClick();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     /*
         private void svirajUpozorenje() {
             if(myPostavke.isSvirajUpozorenja()){
@@ -531,6 +559,9 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             if(resultCode == Activity.RESULT_OK){
                 Artikl myArtikl = (Artikl) data.getSerializableExtra("artikl");
                 setIzabraniArtikl(myArtikl);
+
+                MenuInflater inflater = getMenuInflater();
+                inflater.inflate(R.menu.unos_stavke, getMenu());
             }
             if (resultCode == Activity.RESULT_CANCELED) {
 

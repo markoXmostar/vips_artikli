@@ -7,6 +7,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -35,6 +38,8 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
     Spinner spinVrstaPlacanja;
     EditText etxtNapomena;
     Button btnOk,btnCancel;
+
+    private Menu myMenu;
 
     Calendar kalendar;
     int dan,mjesec,godina;
@@ -367,6 +372,9 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
                 Komitent myKomitent = (Komitent) data.getSerializableExtra("komitent");
                 setIzabraniKomitent(myKomitent);
 
+                MenuInflater inflater = getMenuInflater();
+                inflater.inflate(R.menu.unos_stavke, getMenu());
+
             }
             if (resultCode == Activity.RESULT_CANCELED) {
 
@@ -426,6 +434,27 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
             }
         }
     }//onActivityResult
+
+    private Menu getMenu() {
+        return myMenu;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        myMenu=menu;
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_ok_button:
+                btnOk.callOnClick();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 
 }
