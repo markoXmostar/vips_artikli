@@ -1,4 +1,4 @@
-package com.example.marko.vips_artikli.activities;
+﻿package com.example.marko.vips_artikli.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;

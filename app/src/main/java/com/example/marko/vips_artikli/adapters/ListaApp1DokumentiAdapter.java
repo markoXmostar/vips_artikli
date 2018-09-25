@@ -1,4 +1,4 @@
-package com.example.marko.vips_artikli.adapters;
+﻿package com.example.marko.vips_artikli.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -97,13 +97,17 @@ public class ListaApp1DokumentiAdapter extends ArrayAdapter{
         layoutHandler.PjKomitenta.setText(myObject.getKomitentNaziv() + " / " + myObject.getPjKomitentNaziv() + " / " +myObject.getNacinPlacanjaNaziv());
 
         layoutHandler.PodtipDokumenta.setText(myObject.getTipDokumentaNaziv() + " / " + myObject.getPodtipDokumentaNaziv());
-        if (myObject.getDatumSinkronizacije()==null){
-            layoutHandler.Slika.setImageResource(R.drawable.ic_baseline_error_outline_24px);
+                if (myObject.getDatumSinkronizacije()==null){
+            if (myObject.isZakljucen()){
+                layoutHandler.Slika.setImageResource(R.drawable.img_dokument_zut);
+            }else {
+                layoutHandler.Slika.setImageResource(R.drawable.img_dokument_crven);
+            }
+
         }
         else{
-            layoutHandler.Slika.setImageResource(R.drawable.ic_baseline_check_circle_outline_24px);
+            layoutHandler.Slika.setImageResource(R.drawable.img_dokument_zelen);
         }
         return row;
-
     }
 }
