@@ -4,7 +4,7 @@ ext.supportLibraryVersion = "27.1.1"
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '28.0.2'
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.example.marko.vips_artikli"
         minSdkVersion 18
