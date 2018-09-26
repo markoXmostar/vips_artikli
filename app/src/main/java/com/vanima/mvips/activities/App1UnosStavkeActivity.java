@@ -138,6 +138,9 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         }
         else{
             txtRokTrajanja.setText(izabraniAtribut.toString());
+            if(izabraniArtikl.isImaRokTrajanja()){
+                txtRokTrajanja.setText(txtRokTrajanja.getText()+"...");
+            }
         }
     }
 
