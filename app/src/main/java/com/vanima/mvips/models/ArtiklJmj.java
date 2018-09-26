@@ -7,17 +7,27 @@ package com.vanima.mvips.models;
 public class ArtiklJmj {
     private long ArtiklID;
     private long JmjID;
+    private double odnos;
     private String nazivJMJ;
 
 
     private String nazivArtikla;
 
-    public ArtiklJmj(long artiklID, long jmjID, String nazivArt, String nazivJM) {
+    public ArtiklJmj(long artiklID, long jmjID, String nazivArt, String nazivJM, double odnos) {
         ArtiklID = artiklID;
         JmjID = jmjID;
         nazivArtikla = nazivArt;
         nazivJMJ = nazivJM;
+        this.odnos=odnos;
 
+    }
+
+    public double getOdnos() {
+        return odnos;
+    }
+
+    public void setOdnos(double odnos) {
+        this.odnos = odnos;
     }
 
     public long getArtiklID() {

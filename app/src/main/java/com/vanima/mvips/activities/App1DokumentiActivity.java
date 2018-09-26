@@ -123,10 +123,15 @@ public class App1DokumentiActivity extends AppCompatActivity {
                     if (selektiranDok.isZakljucen()){
                         akcije = new CharSequence[]{"Izbriši dokument!","Izmijeni dokument", zakljucenString, "Sinkroniziraj", "Ispis / detalji dokumenta"};
                     }else{
-                        akcije = new CharSequence[]{"Izbriši dokument!","Izmijeni dokument", zakljucenString,  "Ispis / detalji dokumenta"};
+                        if (selektiranDok.getBrojStavki()==0){
+                            akcije = new CharSequence[]{"Izbriši dokument!","Izmijeni dokument",   "Ispis / detalji dokumenta"};
+                        }else{
+                            akcije = new CharSequence[]{"Izbriši dokument!","Izmijeni dokument", zakljucenString,  "Ispis / detalji dokumenta"};
+                        }
                     }
                 } else {
-                    akcije = new CharSequence[]{"Izbriši dokument!","Izmijeni dokument", zakljucenString,  "Ispis / detalji dokumenta"};
+                    //akcije = new CharSequence[]{"Izbriši dokument!","Izmijeni dokument", zakljucenString,  "Ispis / detalji dokumenta"};
+                    akcije = new CharSequence[]{"Izbriši dokument!", "Ispis / detalji dokumenta"};
                 }
 
                 //final CharSequence akcije[] = new CharSequence[] {"Izbriši", "Sinkroniziraj", "Prikaži detalje"};

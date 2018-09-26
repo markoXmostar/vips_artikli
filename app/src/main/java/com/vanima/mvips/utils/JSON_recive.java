@@ -239,7 +239,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                         for (int i = 0; i < arr.length(); i++) {
                             JSONObject myJmj = arr.getJSONObject(i);
                             ArtiklJmj _artJmj = new ArtiklJmj(myJmj.optLong("artiklId", 0),
-                                    myJmj.optLong("jmjId", 0), "", "");
+                                    myJmj.optLong("jmjId", 0), "", "", myJmj.optDouble("odnos",0));
                             ListaArtiklJmj.add(_artJmj);
                         }
                         Log.d(TAG, "onPostExecute: BROJ ArtiklJmjID=" + ListaArtiklJmj.size());
@@ -949,6 +949,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
             Log.d(TAG, "Kreiram tabelu");
             myDB.execSQL("CREATE TABLE IF NOT EXISTS " + myTabela + " (" +
                     "artiklId long, " +
+                    "odnos decimal, " +
                     "jmjId long);");
 
             Log.d(TAG, "Brišem sve iz tabele");
@@ -956,9 +957,9 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
             myDB.execSQL("DELETE FROM " + myTabela + ";");
             for (int i = 0; i < Lista.size(); i++) {
                 ArtiklJmj object = Lista.get(i);
-                myDB.execSQL("INSERT INTO " + myTabela + " (artiklId, jmjId ) VALUES (" +
+                myDB.execSQL("INSERT INTO " + myTabela + " (artiklId, jmjId, odnos ) VALUES (" +
                         Long.toString(object.getArtiklID()) + "," +
-                        Long.toString(object.getJmjID())+ ");");
+                        Long.toString(object.getJmjID())+ "," + object.getOdnos() + ");");
 
             }
             Log.d(TAG, "Gotovo ");

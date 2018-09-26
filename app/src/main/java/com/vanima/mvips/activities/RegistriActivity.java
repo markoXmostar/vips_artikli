@@ -353,7 +353,7 @@ public class RegistriActivity extends AppCompatActivity implements AdapterView.O
         if (!PostaviVidljivostElemenata(myTabela)){
             return;
         }
-        ListaArtiklJmjAdapter listaArtiklJmjAdapter = new ListaArtiklJmjAdapter(this, R.layout.row_jmj);
+        ListaArtiklJmjAdapter listaArtiklJmjAdapter = new ListaArtiklJmjAdapter(this, R.layout.row_grupa);
         mojListView.setAdapter(listaArtiklJmjAdapter);
 
         List<ArtiklJmj> mojaLista = MainActivity.getListaArtiklJMJ(this, -1, "");

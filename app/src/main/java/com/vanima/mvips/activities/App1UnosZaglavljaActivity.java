@@ -25,6 +25,7 @@ import com.vanima.mvips.models.PjKomitent;
 import com.vanima.mvips.models.PodtipDokumenta;
 import com.vanima.mvips.R;
 import com.vanima.mvips.models.TipDokumenta;
+import com.vanima.mvips.utils.TipDokumentaFilter;
 import com.vanima.mvips.utils.postavkeAplikacije;
 
 import java.util.Calendar;
@@ -198,7 +199,9 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
             for (NacinPlacanja podtip : MainActivity.getListaNacinaPlacanja(App1UnosZaglavljaActivity.this, "")) {
                 nacinPlacanjaArrayAdapter.add(podtip);
             }
-            nacinPlacanjaArrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_mydialog);
+
+
+            nacinPlacanjaArrayAdapter.setDropDownViewResource(R.layout.moj_spinner_za_izbor);
             spinVrstaPlacanja.setAdapter(nacinPlacanjaArrayAdapter);
 
         }
@@ -242,6 +245,11 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
             izabraniDatum=MainActivity.danMjesecGodinaToFormatString(dan,mjesec,godina);
             txtDatumDokumenta.setText(izabraniDatum);
             etxtNapomena.setText(napomena);
+            for (int i=0;i<spinVrstaPlacanja.getCount();i++){
+                if (spinVrstaPlacanja.getItemAtPosition(i).toString().equalsIgnoreCase(izabraniDokument.getNacinPlacanjaNaziv())){
+                    spinVrstaPlacanja.setSelection(i);
+                }
+            }
 
             Komitent myKom=MainActivity.getKomitentByID(this,izabraniDokument.getIdKomitent());
             setIzabraniKomitent(myKom);
