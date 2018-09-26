@@ -116,6 +116,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                     }
                 }
 
+
             } else {
                 txtJmj.setEnabled(false);
                 ArtiklJmj jmj = spisakJMJ.get(0);
@@ -137,6 +138,9 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         }
         else{
             txtRokTrajanja.setText(izabraniAtribut.toString());
+            if(izabraniArtikl.isImaRokTrajanja()){
+                txtRokTrajanja.setText(txtRokTrajanja.getText()+"...");
+            }
         }
     }
 
@@ -151,6 +155,9 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             txtJmj.setText(getString(R.string.Izaberi));
         } else {
             txtJmj.setText(izabranaJMJ.toString());
+            if (spisakJMJ.size() > 1){
+                txtJmj.setText(txtJmj.getText()+"...");
+            }
         }
     }
 
@@ -482,14 +489,25 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             return;
         }
 
+        //prepravak jmj na defoltnu
+        List<ArtiklJmj> myArtList =MainActivity.getListaArtiklJMJ(this,izabraniArtikl.getId(),"");
+
+        double odnos=izabranaJMJ.getOdnos();
+        Long defJmjId=izabraniArtikl.getJmjId();
+        String defJmjNaziv=izabraniArtikl.getJmjNaziv();
+        myKolicina=odnos*myKolicina;
 
         if (izabraniArtikl.isImaRokTrajanja()) {
             Log.d(TAG, "onClick: IMA ROK TRAJANJA TRUE");
+
+
             newStavka = new App1Stavke(-1, idDokumenta,
                     izabraniArtikl.getId(),
                     izabraniArtikl.getNaziv(),
-                    izabranaJMJ.getJmjID(),
-                    izabranaJMJ.getNazivJMJ(),
+                    //izabranaJMJ.getJmjID(),
+                    //izabranaJMJ.getNazivJMJ(),
+                    defJmjId,
+                    defJmjNaziv,
                     izabraniArtikl.isImaRokTrajanja(),
                     izabraniAtribut.getAtributId1(),
                     izabraniAtribut.getAtributNaziv1(),
@@ -508,8 +526,10 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             newStavka = new App1Stavke(-1, idDokumenta,
                     izabraniArtikl.getId(),
                     izabraniArtikl.getNaziv(),
-                    izabranaJMJ.getJmjID(),
-                    izabranaJMJ.getNazivJMJ(),
+                    //izabranaJMJ.getJmjID(),
+                    //izabranaJMJ.getNazivJMJ(),
+                    defJmjId,
+                    defJmjNaziv,
                     izabraniArtikl.isImaRokTrajanja(),
                     -1,
                     null,

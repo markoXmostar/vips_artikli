@@ -26,7 +26,7 @@ public class ListaArtiklJmjAdapter extends ArrayAdapter {
         super(context, resource);
     }
     static class LayoutHandler {
-        TextView artiklID, jmjID;
+        TextView artiklID, jmjID, odnos;
     }
 
     @Override
@@ -55,10 +55,11 @@ public class ListaArtiklJmjAdapter extends ArrayAdapter {
         if (row == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            row = layoutInflater.inflate(R.layout.row_jmj, parent, false);
+            row = layoutInflater.inflate(R.layout.row_grupa, parent, false);
             layoutHandler = new ListaArtiklJmjAdapter.LayoutHandler();
-            layoutHandler.artiklID = (TextView) row.findViewById(R.id.jmjID);
-            layoutHandler.jmjID = (TextView) row.findViewById(R.id.jmjNaziv);
+            layoutHandler.artiklID = (TextView) row.findViewById(R.id.grupaID);
+            layoutHandler.jmjID = (TextView) row.findViewById(R.id.grupaNaziv);
+            layoutHandler.odnos= (TextView) row.findViewById(R.id.grupaRid);
             row.setTag(layoutHandler);
         } else {
             layoutHandler = (ListaArtiklJmjAdapter.LayoutHandler) row.getTag();
@@ -76,6 +77,7 @@ public class ListaArtiklJmjAdapter extends ArrayAdapter {
         */
         layoutHandler.artiklID.setText(Long.toString(artiklJmj.getArtiklID()));
         layoutHandler.jmjID.setText(Long.toString(artiklJmj.getJmjID()));
+        layoutHandler.odnos.setText(Double.toString(artiklJmj.getOdnos()));
 
         return row;
 
