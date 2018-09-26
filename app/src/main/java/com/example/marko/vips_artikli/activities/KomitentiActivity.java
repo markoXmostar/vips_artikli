@@ -24,10 +24,10 @@ public class KomitentiActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_komitenti);
 
-        NoDataText = (TextView) findViewById(R.id.noDataText_komitent);
+        NoDataText = findViewById(R.id.noDataText_komitent);
         NoDataText.setVisibility(View.INVISIBLE);
 
-        artiklListView = (ListView) findViewById(R.id.komitentiListView);
+        artiklListView = findViewById(R.id.komitentiListView);
         artiklListView.setItemsCanFocus(false);
 
         UcitajListuIzBaze("");
