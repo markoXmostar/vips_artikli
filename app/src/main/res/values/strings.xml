@@ -7,7 +7,6 @@
     <string name="action_settings">Postavke</string>
     <string name="Poruka_app_molimPricekajte">Molim pričekajte</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="pretraga">Pretraga</string>
     <string name="PosaljiPodatke_title">Pošalji podatke</string>
@@ -58,4 +57,5 @@
     <string name="postavke_aplikacije">Postavke aplikacije</string>
     <string name="title_activity_log">LogActivity</string>
     <string name="ponistiFilter">Poništi filter</string>
+    <string name="pritisnite_natrag_još_jednom_exit">Još jednom pritisnite natrag da bi ste izišli iz aplikacije</string>
 </resources>

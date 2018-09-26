@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.marko.vips_artikli.KomitentiActivity">
+    tools:context="com.vanima.mvips.activities.KomitentiActivity">
 
     <TextView
         android:id="@+id/noDataText_komitent"
@@ -30,10 +30,10 @@
         android:id="@+id/komitentiListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
