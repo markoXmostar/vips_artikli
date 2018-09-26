@@ -13,6 +13,7 @@
         android:id="@+id/asortiman_kupca_switch"
         android:title="Asortiman kupca"
         android:checkable="true"
-        app:actionLayout="@layout/menu_asortiman_kupca_switch"
-        app:showAsAction="collapseActionView" />
+        android:checked="false"
+        app:showAsAction="never" />
+
 </menu>

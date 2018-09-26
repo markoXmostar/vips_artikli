@@ -95,21 +95,7 @@ public class ArtikliActivity extends AppCompatActivity {
             }
         });
 
-        MenuItem checkable = menu.findItem(R.id.asortiman_kupca_switch);
-        checkable.setChecked(false); //početno je iskjučen asortiman kupca
-        final Switch sw= menu.findItem(R.id.asortiman_kupca_switch).getActionView().findViewById(R.id.asortiman_kupca_switch);
-        sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b){
-                    Toast.makeText(getBaseContext(),"ASORTIMAN KUPCA UKLJUČEN!", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(getBaseContext(),"ASORTIMAN KUPCA ISKLJUČEN!", Toast.LENGTH_SHORT).show();
-                }
-                asortimanKupca=b;
-                UcitajListuIzBaze(myFilter);
-            }
-        });
+        MenuItem useAsortimanKupca = menu.findItem(R.id.asortiman_kupca_switch);
 
         return true;
     }
@@ -126,6 +112,16 @@ public class ArtikliActivity extends AppCompatActivity {
         }
 
         if (id==R.id.asortiman_kupca_switch){
+            if(item.isChecked()){
+                item.setChecked(false);
+                asortimanKupca=false;
+                UcitajListuIzBaze(myFilter);
+            }
+            else{
+                item.setChecked(true);
+                asortimanKupca=true;
+                UcitajListuIzBaze(myFilter);
+            }
             return true;
         }
 
