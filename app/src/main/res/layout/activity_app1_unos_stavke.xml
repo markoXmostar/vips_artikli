@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.marko.vips_artikli.activities.App1UnosStavkeActivity">
+    tools:context="com.example.marko.mvips.activities.App1UnosStavkeActivity">
 
     <TextView
         android:id="@+id/tvBarcode_App1UnosStavke"
@@ -16,7 +16,7 @@
         android:textSize="@dimen/velicinaTeksta"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.example.marko.vips_artikli.models.myEditTextNoKeyboard
+    <com.example.marko.mvips.models.myEditTextNoKeyboard
         android:id="@+id/txtBarcode_App1UnosStavke"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

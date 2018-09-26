@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.marko.vips_artikli">
+    package="com.vanima.mvips">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission
-        android:name="android.permission.USE_FINGERPRINT"
-        android:required="false" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC"
+        android:required="false"/>
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -20,7 +18,7 @@
         android:allowBackup="true">
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.vanima.mvips.activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -30,34 +28,34 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ArtikliActivity" />
-        <activity android:name=".activities.RegistriActivity" />
-        <activity android:name=".activities.KomitentiActivity" />
+        <activity android:name="com.vanima.mvips.activities.ArtikliActivity" />
+        <activity android:name="com.vanima.mvips.activities.RegistriActivity" />
+        <activity android:name="com.vanima.mvips.activities.KomitentiActivity" />
         <activity
-            android:name=".activities.App1DokumentiActivity"
+            android:name="com.vanima.mvips.activities.App1DokumentiActivity"
             android:label="@string/NaslovApp1Dokumenti" />
         <activity
-            android:name=".activities.App1UnosZaglavljaActivity"
+            android:name="com.vanima.mvips.activities.App1UnosZaglavljaActivity"
             android:label="@string/NoviDokument" />
-        <activity android:name=".activities.PretragaKomitenata_Tipova_Podtipova_PJKomitenata_Activity" />
+        <activity android:name="com.vanima.mvips.activities.PretragaKomitenata_Tipova_Podtipova_PJKomitenata_Activity" />
         <activity
-            android:name=".activities.App1UnosStavkeActivity"
+            android:name="com.vanima.mvips.activities.App1UnosStavkeActivity"
             android:label="@string/NovaStavka" />
         <activity
-            android:name=".activities.App1StavkeActivity"
+            android:name="com.vanima.mvips.activities.App1StavkeActivity"
             android:label="@string/NaslovApp1Stavke" />
         <activity
-            android:name=".activities.PostavkeActivity"
+            android:name="com.vanima.mvips.activities.PostavkeActivity"
             android:label="@string/PostavkeNaslov" />
-        <activity android:name=".activities.LoginActivity" />
-        <activity android:name=".activities.PinActivity" />
-        <activity android:name=".activities.App2DokumentiActivity" />
-        <activity android:name=".activities.App2StavkeActivity" />
-        <activity android:name=".activities.App2UnosKolicine" />
+        <activity android:name="com.vanima.mvips.activities.LoginActivity" />
+        <activity android:name="com.vanima.mvips.activities.PinActivity" />
+        <activity android:name="com.vanima.mvips.activities.App2DokumentiActivity" />
+        <activity android:name="com.vanima.mvips.activities.App2StavkeActivity" />
+        <activity android:name="com.vanima.mvips.activities.App2UnosKolicine" />
         <activity
-            android:name=".activities.LogActivity"
+            android:name="com.vanima.mvips.activities.LogActivity"
             android:label="@string/title_activity_log" />
-        <activity android:name=".activities.filterPretragaDokumenataActivity"/>
+        <activity android:name="com.vanima.mvips.activities.filterPretragaDokumenataActivity"/>
     </application>
 
 </manifest>
