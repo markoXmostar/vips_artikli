@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -122,7 +123,13 @@ public class MainActivity extends AppCompatActivity
         procitajPostavke();
         zadanaVrstaAplikacija = myPostavke.getVrstaAplikacije();
         if (!myPostavke.getPin().equals("")) {
-            Intent intent = new Intent(this, PinActivity.class);
+            Intent intent;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                intent = new Intent(this, PinActivity.class);
+            }
+            else{
+                intent = new Intent(this, PinActivityLowAPI.class);
+            }
             startActivityForResult(intent, 998);
         }
 
@@ -646,7 +653,13 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, PostavkeActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_security) {
-            Intent intent = new Intent(this, PinActivity.class);
+            Intent intent;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                intent = new Intent(this, PinActivity.class);
+            }
+            else{
+                intent = new Intent(this, PinActivityLowAPI.class);
+            }
             startActivityForResult(intent, 998);
         }
 

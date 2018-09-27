@@ -17,7 +17,7 @@
         android:drawableEnd="?android:attr/fingerprintAuthDrawable"
         android:enabled="false"
         android:fontFamily="monospace"
-        android:inputType="textPassword"
+        android:inputType="numberPassword"
         android:textAlignment="center"
         android:textSize="60sp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -52,6 +52,7 @@
             android:label="@string/PostavkeNaslov" />
         <activity android:name="com.vanima.mvips.activities.LoginActivity" />
         <activity android:name="com.vanima.mvips.activities.PinActivity" />
+        <activity android:name="com.vanima.mvips.activities.PinActivityLowAPI" />
         <activity android:name="com.vanima.mvips.activities.App2DokumentiActivity" />
         <activity android:name="com.vanima.mvips.activities.App2StavkeActivity" />
         <activity android:name="com.vanima.mvips.activities.App2UnosKolicine" />
