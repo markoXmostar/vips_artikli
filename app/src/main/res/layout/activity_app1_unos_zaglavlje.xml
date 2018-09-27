@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.marko.vips_artikli.activities.App1UnosZaglavljaActivity">
+    tools:context="com.vanima.mvips.activities.App1UnosZaglavljaActivity">
 
     <TextView
         android:id="@+id/txtDatumDokumenta_App1Zaglavlje"

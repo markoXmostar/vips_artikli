@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.marko.vips_artikli.activities.PinActivity">
+    tools:context="com.vanima.mvips.activities.PinActivity">
 
     <EditText
         android:id="@+id/txtPass_pin"

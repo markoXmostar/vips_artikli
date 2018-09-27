@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.marko.vips_artikli.activities.PretragaKomitenata_Tipova_Podtipova_PJKomitenata_Activity">
+    tools:context="com.vanima.mvips.activities.PretragaKomitenata_Tipova_Podtipova_PJKomitenata_Activity">
 
     <EditText
         android:id="@+id/etxtFilter_PretragaKomitenata"
@@ -24,9 +24,9 @@
         android:id="@+id/listKomitenti_PretragaKomitenata"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
