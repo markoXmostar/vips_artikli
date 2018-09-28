@@ -83,11 +83,10 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 }.execute(newUrl.urlTabele, newUrl.Akcija);
-
             }
         });
-
     }
+
     // čeka na dvostruki klik nazad da ne bi bilo slučajnih izlaza iz aplikacije
     @Override
     public void onBackPressed() {

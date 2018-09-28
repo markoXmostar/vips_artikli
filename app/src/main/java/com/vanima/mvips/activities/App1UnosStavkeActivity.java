@@ -3,9 +3,9 @@ package com.vanima.mvips.activities;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,8 +16,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -52,8 +52,6 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
     EditText txtKolicina;
     TextView txtDodatniOpisArtikla;
     EditText txtNapomena;
-
-    //TODO Vidit da li nakon unosa količine pri enteru odmah zaključuje artikl ili prelazi u napomenu
 
     //EditText txtNapomena;
     myEditTextNoKeyboard txtBarcode;
@@ -126,8 +124,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             txtKolicina.requestFocus();
             txtKolicina.selectAll();
 
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
     }
 
@@ -140,14 +137,12 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             txtRokTrajanja.setText(izabraniAtribut.toString());
             if(izabraniArtikl.isImaRokTrajanja()){
                 txtRokTrajanja.setText(txtRokTrajanja.getText()+"...");
+                txtRokTrajanja.setPaintFlags(txtRokTrajanja.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
             }
         }
     }
 
     private ArtiklAtributStanje izabraniAtribut;
-
-
-
 
     public void setIzabranaJMJ(ArtiklJmj izabranaJMJ) {
         this.izabranaJMJ = izabranaJMJ;
@@ -157,6 +152,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             txtJmj.setText(izabranaJMJ.toString());
             if (spisakJMJ.size() > 1){
                 txtJmj.setText(txtJmj.getText()+"...");
+                txtJmj.setPaintFlags(txtJmj.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
             }
         }
     }
@@ -565,13 +561,13 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
 
 
     }
+
     private void ispisiPorukuNisteUnijeliPotrebnePodatke(View view) {
 
         String poruka = getResources().getString(R.string.NepotpunUnos);
         Snackbar.make(view, poruka, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }
-
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == 1) {

@@ -42,7 +42,7 @@ public final class postavkeAplikacije {
         dopustenaIzmjenaTipaDokumenta = settings.getBoolean("dopustenaIzmjenaTipaDokumenta", true);
         svirajUpozorenja = settings.getBoolean("svirajUpozorenja", true);
         dlt_id = settings.getInt("dlt_id", 0);
-        pin = settings.getString("pin", "1234");
+        pin = settings.getString("pin", "");
         saldakonti = settings.getInt("saldakonti", 1);
 
         Log.d(TAG, "procitajPostavke: vrstaPretrage=" + vrstaPretrageArtikala);
@@ -187,6 +187,13 @@ public final class postavkeAplikacije {
         editor.commit();
     }
 
+    public void snimiPin(String value) {
+        SharedPreferences settings = activity.getSharedPreferences(MainActivity.APP_POSTAVKE, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("pin", value);
+        editor.commit();
+    }
+
     public void snimiSvePostavke(int dlt_id, int kasaId, int pjFrmId, long tipDokumenta, long podtipDokumenta, int vrstaAplikacije, int vrstaPretrageArtikala, boolean brziUnosArtikala, float defoltnaKolicina,
                                  int brojDecimala, boolean dopustenaIzmjenaTipaDokumenta, boolean svirajUpozorenja) {
         SharedPreferences settings = activity.getSharedPreferences(MainActivity.APP_POSTAVKE, 0);
@@ -223,5 +230,6 @@ public final class postavkeAplikacije {
         Log.d(TAG, "snimiSvePostavke: PostavkeAplikacije brziUnos=" + isBrziUnosArtikala());
         Log.d(TAG, "snimiSvePostavke: PostavkeAplikacije zvukoviUpozorenja=" + isSvirajUpozorenja());
         Log.d(TAG, "snimiSvePostavke: PostavkeAplikacije brojDecimala=" + getBrojDecimala());
+        Log.d(TAG, "snimiSvePostavke: PostavkeAplikacije pin=" + getPin());
     }
 }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.vanima.mvips.activities.PinActivityLowAPI">
+    tools:context="com.vanima.mvips.activities.PinActivity">
 
     <EditText
         android:id="@+id/txtPass_pin"
@@ -148,7 +148,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CE"
+                android:drawableLeft="@drawable/ic_delete_sweep_boja_aplikacije_24dp"
+                android:paddingLeft="30dp"
+                android:text="_"
                 android:textAppearance="@style/mojTextStyleZaPinTipkovnicu"
                 android:textSize="30sp" />
 
@@ -166,9 +168,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:drawableLeft="@drawable/ic_backspace_boja_aplikacije_24dp"
                 android:gravity="center"
-                android:text="DEL"
-                android:textAllCaps="false"
+                android:paddingLeft="30dp"
                 android:textAppearance="@style/mojTextStyleZaPinTipkovnicu"
                 android:textSize="30sp" />
 
@@ -183,8 +185,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/OKtext"
-                android:textAppearance="@style/mojTextStyleZaPinTipkovnicu"
-                android:textSize="18sp" />
+                android:textAppearance="@style/mojTextStyleZaPinTipkovnicu" />
         </LinearLayout>
     </LinearLayout>
 

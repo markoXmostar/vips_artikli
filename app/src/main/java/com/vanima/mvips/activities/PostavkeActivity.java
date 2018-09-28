@@ -2,12 +2,15 @@ package com.vanima.mvips.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -47,6 +50,8 @@ public class PostavkeActivity extends AppCompatActivity {
 
     TextView lblDefKolicina;
     TextView lblBrojDec;
+
+    EditText pinText;
 
     static int progressKolicina;
 
@@ -95,6 +100,7 @@ public class PostavkeActivity extends AppCompatActivity {
         sbarBrojDecimala = (SeekBar) findViewById(R.id.sbarBrojDecimala_Postavke);
         lblDefKolicina = (TextView) findViewById(R.id.lblDefoltnaKolicina_Posavke);
         lblBrojDec = (TextView) findViewById(R.id.lblBrojDecimala_Postavke);
+        pinText = (EditText) findViewById(R.id.pinText);
         btnSvirajUpozorenja = (Switch) findViewById(R.id.btnZvukoviObavijesti_Postavke);
 
         final postavkeAplikacije myPostavke = new postavkeAplikacije(PostavkeActivity.this);
@@ -103,6 +109,26 @@ public class PostavkeActivity extends AppCompatActivity {
         spinnerVrstaAplikacije.setAdapter(new ArrayAdapter<VrstaAplikacije>(this, android.R.layout.simple_spinner_item, VrstaAplikacije.values()));
         sppinerVrstaPretrage.setAdapter(new ArrayAdapter<VrstaPretrageArtikala>(this, android.R.layout.simple_spinner_item, VrstaPretrageArtikala.values()));
 
+        pinText.setText(myPostavke.getPin());
+        pinText.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                Log.i(TAG,"Pin postavljen na " + s.toString());
+                myPostavke.snimiPin(s.toString());
+            }
+        });
 
         spinPodtipDokumenta.setOnTouchListener(new View.OnTouchListener() {
             @Override

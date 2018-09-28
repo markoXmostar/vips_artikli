@@ -8,13 +8,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -41,38 +41,29 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
-public class PinActivity extends AppCompatActivity {
+public class PinActivityLowAPI extends AppCompatActivity {
 
     boolean doubleBackToExitPressedOnce = false;
     int brojPokusaja = 1;
     private String TAG = "PIN_ACTIVITY";
     EditText txtPin;
-    Button btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btnDellAll, btnDell1, btnOK;
-    static String requiredPin;
-
-    private FingerprintManager fingerprintManager;
-    private KeyguardManager keyguardManager;
-
-    private KeyStore keyStore;
-    private Cipher cipher;
-    private String KEY_NAME = "AndroidKey";
+    Button btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btnDellAll, btnDell1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pin);
 
-        requiredPin = new postavkeAplikacije(PinActivity.this).getPin();
         txtPin = findViewById(R.id.txtPass_pin);
 
         postaviDugmice();
 
-        btnOK = findViewById(R.id.btnOK_pin);
+        Button btnOK = findViewById(R.id.btnOK_pin);
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String pin = txtPin.getText().toString();
-                postavkeAplikacije myPOstavke = new postavkeAplikacije(PinActivity.this);
+                postavkeAplikacije myPOstavke = new postavkeAplikacije(PinActivityLowAPI.this);
                 //Log.d(TAG, "onClick: UPSIAN JE PIN=" + pin);
                 //Log.d(TAG, "onClick: TREBA BITI PIN=" + myPOstavke.getPin());
                 if (pin.equals(myPOstavke.getPin())) {
@@ -95,112 +86,6 @@ public class PinActivity extends AppCompatActivity {
             }
         });
     }
-
-    @Override
-    protected void onPause(){
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-            fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
-            keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-
-            if (!fingerprintManager.isHardwareDetected()) {
-
-                Log.i(TAG, "No fingerprint hardware");
-                txtPin.setCompoundDrawables(null,null,null,null);
-
-            } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-
-                Log.i(TAG, "No fingerprint permission");
-                txtPin.setCompoundDrawables(null,null,null,null);
-
-            } else if (!keyguardManager.isKeyguardSecure()) {
-
-                Log.i(TAG, "Fingerprint not used");
-                txtPin.setCompoundDrawables(null,null,null,null);
-
-            } else if (!fingerprintManager.hasEnrolledFingerprints()) {
-
-                Log.i(TAG, "No fingerprints");
-                txtPin.setCompoundDrawables(null,null,null,null);
-
-            } else {
-
-                generateKey();
-
-                if (cipherInit()) {
-
-                    FingerprintManager.CryptoObject cryptoObject = new FingerprintManager.CryptoObject(cipher);
-                    FingerprintHandler fingerprintHandler = new FingerprintHandler(this);
-                    fingerprintHandler.startAuth(fingerprintManager, cryptoObject, btnOK, requiredPin, txtPin, this);
-
-                }
-            }
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    private void generateKey() {
-
-        try {
-
-            keyStore = KeyStore.getInstance("AndroidKeyStore");
-            KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
-
-            keyStore.load(null);
-            keyGenerator.init(new
-                    KeyGenParameterSpec.Builder(KEY_NAME,
-                    KeyProperties.PURPOSE_ENCRYPT |
-                            KeyProperties.PURPOSE_DECRYPT)
-                    .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                    .setUserAuthenticationRequired(true)
-                    .setEncryptionPaddings(
-                            KeyProperties.ENCRYPTION_PADDING_PKCS7)
-                    .build());
-            keyGenerator.generateKey();
-
-        } catch (KeyStoreException | IOException | CertificateException
-                | NoSuchAlgorithmException | InvalidAlgorithmParameterException
-                | NoSuchProviderException e) {
-
-            e.printStackTrace();
-
-        }
-
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    public boolean cipherInit() {
-        try {
-            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
-        }
-        catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-            throw new RuntimeException("Failed to get Cipher", e);
-        }
-        try {
-
-            keyStore.load(null);
-
-            SecretKey key = (SecretKey) keyStore.getKey(KEY_NAME,
-                    null);
-
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-
-            return true;
-
-        } catch (KeyPermanentlyInvalidatedException e) {
-            return false;
-        } catch (KeyStoreException | CertificateException | UnrecoverableKeyException | IOException | NoSuchAlgorithmException | InvalidKeyException e) {
-            throw new RuntimeException("Failed to init Cipher", e);
-        }
-
-    }
-
 
     private void postaviDugmice() {
         btn1 = findViewById(R.id.btn1_pin);
