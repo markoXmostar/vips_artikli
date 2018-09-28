@@ -98,7 +98,6 @@
         android:layout_width="0px"
         android:layout_height="0px"/>
 
-    <!-- TODO odlucit da li koristit action next ili done za količinu -->
     <EditText
         android:id="@+id/txtKolicina_App1UnosStavke"
         android:layout_width="0dp"
@@ -213,13 +212,12 @@
         android:ems="10"
         android:gravity="top|left"
         android:hint="@string/Napomena"
-        android:imeOptions="actionDone"
+        android:imeOptions="actionNext"
         android:inputType="text"
         android:singleLine="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtOpisArtikla_App1UnosStavke" />
-
 
 </android.support.constraint.ConstraintLayout>

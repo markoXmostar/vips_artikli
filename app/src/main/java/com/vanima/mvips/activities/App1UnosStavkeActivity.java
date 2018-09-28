@@ -53,8 +53,6 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
     TextView txtDodatniOpisArtikla;
     EditText txtNapomena;
 
-    //TODO Vidit da li nakon unosa količine pri enteru odmah zaključuje artikl ili prelazi u napomenu
-
     //EditText txtNapomena;
     myEditTextNoKeyboard txtBarcode;
     TextView tvBarcode;
