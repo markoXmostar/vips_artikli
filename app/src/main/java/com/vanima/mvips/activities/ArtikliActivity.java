@@ -1,6 +1,5 @@
 package com.vanima.mvips.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.support.v7.widget.SearchView;
@@ -59,8 +57,6 @@ public class ArtikliActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 if (varijantaForme==0){
-                    InputMethodManager imm = (InputMethodManager)   getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
 
                     Artikl selektiraniArtikl=(Artikl)adapterView.getItemAtPosition(position);
                     Log.d(TAG, "greška1: " + selektiraniArtikl.getNaziv());

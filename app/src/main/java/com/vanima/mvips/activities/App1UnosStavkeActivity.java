@@ -3,9 +3,9 @@ package com.vanima.mvips.activities;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,8 +16,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -126,8 +126,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             txtKolicina.requestFocus();
             txtKolicina.selectAll();
 
-            InputMethodManager imm = (InputMethodManager)   getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
     }
 
@@ -140,14 +139,12 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             txtRokTrajanja.setText(izabraniAtribut.toString());
             if(izabraniArtikl.isImaRokTrajanja()){
                 txtRokTrajanja.setText(txtRokTrajanja.getText()+"...");
+                txtRokTrajanja.setPaintFlags(txtRokTrajanja.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
             }
         }
     }
 
     private ArtiklAtributStanje izabraniAtribut;
-
-
-
 
     public void setIzabranaJMJ(ArtiklJmj izabranaJMJ) {
         this.izabranaJMJ = izabranaJMJ;
@@ -157,6 +154,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             txtJmj.setText(izabranaJMJ.toString());
             if (spisakJMJ.size() > 1){
                 txtJmj.setText(txtJmj.getText()+"...");
+                txtJmj.setPaintFlags(txtJmj.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
             }
         }
     }
