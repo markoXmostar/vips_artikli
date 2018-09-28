@@ -100,42 +100,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
-
-        procitajPostavke();
-
-        if (!myPostavke.getPin().equals("")) {
-            Intent intent;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                intent = new Intent(this, PinActivity.class);
-            }
-            else{
-                intent = new Intent(this, PinActivityLowAPI.class);
-            }
-            startActivityForResult(intent, 998);
-        }
-        else{
-            if (myPostavke.getVrstaAplikacije() != 0 && !potrebnaSinkronizacija) {
-                Intent intent;
-                switch (myPostavke.getVrstaAplikacije()) {
-                    case 1:
-                        intent = new Intent(MainActivity.this, App1DokumentiActivity.class);
-                        intent.putExtra("vrstaAplikacije", 1);
-                        startActivity(intent);
-                        break;
-                    case 2:
-                        intent = new Intent(MainActivity.this, App2DokumentiActivity.class);
-                        intent.putExtra("vrstaAplikacije", 2);
-                        startActivity(intent);
-                        break;
-                    case 3:
-                        intent = new Intent(MainActivity.this, App1DokumentiActivity.class);
-                        intent.putExtra("vrstaAplikacije", 3);
-                        startActivity(intent);
-                        break;
-                }
-            }
-        }
-
         setContentView(R.layout.activity_main);
         MainActivity ma=this;
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -155,7 +119,13 @@ public class MainActivity extends AppCompatActivity
 
         spisakSyncTabela = new ArrayList<>();
 
+
+        procitajPostavke();
         zadanaVrstaAplikacija = myPostavke.getVrstaAplikacije();
+        if (!myPostavke.getPin().equals("")) {
+            Intent intent = new Intent(this, PinActivity.class);
+            startActivityForResult(intent, 998);
+        }
 
         postaviTabeleZaSync();
         getLOG();
@@ -164,7 +134,6 @@ public class MainActivity extends AppCompatActivity
         kreirajTabeluDokumenata(this);
         kreirajTabeluStavki(this);
         //kraj
-
 
         btnDownloadPodataka.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -214,6 +183,39 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+
+        if (!myPostavke.getPin().equals("")) {
+            Intent intent;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                intent = new Intent(this, PinActivity.class);
+            }
+            else{
+                intent = new Intent(this, PinActivityLowAPI.class);
+            }
+            startActivityForResult(intent, 998);
+        }
+        else{
+            if (myPostavke.getVrstaAplikacije() != 0 && !potrebnaSinkronizacija) {
+                Intent intent;
+                switch (myPostavke.getVrstaAplikacije()) {
+                    case 1:
+                        intent = new Intent(MainActivity.this, App1DokumentiActivity.class);
+                        intent.putExtra("vrstaAplikacije", 1);
+                        startActivity(intent);
+                        break;
+                    case 2:
+                        intent = new Intent(MainActivity.this, App2DokumentiActivity.class);
+                        intent.putExtra("vrstaAplikacije", 2);
+                        startActivity(intent);
+                        break;
+                    case 3:
+                        intent = new Intent(MainActivity.this, App1DokumentiActivity.class);
+                        intent.putExtra("vrstaAplikacije", 3);
+                        startActivity(intent);
+                        break;
+                }
+            }
+        }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
