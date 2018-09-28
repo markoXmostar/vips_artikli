@@ -15,6 +15,16 @@
         tools:context="com.vanima.mvips.activities.PostavkeActivity">
 
         <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:text="Pin:"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnZvukoviObavijesti_Postavke" />
+
+        <TextView
             android:id="@+id/textView3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -204,6 +214,21 @@
             android:text="Zvukovi obavijesti i upozorenja"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnDopustenaIZmjenaTipa_Postavke" />
+
+        <EditText
+            android:id="@+id/pinText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:hint="Postavite pin..."
+            android:inputType="numberSigned"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView9"
+            app:layout_constraintTop_toBottomOf="@+id/btnZvukoviObavijesti_Postavke" />
 
 
     </android.support.constraint.ConstraintLayout>
