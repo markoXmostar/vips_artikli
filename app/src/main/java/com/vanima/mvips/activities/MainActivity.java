@@ -122,16 +122,6 @@ public class MainActivity extends AppCompatActivity
 
         procitajPostavke();
         zadanaVrstaAplikacija = myPostavke.getVrstaAplikacije();
-        if (!myPostavke.getPin().equals("")) {
-            Intent intent;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                intent = new Intent(this, PinActivity.class);
-            }
-            else{
-                intent = new Intent(this, PinActivityLowAPI.class);
-            }
-            startActivityForResult(intent, 998);
-        }
 
         postaviTabeleZaSync();
         getLOG();
@@ -190,6 +180,32 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+
+        if (!myPostavke.getPin().equals("")) {
+            Intent intent;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                intent = new Intent(this, PinActivity.class);
+            }
+            else{
+                intent = new Intent(this, PinActivityLowAPI.class);
+            }
+            startActivityForResult(intent, 998);
+        }
+        else{
+            if (myPostavke.getVrstaAplikacije() != 0 && !potrebnaSinkronizacija) {
+                switch (myPostavke.getVrstaAplikacije()) {
+                    case 1:
+                        btnApp1.callOnClick();
+                        break;
+                    case 2:
+                        btnApp2.callOnClick();
+                        break;
+                    case 3:
+                        btnApp3.callOnClick();
+                        break;
+                }
+            }
+        }
 
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
