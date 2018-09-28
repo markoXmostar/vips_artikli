@@ -86,12 +86,12 @@
         android:id="@+id/tvKolicina_App1UnosStavke"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="8dp"
         android:text="Količina"
         android:textSize="@dimen/velicinaTeksta"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtJmj_App1UnosStavke" />
+        app:layout_constraintTop_toBottomOf="@+id/txtNapomena_App1UnosStavke" />
     <LinearLayout
         android:focusable="true"
         android:focusableInTouchMode="true"
@@ -103,11 +103,11 @@
         android:id="@+id/txtKolicina_App1UnosStavke"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:imeOptions="actionDone"
+        android:layout_marginEnd="8dp"
         android:focusableInTouchMode="true"
+        android:imeOptions="actionDone"
         android:inputType="numberDecimal"
         android:paddingTop="0dp"
         android:selectAllOnFocus="true"
@@ -118,7 +118,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/tvKolicina_App1UnosStavke"
-        app:layout_constraintTop_toBottomOf="@+id/txtJmj_App1UnosStavke" />
+        app:layout_constraintTop_toBottomOf="@+id/txtNapomena_App1UnosStavke" />
 
     <TextView
         android:id="@+id/tvRokTrajanja_App1UnosStavke"
@@ -169,12 +169,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtNapomena_App1UnosStavke">
+        app:layout_constraintTop_toBottomOf="@+id/txtKolicina_App1UnosStavke">
 
         <Button
             android:id="@+id/btnCancel_App1UnosStavke"
@@ -197,21 +197,18 @@
         android:id="@+id/txtOpisArtikla_App1UnosStavke"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtKolicina_App1UnosStavke" />
+        app:layout_constraintTop_toBottomOf="@+id/txtJmj_App1UnosStavke" />
 
     <EditText
         android:id="@+id/txtNapomena_App1UnosStavke"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:gravity="top|left"

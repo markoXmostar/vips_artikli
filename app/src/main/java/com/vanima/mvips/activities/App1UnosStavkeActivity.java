@@ -126,7 +126,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             txtKolicina.requestFocus();
             txtKolicina.selectAll();
 
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager)   getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         }
     }
@@ -565,13 +565,13 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
 
 
     }
+
     private void ispisiPorukuNisteUnijeliPotrebnePodatke(View view) {
 
         String poruka = getResources().getString(R.string.NepotpunUnos);
         Snackbar.make(view, poruka, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }
-
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == 1) {
