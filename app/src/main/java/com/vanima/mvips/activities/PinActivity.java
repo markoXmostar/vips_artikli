@@ -143,9 +143,6 @@ public class PinActivity extends AppCompatActivity {
             }
         }
     }
-    @TargetApi(Build.VERSION_CODES.M)
-    public static void authenticateWithFingerprint(){
-    }
 
     @TargetApi(Build.VERSION_CODES.M)
     private void generateKey() {
