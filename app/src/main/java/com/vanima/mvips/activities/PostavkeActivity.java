@@ -25,6 +25,8 @@ import com.vanima.mvips.utils.postavkeAplikacije;
 
 import java.util.List;
 
+// TODO treba dodat postavku hoce li koristit pin ili fingerprint+pin
+// ili samo fingerprint jer planiraju depricirati ovaj način što koristim i koristit dialog za autentikaciju)
 
 public class PostavkeActivity extends AppCompatActivity {
 

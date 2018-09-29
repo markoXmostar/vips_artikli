@@ -122,6 +122,10 @@ public class MainActivity extends AppCompatActivity
         procitajPostavke();
         zadanaVrstaAplikacija = myPostavke.getVrstaAplikacije();
 
+        // TODO ovo treba prije radit kako bi brže otvaralo aktivnost koju treba, za sad ću ostavit ovdje
+        // može i ovo nova postavka bit, kad prvi put otvori aplikaciju da pita da li da uvijek otvara tu aplikaciju
+        // onda upišemo u postavke i iz njih čitamo, sync status prikažemo i u App1,App2,App3 glavnim aktivnostima
+
         if (!myPostavke.getPin().equals("")) {
             Intent intent;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
