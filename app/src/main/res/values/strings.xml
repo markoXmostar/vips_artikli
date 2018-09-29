@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">vips</string>
+    <string name="app_name">mVips</string>
 
     <string name="navigation_drawer_open">Otvori izbornik</string>
     <string name="navigation_drawer_close">Zatvori izbornik</string>
