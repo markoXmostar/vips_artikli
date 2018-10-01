@@ -19,7 +19,7 @@ public final class postavkeAplikacije {
     private String pin;
 
 
-    private boolean brziUnosArtikala, dopustenaIzmjenaTipaDokumenta, svirajUpozorenja;
+    private boolean brziUnosArtikala, dopustenaIzmjenaTipaDokumenta, svirajUpozorenja, uvijekOtvoriDokumentNakonStvaranjaZaglavlja;
 
     private Activity activity;
 
@@ -44,6 +44,7 @@ public final class postavkeAplikacije {
         dlt_id = settings.getInt("dlt_id", 0);
         pin = settings.getString("pin", "");
         saldakonti = settings.getInt("saldakonti", 1);
+        uvijekOtvoriDokumentNakonStvaranjaZaglavlja = settings.getBoolean("uvijekOtvoriDokumentNakonStvaranjaZaglavlja", false);
 
         Log.d(TAG, "procitajPostavke: vrstaPretrage=" + vrstaPretrageArtikala);
         Log.d(TAG, "procitajPostavke: vrstaAplikacije=" + vrstaAplikacije);
@@ -58,6 +59,7 @@ public final class postavkeAplikacije {
         Log.d(TAG, "procitajPostavke: kasaId=" + kasaId);
         Log.d(TAG, "procitajPostavke: pjFrmId=" + pjFrmId);
         Log.d(TAG, "procitajPostavke: pin=" + pin);
+        Log.d(TAG, "procitajPostavke: uvijekOtvoriDokumentNakonStvaranjaZaglavlja=" + uvijekOtvoriDokumentNakonStvaranjaZaglavlja);
     }
 
     public String getPin() {
@@ -103,6 +105,10 @@ public final class postavkeAplikacije {
 
     public boolean isSvirajUpozorenja() {
         return svirajUpozorenja;
+    }
+
+    public boolean isUvijekOtvoriDokumentNakonStvaranjaZaglavlja(){
+        return uvijekOtvoriDokumentNakonStvaranjaZaglavlja;
     }
 
     public long getTipDokumenta() {
@@ -191,6 +197,13 @@ public final class postavkeAplikacije {
         SharedPreferences settings = activity.getSharedPreferences(MainActivity.APP_POSTAVKE, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("pin", value);
+        editor.commit();
+    }
+
+    public void snimiUvijekOtvoriDokumentNakonStvaranjaZaglavlja(boolean value){
+        SharedPreferences settings = activity.getSharedPreferences(MainActivity.APP_POSTAVKE, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("uvijekOtvoriDokumentNakonStvaranjaZaglavlja", value);
         editor.commit();
     }
 
