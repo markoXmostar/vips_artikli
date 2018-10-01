@@ -44,7 +44,7 @@ public final class postavkeAplikacije {
         dlt_id = settings.getInt("dlt_id", 0);
         pin = settings.getString("pin", "");
         saldakonti = settings.getInt("saldakonti", 1);
-        uvijekOtvoriDokumentNakonStvaranjaZaglavlja = settings.getBoolean("uvijekOtvoriDokumentNakonStvaranjaZaglavlja", false);
+        uvijekOtvoriDokumentNakonStvaranjaZaglavlja = settings.getBoolean("uvijekOtvoriDokumentNakonStvaranjaZaglavlja", true);
 
         Log.d(TAG, "procitajPostavke: vrstaPretrage=" + vrstaPretrageArtikala);
         Log.d(TAG, "procitajPostavke: vrstaAplikacije=" + vrstaAplikacije);
