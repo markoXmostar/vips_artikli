@@ -929,7 +929,7 @@ public class MainActivity extends AppCompatActivity
         myDB.execSQL("DROP TABLE IF EXISTS  log;");
         myDB.execSQL("CREATE TABLE IF NOT EXISTS log (" +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "vrijeme datetime default CURRENT_TIMESTAMP, " +
+                "vrijeme datetime default (datetime('now','localtime')), " +
                 "greska INTEGER, " +
                 "poruka VARCHAR," +
                 "redniBroj INTEGER," +
@@ -2331,7 +2331,7 @@ public class MainActivity extends AppCompatActivity
                 "idJmj long," +
                 "nazivJmj VARCHAR," +
                 "napomena VARCHAR," +
-                "datumUpisa datetime default CURRENT_TIMESTAMP);");
+                "datumUpisa datetime default (datetime('now','localtime')));");
         myDB.close();
     }
 
@@ -2356,7 +2356,7 @@ public class MainActivity extends AppCompatActivity
                 "VrstaPlacanjaNaziv VARCHAR, " +
                 "datumDokumenta datetime, " +
                 "datumSinkronizacije datetime," +
-                "datumUpisa datetime default CURRENT_TIMESTAMP," +
+                "datumUpisa datetime default (datetime('now','localtime'))," +
                 "vrstaAplikacije INTEGER, " +
                 "zakljucen INTEGER DEFAULT 0," +
                 "napomena VARCHAR);");
