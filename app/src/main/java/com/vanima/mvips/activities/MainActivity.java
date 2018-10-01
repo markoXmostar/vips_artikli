@@ -428,7 +428,7 @@ public class MainActivity extends AppCompatActivity
                 /*
                     myDB.execSQL("CREATE TABLE IF NOT EXISTS log (" +
                         "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        "vrijeme datetime default current_timestamp, " +
+                        "vrijeme datetime default (datetime('now','localtime')), " +
                         "greska INTEGER, " +
                         "poruka VARCHAR," +
                         "redniBroj INTEGER," +
@@ -929,7 +929,7 @@ public class MainActivity extends AppCompatActivity
         myDB.execSQL("DROP TABLE IF EXISTS  log;");
         myDB.execSQL("CREATE TABLE IF NOT EXISTS log (" +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "vrijeme datetime default current_timestamp, " +
+                "vrijeme datetime default (datetime('now','localtime')), " +
                 "greska INTEGER, " +
                 "poruka VARCHAR," +
                 "redniBroj INTEGER," +
@@ -1033,29 +1033,25 @@ public class MainActivity extends AppCompatActivity
         return date;
     }
     public static String parseDateFromSQLLiteDBFormatToMyFormat_DateTime(Date date){
-
-        SimpleDateFormat mojDateFormat=new SimpleDateFormat(DatumVrijemeFormat);
         if (date==null){
             return "";
         }
-        String myDateString=mojDateFormat.format(date);
-        return myDateString;
+        SimpleDateFormat mojDateFormat=new SimpleDateFormat(DatumVrijemeFormat);
+        return mojDateFormat.format(date);
 
     }
 
     public static String parseDateFromSQLLiteDBFormatToMyOnlyDateFormat(Date date){
 
         SimpleDateFormat mojDateFormat=new SimpleDateFormat(DatumFormat);
-        String myDateString=mojDateFormat.format(date);
-        return myDateString;
+        return mojDateFormat.format(date);
 
     }
 
     public static String parseDateFromSQLLiteDBFormatToJSONFormat(Date date) {
 
         SimpleDateFormat mojDateFormat = new SimpleDateFormat(BorisovFormatDatuma);
-        String myDateString = mojDateFormat.format(date);
-        return myDateString;
+        return mojDateFormat.format(date);
 
     }
 
@@ -2335,7 +2331,7 @@ public class MainActivity extends AppCompatActivity
                 "idJmj long," +
                 "nazivJmj VARCHAR," +
                 "napomena VARCHAR," +
-                "datumUpisa datetime default current_timestamp);");
+                "datumUpisa datetime default (datetime('now','localtime')));");
         myDB.close();
     }
 
@@ -2360,7 +2356,7 @@ public class MainActivity extends AppCompatActivity
                 "VrstaPlacanjaNaziv VARCHAR, " +
                 "datumDokumenta datetime, " +
                 "datumSinkronizacije datetime," +
-                "datumUpisa datetime default current_timestamp," +
+                "datumUpisa datetime default (datetime('now','localtime'))," +
                 "vrstaAplikacije INTEGER, " +
                 "zakljucen INTEGER DEFAULT 0," +
                 "napomena VARCHAR);");
