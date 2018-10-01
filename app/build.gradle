@@ -8,8 +8,8 @@ android {
         applicationId "com.vanima.mvips"
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 15
-        versionName "0.1.15"
+        versionCode 17
+        versionName "0.1.17"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }

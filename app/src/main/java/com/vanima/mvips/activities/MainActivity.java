@@ -929,7 +929,7 @@ public class MainActivity extends AppCompatActivity
         myDB.execSQL("DROP TABLE IF EXISTS  log;");
         myDB.execSQL("CREATE TABLE IF NOT EXISTS log (" +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "vrijeme datetime default (datetime('now','localtime')), " +
+                "vrijeme datetime default CURRENT_TIMESTAMP, " +
                 "greska INTEGER, " +
                 "poruka VARCHAR," +
                 "redniBroj INTEGER," +
@@ -2251,7 +2251,7 @@ public class MainActivity extends AppCompatActivity
 
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
         for (App1Dokumenti dok : spisakSyncDokumenta) {
-            myDB.execSQL("UPDATE dokumenti1 SET datumSinkronizacije=datetime('now') WHERE _id=" + dok.getId() + ";");
+            myDB.execSQL("UPDATE dokumenti1 SET datumSinkronizacije=datetime('now','localtime') WHERE _id=" + dok.getId() + ";");
             Log.d(TAG, "updateZaglavljaPoslijeSinkronizacije: UPDATE ODRAĐEN!");
         }
         myDB.close();
@@ -2331,7 +2331,7 @@ public class MainActivity extends AppCompatActivity
                 "idJmj long," +
                 "nazivJmj VARCHAR," +
                 "napomena VARCHAR," +
-                "datumUpisa datetime default (datetime('now','localtime')));");
+                "datumUpisa datetime default CURRENT_TIMESTAMP);");
         myDB.close();
     }
 
@@ -2356,7 +2356,7 @@ public class MainActivity extends AppCompatActivity
                 "VrstaPlacanjaNaziv VARCHAR, " +
                 "datumDokumenta datetime, " +
                 "datumSinkronizacije datetime," +
-                "datumUpisa datetime default (datetime('now','localtime'))," +
+                "datumUpisa datetime default CURRENT_TIMESTAMP," +
                 "vrstaAplikacije INTEGER, " +
                 "zakljucen INTEGER DEFAULT 0," +
                 "napomena VARCHAR);");
