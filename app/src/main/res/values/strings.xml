@@ -39,23 +39,22 @@
     <string name="PosaljiPodatke">Pošalji podatke</string>
     <string name="PostavkeNaslov">Postavke aplikacije</string>
     <string name="title_activity_login">Prijava</string>
-
-    <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
     <string name="odjavi_i_izbrisi_podatke">Odjavi i izbriši podatke</string>
     <string name="sigurnost_aplikacije">Sigurnost aplikacije</string>
     <string name="postavke_aplikacije">Postavke aplikacije</string>
     <string name="title_activity_log">LogActivity</string>
     <string name="ponistiFilter">Poništi filter</string>
     <string name="pritisnite_natrag_još_jednom_exit">Još jednom pritisnite natrag da bi ste izišli iz aplikacije</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Lozinka (opcionalno)</string>
+    <string name="action_sign_in">Prijavi se ili se registriraj</string>
+    <string name="action_sign_in_short">Prijavi se</string>
+    <string name="error_invalid_email">Email adresa nije valjana</string>
+    <string name="error_invalid_password">Lozinka je prekratka</string>
+    <string name="error_incorrect_password">Lozinka nije ispravna</string>
+    <string name="error_field_required">Ovo polje je potrebno</string>
+    <string name="permission_rationale">"Pristup kontaktima je potreban za automatsko dovršavalje email-ova."
+    </string>
 </resources>
