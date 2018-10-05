@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity
     public static String DatumFormat="dd.MM.yyyy";
     public static String BorisovFormatDatuma = "yyyy-MM-dd'T'HH:mm:ss";
 
-    public static int DJELATNIK = 2;
+    public static int DJELATNIK = 0;
     public static String url = "http://vanima.net:8099/api/";
 
 
@@ -121,6 +121,8 @@ public class MainActivity extends AppCompatActivity
 
         procitajPostavke();
         zadanaVrstaAplikacija = myPostavke.getVrstaAplikacije();
+
+        DJELATNIK = myPostavke.getDlt_id();
 
         // TODO ovo treba prije radit kako bi brže otvaralo aktivnost koju treba, za sad ću ostavit ovdje
         // može i ovo nova postavka bit, kad prvi put otvori aplikaciju da pita da li da uvijek otvara tu aplikaciju
@@ -599,6 +601,7 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 Log.d(TAG, "onActivityResult: ZATVARAM LOGIN---OK");
                 int result = data.getIntExtra("dlt_id", 0);
+                myPostavke.snimiDLT_ID(result);
                 this.DJELATNIK = result;
 
             } else {
