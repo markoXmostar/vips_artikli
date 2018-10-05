@@ -119,10 +119,13 @@ public class MainActivity extends AppCompatActivity
 
         spisakSyncTabela = new ArrayList<>();
 
+        myPostavke = new postavkeAplikacije(MainActivity.this);
         procitajPostavke();
         zadanaVrstaAplikacija = myPostavke.getVrstaAplikacije();
 
-        DJELATNIK = myPostavke.getDlt_id();
+        this.DJELATNIK = myPostavke.getDlt_id();
+
+        Log.d(TAG, String.format("%o, %o", myPostavke.getDlt_id(), myPostavke.getVrstaAplikacije()));
 
         // TODO ovo treba prije radit kako bi brže otvaralo aktivnost koju treba, za sad ću ostavit ovdje
         // može i ovo nova postavka bit, kad prvi put otvori aplikaciju da pita da li da uvijek otvara tu aplikaciju
