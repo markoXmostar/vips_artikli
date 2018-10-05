@@ -62,7 +62,7 @@ public class JSON_send extends AsyncTask<String, String, String> {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         try {
-            URL url = new URL("http://vanima.net:8099/api/dokumentirazmjena?d=" + MainActivity.DJELATNIK);
+            URL url = new URL("http://vanima.net:8099/api/dokumentirazmjena?d=" + MainActivity.getDjelatnik());
             Log.d(TAG, "doInBackground: URL=" + url);
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setDoOutput(true);
@@ -108,7 +108,7 @@ public class JSON_send extends AsyncTask<String, String, String> {
             postavkeAplikacije pa=new postavkeAplikacije(myActivity);
 
             jsonObject.put("UredjajId", MainActivity.UREDJAJ);
-            jsonObject.put("DjelatnikId", MainActivity.DJELATNIK);
+            jsonObject.put("DjelatnikId", MainActivity.getDjelatnik());
             jsonObject.put("VrstaAplikacije", vrstaAplikacije);
 
             JSONArray jsonArrayDokumenti = new JSONArray();
@@ -120,7 +120,7 @@ public class JSON_send extends AsyncTask<String, String, String> {
                 jsonDokument.put("PjFrmId", pa.getPjFrmId());
                 jsonDokument.put("PjKmtId", dokument.getIdPjKomitenta());
                 jsonDokument.put("DatumDokumenta", dokument.getDatumDokumentaJSONString());
-                jsonDokument.put("KomercijalistID", MainActivity.DJELATNIK);
+                jsonDokument.put("KomercijalistID", MainActivity.getDjelatnik());
                 jsonDokument.put("NacinPlacanjaId", dokument.getIdNacinPlacanja());
                 jsonDokument.put("Opaska", dokument.getNapomena());
                 if (sendVipsID) {

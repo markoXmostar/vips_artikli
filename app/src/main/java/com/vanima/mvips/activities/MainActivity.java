@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity
     public static String DatumFormat="dd.MM.yyyy";
     public static String BorisovFormatDatuma = "yyyy-MM-dd'T'HH:mm:ss";
 
-    public static int DJELATNIK = 0;
     public static String url = "http://vanima.net:8099/api/";
 
 
@@ -123,8 +122,6 @@ public class MainActivity extends AppCompatActivity
         procitajPostavke();
         zadanaVrstaAplikacija = myPostavke.getVrstaAplikacije();
 
-        this.DJELATNIK = myPostavke.getDlt_id();
-
         Log.d(TAG, String.format("%o, %o", myPostavke.getDlt_id(), myPostavke.getVrstaAplikacije()));
 
         // TODO ovo treba prije radit kako bi brže otvaralo aktivnost koju treba, za sad ću ostavit ovdje
@@ -163,7 +160,6 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }
-
         postaviTabeleZaSync();
         getLOG();
 
@@ -230,16 +226,16 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        procitajPostavke();
+
         //new JSON_task(this).execute("http://vanima.net:8099/api/artikli?d=2");
         //provjeriti da li je upisan DLT_ID ako nije upaliti login screen i preuzeti sa servera podatke
         if (myPostavke.getDlt_id() == 0) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivityForResult(intent, 999);
-        } else {
-            DJELATNIK = myPostavke.getDlt_id();
+        }else {
+            postaviDugmiceOvisnoOdOvlasti();
         }
-
-        postaviDugmiceOvisnoOdOvlasti();
 
     }
 
@@ -510,12 +506,18 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "getLOG: BROJ POTREBNIH SYNC TABELA JE " + spisakSyncTabela.size());
 
         if(brojZadnjihSyncTabela!=spisakSyncTabela.size()){
-            //zadnja sinkronizacija je bila nepotpuna
 
-            sastaviTabelePotrebnieZaSinkronizaciju(myListaLog);
-            Log.d(TAG, "getLOG: Zadnja sinkronizacija nepotpuna potrebno je uraditi opet!");
-            //postaviVidljivostFabKontrola(true,false);
-            potrebnaSinkronizacija = true;
+            if(provjeriSinkZaJedanApp()){
+                Log.d(TAG, String.format("getLOG: Zadnja sinkronizacija uspješna za aplikaciju %o!", myPostavke.getVrstaAplikacije()));
+                potrebnaSinkronizacija = false;
+            }
+            else {
+
+                sastaviTabelePotrebnieZaSinkronizaciju(myListaLog);
+                Log.d(TAG, "getLOG: Zadnja sinkronizacija nepotpuna potrebno je uraditi opet!");
+
+                potrebnaSinkronizacija = true;
+            }
         }
         else {
             Log.d(TAG, "getLOG: Zadnja sinkronizacija uspješna!");
@@ -523,6 +525,24 @@ public class MainActivity extends AppCompatActivity
         }
         postaviDugmiceOvisnoOdOvlasti();
         myDB.close();
+    }
+
+    private boolean provjeriSinkZaJedanApp(){
+        switch (myPostavke.getVrstaAplikacije()){
+            case 1:
+                return false;
+            case 2:
+                return false;
+            case 3:
+                if(spisakSyncTabela.size() >= 13){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            default:
+                return false;
+        }
     }
 
     private void sastaviTabelePotrebnieZaSinkronizaciju(List<dbLog> novaListaLog){
@@ -605,16 +625,17 @@ public class MainActivity extends AppCompatActivity
                 Log.d(TAG, "onActivityResult: ZATVARAM LOGIN---OK");
                 int result = data.getIntExtra("dlt_id", 0);
                 myPostavke.snimiDLT_ID(result);
-                this.DJELATNIK = result;
+                procitajPostavke();
+                spisakSyncTabela.clear();
+                postaviDugmiceOvisnoOdOvlasti();
+                postaviTabeleZaSync();
 
             } else {
                 Log.d(TAG, "onActivityResult: ZATVARAM LOGIN---CANCEL");
-                this.DJELATNIK = 0;
-
             }
         }
         if (requestCode == 998) {
-            //LOGIN
+            //PIN
             if (resultCode == RESULT_OK) {
                 Log.d(TAG, "onActivityResult: ZATVARAM PIN ACTIVITY---OK");
 
@@ -764,54 +785,55 @@ public class MainActivity extends AppCompatActivity
         String akcija = "";
         String urlString = "";
         akcija = "jmj";
-        urlString = url + "idnaziv" + "?d=" + DJELATNIK + "&t=" + akcija;
+        int djelatnik = getDjelatnik();
+        urlString = url + "idnaziv" + "?d=" + djelatnik + "&t=" + akcija;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "jmj"));
 
         akcija = "tipdokumenta";
-        urlString = url + "idnaziv" + "?d=" + DJELATNIK + "&t=" + akcija;
+        urlString = url + "idnaziv" + "?d=" + djelatnik + "&t=" + akcija;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "tip_dokumenta"));
 
         akcija = "podtipdokumenta";
-        urlString = url + "idnazivrid" + "?d=" + DJELATNIK + "&t=" + akcija;
+        urlString = url + "idnazivrid" + "?d=" + djelatnik + "&t=" + akcija;
         Log.d(TAG, "onNavigationItemSelected: " + urlString);
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "podtip_dokumenta"));
 
         akcija = "nacinplacanja";
-        urlString = url + "idnaziv" + "?d=" + DJELATNIK + "&t=" + akcija;
+        urlString = url + "idnaziv" + "?d=" + djelatnik + "&t=" + akcija;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "nacin_placanja"));
 
         akcija = "grupaartikala";
-        urlString = url + "idnazivrid" + "?d=" + DJELATNIK + "&t=" + akcija;
+        urlString = url + "idnazivrid" + "?d=" + djelatnik + "&t=" + akcija;
         Log.d(TAG, "onNavigationItemSelected: " + urlString);
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "grupa_artikala"));
 
         akcija = "podgrupaartikala";
-        urlString = url + "idnazivrid" + "?d=" + DJELATNIK + "&t=" + akcija;
+        urlString = url + "idnazivrid" + "?d=" + djelatnik + "&t=" + akcija;
         Log.d(TAG, "onNavigationItemSelected: " + urlString);
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "podgrupa_artikala"));
 
         akcija = "artikli";
-        urlString = url + akcija + "?d=" + DJELATNIK;
+        urlString = url + akcija + "?d=" + djelatnik;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "artikli"));
 
         akcija = "artiklbarcode";
-        urlString = url + akcija + "?d=" + DJELATNIK;
+        urlString = url + akcija + "?d=" + djelatnik;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "artiklbarcode"));
 
         akcija = "artikljmj";
-        urlString = url + akcija + "?d=" + DJELATNIK;
+        urlString = url + akcija + "?d=" + djelatnik;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "artikljmj"));
 
         akcija = "artiklatribut";
-        urlString = url + akcija + "?d=" + DJELATNIK;
+        urlString = url + akcija + "?d=" + djelatnik;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "artiklatribut"));
 
         akcija = "komitenti";
-        urlString = url + akcija + "?d=" + DJELATNIK + "&sk=" + myPostavke.getSaldakonti();
+        urlString = url + akcija + "?d=" + djelatnik + "&sk=" + myPostavke.getSaldakonti();
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "komitenti"));
 
         akcija = "komitentpj";
-        urlString = url + "idnazivrid" + "?d=" + DJELATNIK + "&t=" + akcija;
+        urlString = url + "idnazivrid" + "?d=" + djelatnik + "&t=" + akcija;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "PjKomitenta"));
 
         //if (myPostavke.getVrstaAplikacije() == 0) {
@@ -823,15 +845,15 @@ public class MainActivity extends AppCompatActivity
             }
             Log.d(TAG, "postaviTabeleZaSync: POSTAVLJEN PODTIP ZA APP 2/ podtipID = " + podtipDokumenta);
             akcija = "dokumentizaglavlja";
-            urlString = url + akcija + "?d=" + DJELATNIK + "&u=" + UREDJAJ + "&p=" + String.valueOf(podtipDokumenta);
+            urlString = url + akcija + "?d=" + djelatnik + "&u=" + UREDJAJ + "&p=" + String.valueOf(podtipDokumenta);
             spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "dokumenti2"));
 
             akcija = "dokumentistavke";
-            urlString = url + akcija + "?d=" + DJELATNIK + "&u=" + UREDJAJ + "&p=" + String.valueOf(podtipDokumenta);
+            urlString = url + akcija + "?d=" + djelatnik + "&u=" + UREDJAJ + "&p=" + String.valueOf(podtipDokumenta);
             spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "stavke2"));
 
             akcija = "asortimankupca";
-            urlString = url + akcija + "?d=" + DJELATNIK;
+            urlString = url + akcija + "?d=" + djelatnik;
             spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "asortimankupca"));
 
         //}
@@ -2251,6 +2273,10 @@ public class MainActivity extends AppCompatActivity
         myDB.close();
         Log.d(TAG, " Tabela " + myTabela + " učitana!");
         return spisak;
+    }
+
+    public static int getDjelatnik(){
+        return myStaticPostavke.getDlt_id();
     }
 
     public static void updateZaglavljaPoslijeSinkronizacije(Activity a, List<App1Dokumenti> spisakSyncDokumenta) {

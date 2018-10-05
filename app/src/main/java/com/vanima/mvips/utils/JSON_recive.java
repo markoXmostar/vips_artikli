@@ -801,7 +801,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
         myDB.close();
     }
-
+    // TODO viditi gdje puca, ukloniti log u loopu
     private void UpisiAsortimanUBazu(ArrayList<AsortimanKupca> Lista) {
         boolean greska = false;
         String greskaStr = "";
@@ -818,8 +818,11 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
             Log.d(TAG, "Brišem sve iz tabele");
             myDB.execSQL("DELETE FROM " + myTabela + ";");
             myDB.beginTransaction();
+            AsortimanKupca myAsortiman;
+            Log.d(TAG,String.format("%o", Lista.size()));
             for (int i = 0; i < Lista.size(); i++) {
-                AsortimanKupca myAsortiman = Lista.get(i);
+                myAsortiman = Lista.get(i);
+                Log.d(TAG,String.format("%o,%o", myAsortiman.getPjID(), myAsortiman.getArtiklID()));
                 myDB.execSQL("INSERT INTO " + myTabela + " (pjKmtId, artiklId ) VALUES (" +
                         myAsortiman.getPjID() + "," +
                         myAsortiman.getArtiklID() + ");");
