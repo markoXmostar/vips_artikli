@@ -573,10 +573,11 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
                 Artikl myArtikl = (Artikl) data.getSerializableExtra("artikl");
+                if (izabraniArtikl==null){
+                    MenuInflater inflater = getMenuInflater();
+                    inflater.inflate(R.menu.unos_stavke, getMenu());
+                }
                 setIzabraniArtikl(myArtikl);
-
-                MenuInflater inflater = getMenuInflater();
-                inflater.inflate(R.menu.unos_stavke, getMenu());
             }
             if (resultCode == Activity.RESULT_CANCELED) {
 

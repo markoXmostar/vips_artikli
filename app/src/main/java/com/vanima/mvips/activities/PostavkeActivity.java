@@ -25,6 +25,8 @@ import com.vanima.mvips.utils.postavkeAplikacije;
 
 import java.util.List;
 
+// TODO treba dodat postavku hoce li koristit pin ili fingerprint+pin
+// ili samo fingerprint jer planiraju depricirati ovaj način što koristim i koristit dialog za autentikaciju)
 
 public class PostavkeActivity extends AppCompatActivity {
 
@@ -43,7 +45,7 @@ public class PostavkeActivity extends AppCompatActivity {
 
     private boolean spinnerTouched = false;
 
-    Switch btnBrziUnosArtikla, btnDopustenaIzmjenaTipaDokumenta, btnSvirajUpozorenja;
+    Switch btnBrziUnosArtikla, btnDopustenaIzmjenaTipaDokumenta, btnSvirajUpozorenja, uvijekOtvoriDokumentNakonStvaranjaZaglavlja;
 
     SeekBar sbarKolicina;
     SeekBar sbarBrojDecimala;
@@ -102,6 +104,7 @@ public class PostavkeActivity extends AppCompatActivity {
         lblBrojDec = (TextView) findViewById(R.id.lblBrojDecimala_Postavke);
         pinText = (EditText) findViewById(R.id.pinText);
         btnSvirajUpozorenja = (Switch) findViewById(R.id.btnZvukoviObavijesti_Postavke);
+        uvijekOtvoriDokumentNakonStvaranjaZaglavlja = (Switch) findViewById(R.id.otvori_dokument);
 
         final postavkeAplikacije myPostavke = new postavkeAplikacije(PostavkeActivity.this);
         _myPostavke = myPostavke;
@@ -328,6 +331,14 @@ public class PostavkeActivity extends AppCompatActivity {
                 if (radi) {
                     myPostavke.snimiSvirajUpozorenja(btnSvirajUpozorenja.isChecked());
                 }
+
+            }
+        });
+
+        uvijekOtvoriDokumentNakonStvaranjaZaglavlja.setChecked(myPostavke.isUvijekOtvoriDokumentNakonStvaranjaZaglavlja());
+        uvijekOtvoriDokumentNakonStvaranjaZaglavlja.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                myPostavke.snimiUvijekOtvoriDokumentNakonStvaranjaZaglavlja(uvijekOtvoriDokumentNakonStvaranjaZaglavlja.isChecked());
 
             }
         });

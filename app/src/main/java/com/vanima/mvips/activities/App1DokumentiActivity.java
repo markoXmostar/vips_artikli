@@ -28,6 +28,7 @@ import com.vanima.mvips.utils.JSON_send;
 import com.vanima.mvips.adapters.ListaApp1DokumentiAdapter;
 import com.vanima.mvips.adapters.MyPrintDocumentAdapter;
 import com.vanima.mvips.R;
+import com.vanima.mvips.utils.postavkeAplikacije;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -74,7 +75,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
 
 
         kreirajTabeluDokumenata();
-        ucitajDokumente();
+        ucitajDokumente(false, 0);
 
         fabNoviDokument.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,7 +145,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
                         switch (akcije[which].toString()){
                             case "Izbriši dokument!":
                                 MainActivity.izbrisiRedakIzTabele(App1DokumentiActivity.this,tabelaApp1,"_id", selektiranDok.getId());
-                                ucitajDokumente();
+                                ucitajDokumente(false, 0);
                                 break;
                             case "Izmijeni dokument":
                                 Intent intent = new Intent(App1DokumentiActivity.this, App1UnosZaglavljaActivity.class);
@@ -157,7 +158,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
                             case "ZAKLJUČI":
                             case "OTKLJUČAJ":
                                 MainActivity.setZakljuciDokument_Dokumenti1(App1DokumentiActivity.this, selektiranDok.getId(),!selektiranDok.isZakljucen());
-                                ucitajDokumente();
+                                ucitajDokumente(false, 0);
                                 break;
                             case "Sinkroniziraj":
                                 if (selektiranDok.isZakljucen()){
@@ -169,9 +170,9 @@ public class App1DokumentiActivity extends AppCompatActivity {
                                             Toast.makeText(App1DokumentiActivity.this, "Nije moguće poslati podatke! Provjerite internet konekciju i dostupnost servera!", Toast.LENGTH_LONG).show();
                                         } else {
                                             if (rezultat.equals("OK")) {
-                                                //ucitajDokumente();
+                                                //ucitajDokumente(false, 0);
                                                 MainActivity.updateZaglavljaPoslijeSinkronizacije(App1DokumentiActivity.this, spisakDokZaSync);
-                                                ucitajDokumente();
+                                                ucitajDokumente(false,0);
                                             }
                                         }
                                     } catch (InterruptedException e) {
@@ -266,7 +267,9 @@ public class App1DokumentiActivity extends AppCompatActivity {
                 }
 
                 myDB.close();
-                ucitajDokumente();
+                ucitajDokumente(true, akcija);
+
+
 
             }
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -276,7 +279,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
         if (requestCode == 21) {
             //treba osvježiti stavke na zadanom dokumentu (vraćanje sa actovotoja za stavke
 
-            ucitajDokumente();
+            ucitajDokumente(false, 0);
         }
 
         if (requestCode==31){
@@ -291,11 +294,11 @@ public class App1DokumentiActivity extends AppCompatActivity {
                 int filterZakljucen=data.getIntExtra("filterZakjucen",0);
 
                 setFilterPostavke(dat1,dat2,filterIdKom,filterNazKom,filterZakljucen,filterIdPjKom,filterNazPjKom);
-                ucitajDokumente();
+                ucitajDokumente(false, 0);
             }
             if (resultCode==Activity.RESULT_CANCELED){
                 setFilterPocetnePostavke();
-                ucitajDokumente();
+                ucitajDokumente(false, 0);
             }
         }
     }
@@ -351,7 +354,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
         */
         if (id == R.id.sinkroniziraj_dokumenti1) {
             if (MainActivity.sendAllDokuments(App1DokumentiActivity.this, vrstaAplikacije)) {
-                ucitajDokumente();
+                ucitajDokumente(false, 0);
             }
             return true;
         }
@@ -460,7 +463,7 @@ public class App1DokumentiActivity extends AppCompatActivity {
         filterPjKomitentID=pjKomId;
     }
 
-    private void ucitajDokumente() {
+    private void ucitajDokumente(Boolean openFirstOptional, int vrstaAkcija) {
         ListaApp1DokumentiAdapter listaDokumenta = new ListaApp1DokumentiAdapter(this, R.layout.row_app1_zaglavlje);
         listSpisakDokumenata.setAdapter(listaDokumenta);
         List<App1Dokumenti> spisakDok = MainActivity.getListaDokumenta(App1DokumentiActivity.this, vrstaAplikacije,filterKomitentID,filterDatumOd,filterDatumDo,filterPjKomitentID,filterZakljucen);
@@ -473,6 +476,12 @@ public class App1DokumentiActivity extends AppCompatActivity {
                 dok.doadajStavku(stv);
             }
         }
+        boolean settingOpenFirst = new postavkeAplikacije(App1DokumentiActivity.this).isUvijekOtvoriDokumentNakonStvaranjaZaglavlja();
+        Log.d(TAG, "vrsta akcije je " + vrstaAkcija);
+        if(openFirstOptional && settingOpenFirst && vrstaAkcija==0){
+            listSpisakDokumenata.performItemClick(listSpisakDokumenata,0,0);
+        }
+
     }
 
 }

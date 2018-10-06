@@ -378,10 +378,12 @@ public class App1UnosZaglavljaActivity extends AppCompatActivity {
             if(resultCode == Activity.RESULT_OK){
 
                 Komitent myKomitent = (Komitent) data.getSerializableExtra("komitent");
-                setIzabraniKomitent(myKomitent);
+                if(izabraniKomitent==null){
+                    MenuInflater inflater = getMenuInflater();
+                    inflater.inflate(R.menu.unos_stavke, getMenu());
 
-                MenuInflater inflater = getMenuInflater();
-                inflater.inflate(R.menu.unos_stavke, getMenu());
+                }
+                setIzabraniKomitent(myKomitent);
 
             }
             if (resultCode == Activity.RESULT_CANCELED) {
