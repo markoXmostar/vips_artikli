@@ -104,11 +104,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //fabUpdatePodataka = (FloatingActionButton) findViewById(R.id.fabUpdatePodataka);
-        //fabApp1 = (FloatingActionButton) findViewById(R.id.fabApp1);
-        //fabApp2 = (FloatingActionButton) findViewById(R.id.fabApp2);
-        //fabApp3 = (FloatingActionButton) findViewById(R.id.fabApp3);
-
         btnViewLog = findViewById(R.id.btnViewLog);
         btnApp1 = findViewById(R.id.btnApp1);
         btnApp2 = findViewById(R.id.btnApp2);
@@ -403,39 +398,12 @@ public class MainActivity extends AppCompatActivity
                 rbr = getZadnjiID_log(myTabela, this);
                 int brojac = 0;
 
-                /*
-                Cursor c;
-                c = myDB.rawQuery("SELECT MAX(redniBroj) AS rbr FROM " + myTabela, null);
-                int IdMax = c.getColumnIndex("rbr");
-                c.moveToFirst();
-                int brojac = 0;
-                for (int j = 0; j < c.getCount(); j++) {
 
-                    rbr = c.getInt(IdMax);
-                    brojac++;
-                    if (j != c.getCount()) {
-                        c.moveToNext();
-                    }
-                }
-                c.close();
-                */
-                //txtLastSyncID.setText(Integer.toString(rbr));
-                //zadnjaSinkronizacijaID=rbr;
                 Log.d(TAG, "getLOG: ZADNJI RBR =" + Integer.toString(rbr));
                 Cursor z;
                 z = myDB.rawQuery("SELECT * FROM " + myTabela + " WHERE redniBroj =" + rbr + ";", null);
                 brojac = 0;
 
-                /*
-                    myDB.execSQL("CREATE TABLE IF NOT EXISTS log (" +
-                        "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        "vrijeme datetime default (datetime('now','localtime')), " +
-                        "greska INTEGER, " +
-                        "poruka VARCHAR," +
-                        "redniBroj INTEGER," +
-                        "smjer INTEGER," +
-                        "tabela VARCHAR); " );
-                     */
 
                 int idIndex=z.getColumnIndex("_id");
                 int vrijemeIndex=z.getColumnIndex("vrijeme");
@@ -506,7 +474,8 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "getLOG: BROJ POTREBNIH SYNC TABELA JE " + spisakSyncTabela.size());
 
         if(brojZadnjihSyncTabela!=spisakSyncTabela.size()){
-
+            potrebnaSinkronizacija = true;
+            /*
             if(provjeriSinkZaJedanApp()){
                 Log.d(TAG, String.format("getLOG: Zadnja sinkronizacija uspješna za aplikaciju %o!", myPostavke.getVrstaAplikacije()));
                 potrebnaSinkronizacija = false;
@@ -518,6 +487,7 @@ public class MainActivity extends AppCompatActivity
 
                 potrebnaSinkronizacija = true;
             }
+            */
         }
         else {
             Log.d(TAG, "getLOG: Zadnja sinkronizacija uspješna!");
@@ -836,7 +806,11 @@ public class MainActivity extends AppCompatActivity
         urlString = url + "idnazivrid" + "?d=" + djelatnik + "&t=" + akcija;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "PjKomitenta"));
 
-        //if (myPostavke.getVrstaAplikacije() == 0) {
+        akcija = "asortimankupca";
+        urlString = url + akcija + "?d=" + djelatnik;
+        spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "asortimankupca"));
+
+        if (myPostavke.getVrstaAplikacije() == 2 || myPostavke.getVrstaAplikacije() == 0) {
             long podtipDokumenta = 0;
             if (myPostavke.getPodtipDokumenta() == 0) {
                 podtipDokumenta = 51;
@@ -851,10 +825,9 @@ public class MainActivity extends AppCompatActivity
             akcija = "dokumentistavke";
             urlString = url + akcija + "?d=" + djelatnik + "&u=" + UREDJAJ + "&p=" + String.valueOf(podtipDokumenta);
             spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "stavke2"));
+        }
 
-            akcija = "asortimankupca";
-            urlString = url + akcija + "?d=" + djelatnik;
-            spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "asortimankupca"));
+
 
         //}
 /*        if (myPostavke.getVrstaAplikacije() == 2) {
