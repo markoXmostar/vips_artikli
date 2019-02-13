@@ -35,6 +35,7 @@
     <string name="PorukaDownloadPodataka">Radim download podataka molim pričekajte!</string>
     <string name="NepotpunUnos">Niste unijeli sve potrebne podatke!</string>
     <string name="NedozvoljenaNula">Nije dozvoljen unos 0!</string>
+    <string name="MaksimalnoDozvoljenaKolicina">Nije dozvoljen unos količine veće od 1.000.000,00!</string>
     <string name="TabelaNijeUpToDate">Tabela nije up-to-date!!!</string>
     <string name="PosaljiPodatke">Pošalji podatke</string>
     <string name="PostavkeNaslov">Postavke aplikacije</string>
