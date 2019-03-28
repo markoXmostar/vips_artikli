@@ -10,18 +10,28 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.support.v7.widget.SearchView;
 import android.widget.TextView;
 
 import com.vanima.mvips.R;
+import com.vanima.mvips.adapters.ListaArtikalaAdapter2;
 import com.vanima.mvips.adapters.ListaArtiklaAdapter;
 import com.vanima.mvips.models.Artikl;
+import com.vanima.mvips.models.ArtiklJmj;
+import com.vanima.mvips.models.ArtiklSaKolicinom;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ArtikliActivity extends AppCompatActivity {
 
     public static final String TAG="ARTIKLI";
     private int varijantaForme=99;
+    private boolean unosKolicine = false;
+    private long dokumentID = 0;
 
     private long pjKmtID = 0; // ovo služi za asortiman kupca
 
@@ -31,6 +41,8 @@ public class ArtikliActivity extends AppCompatActivity {
     boolean asortimanKupca = false;
 
     String myFilter="";
+    private List<Artikl> listaArtikala = new ArrayList<Artikl>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,16 +54,21 @@ public class ArtikliActivity extends AppCompatActivity {
         NoDataText.setVisibility(View.INVISIBLE);
 
         artiklListView = findViewById(R.id.artikliListView);
-        artiklListView.setItemsCanFocus(false);
+
 
         Bundle b = getIntent().getExtras();
         if (b != null) {
             varijantaForme = b.getInt("varijanta");
+            unosKolicine = b.getBoolean("unosKolicine");
+            dokumentID = b.getLong("dokumentID");
             //asortimanKupca = b.getBoolean("asortimanKupca", false);
             pjKmtID = b.getLong("pjKmtID", 0);
         }
-
-        UcitajListuIzBaze("");
+        if (unosKolicine) {
+            getSupportActionBar().setTitle("(x)Artikli");
+        }
+        ListaArtiklaAdapter myAdapter = new ListaArtiklaAdapter(this, R.layout.row_artikl);
+        postaviAdapterZaListu("");
 
         artiklListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -87,7 +104,7 @@ public class ArtikliActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String sFilter) {
                 myFilter=sFilter;
-                UcitajListuIzBaze(myFilter);
+                postaviAdapterZaListu(myFilter);
                 return false;
             }
         });
@@ -110,12 +127,13 @@ public class ArtikliActivity extends AppCompatActivity {
             if(item.isChecked()){
                 item.setChecked(false);
                 asortimanKupca=false;
-                UcitajListuIzBaze(myFilter);
+                postaviAdapterZaListu(myFilter);
             }
             else{
                 item.setChecked(true);
                 asortimanKupca=true;
-                UcitajListuIzBaze(myFilter);
+
+                postaviAdapterZaListu(myFilter);
             }
             return true;
         }
@@ -124,17 +142,17 @@ public class ArtikliActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void UcitajListuIzBaze(String filter){
+    private ArrayList<Artikl> UcitajListuIzBaze(String filter) {
+        ArrayList<Artikl> mojaLista = new ArrayList<Artikl>();
 
         SQLiteDatabase mDatabase = this.openOrCreateDatabase(MainActivity.myDATABASE, this.MODE_PRIVATE,null);
         if (!MainActivity.isTableExists(mDatabase,"artikli")){
             NoDataText.setVisibility(View.VISIBLE);
             NoDataText.setEnabled(false);
-            return;
+            return null;
         }
         NoDataText.setVisibility(View.INVISIBLE);
-        ListaArtiklaAdapter listArtikalaAdapter=new ListaArtiklaAdapter(this,R.layout.row_artikl);
-        artiklListView.setAdapter(listArtikalaAdapter);
+
         Log.d(TAG," ucitavam bazu!");
 
         SQLiteDatabase myDB=this.openOrCreateDatabase(MainActivity.myDATABASE,this.MODE_PRIVATE,null);
@@ -142,17 +160,17 @@ public class ArtikliActivity extends AppCompatActivity {
         if (filter.equals("")) {
             String sql;
             if (asortimanKupca) {
-                sql = "SELECT * FROM artikli WHERE _id IN (SELECT artiklId FROM asortimankupca WHERE pjKmtId=" + pjKmtID + ");";
+                sql = "SELECT * FROM artikli  WHERE _id IN (SELECT artiklId FROM asortimankupca WHERE pjKmtId=" + pjKmtID + ") ;";
             } else {
-                sql = "SELECT * FROM artikli;";
+                sql = "SELECT  * FROM artikli ;";
             }
             c = myDB.rawQuery(sql, null);
         }else{
             String sql;
             if (asortimanKupca) {
-                sql = "SELECT * FROM artikli WHERE _id IN (SELECT artiklId FROM asortimankupca WHERE pjKmtId=" + pjKmtID + ") AND (sifra like '%" + filter + "%' or naziv like '%" + filter + "%' or kataloskiBroj like '%" + filter + "%');";
+                sql = "SELECT  * FROM artikli WHERE _id IN (SELECT artiklId FROM asortimankupca WHERE pjKmtId=" + pjKmtID + ") AND (sifra like '%" + filter + "%' or naziv like '%" + filter + "%' or kataloskiBroj like '%" + filter + "%');";
             } else {
-                sql = "SELECT * FROM artikli where sifra like '%" + filter + "%' or naziv like '%" + filter + "%' or kataloskiBroj like '%" + filter + "%';";
+                sql = "SELECT  * FROM artikli where sifra like '%" + filter + "%' or naziv like '%" + filter + "%' or kataloskiBroj like '%" + filter + "%';";
             }
             c = myDB.rawQuery(sql, null);
         }
@@ -207,12 +225,11 @@ public class ArtikliActivity extends AppCompatActivity {
             imaRokTrajanja=vrijednostImaAtribut;
             podgrupaID=c.getInt(PodgrupaIdIndex);
 
-
             //Log.d(TAG," Red " + Integer.toString(brojac));
-            Artikl artikliProvider = new Artikl(id, sifra, naziv, kataloskiBroj, jmjId, jmjNaziv, kratkiOpis, proizvodjac, dugiOpis, vrstaAmbalaze, brojKoleta, brojKoletaNaPaleti, stanje, vpc, mpc, netto, brutto, imaRokTrajanja, podgrupaID);
+            Artikl artikl = new Artikl(id, sifra, naziv, kataloskiBroj, jmjId, jmjNaziv, kratkiOpis, proizvodjac, dugiOpis, vrstaAmbalaze, brojKoleta, brojKoletaNaPaleti, stanje, vpc, mpc, netto, brutto, imaRokTrajanja, podgrupaID);
 
 
-            listArtikalaAdapter.add(artikliProvider);
+            mojaLista.add(artikl);
             brojac++;
             if (j!=c.getCount()){
                 c.moveToNext();
@@ -221,6 +238,36 @@ public class ArtikliActivity extends AppCompatActivity {
         c.close();
         Log.d(TAG," Baza učitana!");
         mDatabase.close();
+
+
+        return mojaLista;
     }
+
+    public ListaArtikalaAdapter2 myAdapter;
+
+    private void postaviAdapterZaListu(String filter) {
+        listaArtikala = UcitajListuIzBaze(filter);
+        if (unosKolicine) {
+            artiklListView.setItemsCanFocus(true);
+            ArrayList<ArtiklSaKolicinom> myItems = new ArrayList<ArtiklSaKolicinom>();
+            for (int i = 0; i < listaArtikala.size(); i++) {
+                ArtiklSaKolicinom artKol = new ArtiklSaKolicinom(listaArtikala.get(i), 0);
+                myItems.add(artKol);
+            }
+            myAdapter = new ListaArtikalaAdapter2(ArtikliActivity.this, myItems, dokumentID);
+            artiklListView.setAdapter(myAdapter);
+        } else {
+            artiklListView.setItemsCanFocus(false);
+            ListaArtiklaAdapter myAdapterOLD = new ListaArtiklaAdapter(ArtikliActivity.this, R.layout.row_artikl);
+            myAdapterOLD.clear();
+            for (int i = 0; i < listaArtikala.size(); i++) {
+                myAdapterOLD.add(listaArtikala.get(i));
+            }
+            artiklListView.setAdapter(myAdapterOLD);
+        }
+
+    }
+
+
 
 }

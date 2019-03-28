@@ -63,11 +63,11 @@ public class ListaArtiklaAdapter extends ArrayAdapter {
 
             row = layoutInflater.inflate(R.layout.row_artikl, parent, false);
             layoutHandler = new LayoutHandler();
-            layoutHandler.SIFRA = (TextView) row.findViewById(R.id.sifraArtikla);
-            layoutHandler.NAZIV = (TextView) row.findViewById(R.id.nazivArtikla);
-            layoutHandler.KATALOSKIBROJ = (TextView) row.findViewById(R.id.kataloskiBroj);
-            layoutHandler.PROIZVODJAC = (TextView) row.findViewById(R.id.proizvodac);
-            layoutHandler.OSTALO=(TextView) row.findViewById(R.id.ostaliPodaci);
+            layoutHandler.SIFRA = (TextView) row.findViewById(R.id.sifraArtikla_artikli);
+            layoutHandler.NAZIV = (TextView) row.findViewById(R.id.nazivArtikla_artikli);
+            layoutHandler.KATALOSKIBROJ = (TextView) row.findViewById(R.id.kataloskiBroj_artikli);
+            layoutHandler.PROIZVODJAC = (TextView) row.findViewById(R.id.proizvodac_artikli);
+            layoutHandler.OSTALO = (TextView) row.findViewById(R.id.ostaliPodaci_artikli);
 
 
             row.setTag(layoutHandler);
