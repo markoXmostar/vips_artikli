@@ -26,7 +26,7 @@ public class App1StavkeActivity extends AppCompatActivity {
     private long pjKmtID = 0;
 
     private ListView listSpisakStavki;
-    private FloatingActionButton fabNovaStavka;
+    private FloatingActionButton fabNovaStavka,fabUnosPrekoListe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,7 @@ public class App1StavkeActivity extends AppCompatActivity {
         IdDokumenta = IdDok;
 
         fabNovaStavka = (FloatingActionButton) findViewById(R.id.fabNovaStavka_App1);
+        fabUnosPrekoListe =(FloatingActionButton) findViewById(R.id.fabNovaStavkaLista_App1);
         final boolean isSync = b.getBoolean("isSync");
         if (isSync) {
             fabNovaStavka.setVisibility(View.INVISIBLE);
@@ -62,8 +63,22 @@ public class App1StavkeActivity extends AppCompatActivity {
                 intent.putExtra("idDokumenta",IdDokumenta);
                 intent.putExtra("pjKmtID", pjKmtID);
                 startActivityForResult(intent,1);
+
             }
         });
+        fabUnosPrekoListe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(App1StavkeActivity.this, ArtikliActivity.class);
+                intent.putExtra("dokumentID",IdDokumenta);
+                intent.putExtra("varijanta", 0);
+                intent.putExtra("unosKolicine", false);
+                intent.putExtra("pjKmtID", pjKmtID);
+                startActivityForResult(intent,2);
+
+            }
+        });
+
 
         listSpisakStavki.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -132,9 +147,13 @@ public class App1StavkeActivity extends AppCompatActivity {
                 */
                 ucitajStavke();
             }
+
             if (resultCode == Activity.RESULT_CANCELED) {
                 ucitajStavke();
             }
+        }
+        if (requestCode == 2) {
+            ucitajStavke();
         }
     }
 

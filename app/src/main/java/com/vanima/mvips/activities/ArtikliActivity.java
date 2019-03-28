@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.vanima.mvips.R;
 import com.vanima.mvips.adapters.ListaArtikalaAdapter2;
 import com.vanima.mvips.adapters.ListaArtiklaAdapter;
+import com.vanima.mvips.models.App1Stavke;
 import com.vanima.mvips.models.Artikl;
 import com.vanima.mvips.models.ArtiklJmj;
 import com.vanima.mvips.models.ArtiklSaKolicinom;
@@ -65,7 +66,7 @@ public class ArtikliActivity extends AppCompatActivity {
             pjKmtID = b.getLong("pjKmtID", 0);
         }
         if (unosKolicine) {
-            getSupportActionBar().setTitle("(x)Artikli");
+            getSupportActionBar().setTitle("Artikli unos preko liste");
         }
         ListaArtiklaAdapter myAdapter = new ListaArtiklaAdapter(this, R.layout.row_artikl);
         postaviAdapterZaListu("");
@@ -103,8 +104,10 @@ public class ArtikliActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String sFilter) {
-                myFilter=sFilter;
-                postaviAdapterZaListu(myFilter);
+
+                myAdapter.getFilter().filter(sFilter);
+                /*myFilter=sFilter;
+                postaviAdapterZaListu(myFilter);*/
                 return false;
             }
         });
@@ -252,7 +255,18 @@ public class ArtikliActivity extends AppCompatActivity {
             ArrayList<ArtiklSaKolicinom> myItems = new ArrayList<ArtiklSaKolicinom>();
             for (int i = 0; i < listaArtikala.size(); i++) {
                 ArtiklSaKolicinom artKol = new ArtiklSaKolicinom(listaArtikala.get(i), 0);
-                myItems.add(artKol);
+                if (artKol.getArt().getImaRokTrajanja()==0){
+                    myItems.add(artKol);
+                }
+
+            }
+            List<App1Stavke> listaStavki=MainActivity.getListaStavki(dokumentID, ArtikliActivity.this);
+            for(ArtiklSaKolicinom spisakArtikala : myItems) {
+                for (App1Stavke stavka : listaStavki) {
+                    if (stavka.getArtiklId() == spisakArtikala.getArt().getId()){
+                        spisakArtikala.setKolicina(stavka.getKolicina());
+                    }
+                }
             }
             myAdapter = new ListaArtikalaAdapter2(ArtikliActivity.this, myItems, dokumentID);
             artiklListView.setAdapter(myAdapter);

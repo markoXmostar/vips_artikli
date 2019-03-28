@@ -3,6 +3,7 @@ package com.vanima.mvips.models;
 import android.text.TextUtils;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by marko on 1.11.2017.
@@ -31,6 +32,8 @@ public class Artikl  implements Serializable{
     private boolean imaRokTrajanja;
     private int podgrupaID;
 
+
+
     public Artikl(long id, String sifra, String naziv, String kataloskiBroj, long jmjId, String jmjNaziv, String kratkiOpis,
                   String proizvodjac, String dugiOpis, String vrstaAmbalaze, double brojKoleta, double brojKoletaNaPaleti,
                   double stanje, double vpc, double mpc, double netto, double brutto, boolean imaRokTrajanja, int podgrupaID) {
@@ -53,6 +56,7 @@ public class Artikl  implements Serializable{
         this.brutto = brutto;
         this.imaRokTrajanja = imaRokTrajanja;
         this.podgrupaID = podgrupaID;
+
     }
 
     public long getId() {
@@ -224,3 +228,5 @@ public class Artikl  implements Serializable{
         this.podgrupaID = podgrupaID;
     }
 }
+
+

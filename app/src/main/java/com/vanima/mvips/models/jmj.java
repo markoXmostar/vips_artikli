@@ -32,5 +32,8 @@ public class jmj {
         this.naziv = naziv;
     }
 
-
+    @Override
+    public String toString() {
+        return naziv;
+    }
 }

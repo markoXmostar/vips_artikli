@@ -314,7 +314,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
 
                         Intent intent = new Intent(App1UnosStavkeActivity.this, ArtikliActivity.class);
                         intent.putExtra("varijanta", 0);
-                        intent.putExtra("unosKolicine", true);
+                        intent.putExtra("unosKolicine", false);
                         intent.putExtra("dokumentID", idDokumenta);
                         //intent.putExtra("asortimanKupca", tbtnAsortimanKupca.isChecked());
                         intent.putExtra("pjKmtID", pjKmtID);

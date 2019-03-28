@@ -1334,7 +1334,7 @@ public class MainActivity extends AppCompatActivity
         String myView = "vwArtikliJmj";
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
         Log.d(TAG, "getListaArtiklJMJ: create view START");
-        myDB.execSQL("DROP VIEW IF EXISTS " + myView + ";");
+        //myDB.execSQL("DROP VIEW IF EXISTS " + myView + ";");
         myDB.execSQL("CREATE VIEW IF NOT EXISTS vwArtikliJmj " +
                 "AS SELECT " +
                 "artikljmj.artiklId, " +
@@ -1391,7 +1391,56 @@ public class MainActivity extends AppCompatActivity
         return lista;
     }
 
+    public static List<ArtiklJmj> getListaArtiklJMJ2(Activity a, long artiklID, String filter) {
+        List<ArtiklJmj> lista = new ArrayList<ArtiklJmj>();
 
+        String myView = "vwArtikliJmj";
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
+
+        Cursor c;
+        if (artiklID == -1) {
+            if (filter.equals("")) {
+                c = myDB.rawQuery("SELECT * FROM " + myView + " ORDER BY artiklId ASC;", null);
+            } else {
+                c = myDB.rawQuery("SELECT * FROM " + myView + " where artiklId like '%" + filter + "%'  ORDER BY artiklId ASC;", null);
+            }
+        } else {
+            c = myDB.rawQuery("SELECT * FROM " + myView + " WHERE artiklId=" + artiklID + ";", null);
+        }
+        Log.d(TAG, "getListaArtiklJMJ: broj zapisa je ->" + c.getCount());
+
+        int ArtiklIdIndex = c.getColumnIndex("artiklId");
+        int jmjIdIndex = c.getColumnIndex("jmjId");
+        int nazivArtiklaIndex = c.getColumnIndex("nazivArtikla");
+        int nazivJmjIndex = c.getColumnIndex("nazivJmj");
+        int odnosJmjIndex = c.getColumnIndex("odnosJmj");
+
+        Log.d(TAG, "getListaArtiklJMJ: " + ArtiklIdIndex + "/" + jmjIdIndex + "/" + nazivArtiklaIndex + "/" + nazivJmjIndex);
+        c.moveToFirst();
+        Log.d(TAG, "ListaArtiklJmjAdapter: Broj podataka u bazi je:" + Integer.toString(c.getCount() + 1));
+        for (int j = 0; j < c.getCount(); j++) {
+            long artId;
+            long jmjId;
+            String nazivartikla;
+            String nazivjmj;
+            double odnos;
+
+            artId = c.getLong(ArtiklIdIndex);
+            jmjId = c.getLong(jmjIdIndex);
+            nazivartikla = c.getString(nazivArtiklaIndex);
+            nazivjmj = c.getString(nazivJmjIndex);
+            odnos=c.getDouble(odnosJmjIndex);
+
+            ArtiklJmj ArtJmjProvider = new ArtiklJmj(artId, jmjId, nazivartikla, nazivjmj,odnos);
+            lista.add(ArtJmjProvider);
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        myDB.close();
+        return lista;
+    }
     public static List<jmj> getListaJMJ(Activity a, long id, String filter) {
         List<jmj> lista = new ArrayList<jmj>();
         String myTabela = "jmj";
@@ -2387,6 +2436,37 @@ public class MainActivity extends AppCompatActivity
                     IdDokumenta + "," + rezultat.getArtiklId() + ",'" + rezultat.getArtiklNaziv() + "'," + rezultat.getKolicina() + ", '" + rezultat.isImaAtribut() + "',null,null" +
                     ",null," + rezultat.getJmjId() + ",'" + rezultat.getJmjNaziv() + "','" + rezultat.getNapomena() + "');");
         }
+        myDB.close();
+    }
+
+    public static void izmjeniStavkuSaArtiklom(Activity a, long IdDokumenta, App1Stavke stavka) {
+        App1Stavke rezultat = stavka;
+        List<App1Stavke> spisakStavkiUDokumentu=getListaStavki(IdDokumenta,a);
+        long idStavkeZaIzmjenu=0;
+        for(App1Stavke stv: spisakStavkiUDokumentu){
+            if(stv.getArtiklId()==rezultat.getArtiklId()){
+                idStavkeZaIzmjenu=stv.getId();
+            }
+        }
+        String tabelaApp1 = "stavke1";
+        SQLiteDatabase myDB = null;
+        myDB = a.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+        myDB.execSQL("UPDATE " + tabelaApp1 + " SET kolicina = " + rezultat.getKolicina() + " WHERE _id = " + idStavkeZaIzmjenu + ";");
+        myDB.close();
+    }
+    public static void izbrisiStavkuSaArtiklom(Activity a, long IdDokumenta, App1Stavke stavka) {
+        App1Stavke rezultat = stavka;
+        List<App1Stavke> spisakStavkiUDokumentu=getListaStavki(IdDokumenta,a);
+        long idStavkeZaBrisanje=0;
+        for(App1Stavke stv: spisakStavkiUDokumentu){
+            if(stv.getArtiklId()==rezultat.getArtiklId()){
+                idStavkeZaBrisanje=stv.getId();
+            }
+        }
+        String tabelaApp1 = "stavke1";
+        SQLiteDatabase myDB = null;
+        myDB = a.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+        myDB.execSQL("DELETE FROM " + tabelaApp1 + " WHERE _id = " + idStavkeZaBrisanje + ";");
         myDB.close();
     }
 
