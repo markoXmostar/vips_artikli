@@ -69,6 +69,7 @@ public class App1StavkeActivity extends AppCompatActivity {
         fabUnosPrekoListe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent intent = new Intent(App1StavkeActivity.this, ArtikliActivity.class);
                 intent.putExtra("dokumentID",IdDokumenta);
                 intent.putExtra("varijanta", 0);
@@ -110,6 +111,8 @@ public class App1StavkeActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     @Override
     public void onBackPressed() {

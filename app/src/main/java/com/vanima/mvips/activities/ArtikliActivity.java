@@ -1,5 +1,6 @@
 package com.vanima.mvips.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,8 +23,11 @@ import com.vanima.mvips.models.App1Stavke;
 import com.vanima.mvips.models.Artikl;
 import com.vanima.mvips.models.ArtiklJmj;
 import com.vanima.mvips.models.ArtiklSaKolicinom;
+import com.vanima.mvips.models.jmjOdnos;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 
@@ -51,6 +55,15 @@ public class ArtikliActivity extends AppCompatActivity {
         setContentView(R.layout.activity_artikli);
 
         getSupportActionBar().setTitle("Artikli");
+
+        ProgressDialog dialog = new ProgressDialog(this); // this = YourActivity
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setTitle("Loading");
+        dialog.setMessage("Loading. Please wait...");
+        dialog.setIndeterminate(true);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
         NoDataText = findViewById(R.id.noDataText);
         NoDataText.setVisibility(View.INVISIBLE);
 
@@ -86,6 +99,7 @@ public class ArtikliActivity extends AppCompatActivity {
                 }
             }
         });
+        dialog.dismiss();
     }
 
     @Override
@@ -250,11 +264,39 @@ public class ArtikliActivity extends AppCompatActivity {
 
     private void postaviAdapterZaListu(String filter) {
         listaArtikala = UcitajListuIzBaze(filter);
+
+
+
         if (unosKolicine) {
+            //ubačeno za učitavanje liste JMJ za svaki artikal
+            Date currentTime1 = Calendar.getInstance().getTime();
+            List<ArtiklJmj> listaSaJMJ=MainActivity.getListaSvihArtiklSaSvojimJMJ(ArtikliActivity.this);
+            Date currentTime2 = Calendar.getInstance().getTime();
+            long diff = currentTime2.getTime() - currentTime1.getTime();
+            Log.d(TAG, "12345: Vrijeme ucitavanja liste ArtiklaSaJMJ je:" +diff);
+            /*
+            for(Artikl glavna:listaArtikala) {
+                List<ArtiklJmj> zaBrisati=new ArrayList<ArtiklJmj>();
+                for (ArtiklJmj stv : listaSaJMJ) {
+                    ArrayList<jmjOdnos> myArtListaJMJ=new ArrayList<jmjOdnos>();
+                    if (stv.getArtiklID()==glavna.getId()){
+                        jmjOdnos jmjOdnos=new jmjOdnos(stv.getJmjID(),stv.getOdnos(),stv.getNazivJMJ());
+                        myArtListaJMJ.add(jmjOdnos);
+                        zaBrisati.add(stv);
+                    }
+                }
+                listaSaJMJ.removeAll(zaBrisati);
+            }
+            Date currentTime3 = Calendar.getInstance().getTime();
+            diff = currentTime3.getTime() - currentTime2.getTime();
+            Log.d(TAG, "12345: Vrijeme FILTRIRANJA liste ArtiklaSaJMJ je:" +diff);
+            */
+            //kraj ubačeno za učitavanje liste JMJ za svaki artikal
+
             artiklListView.setItemsCanFocus(true);
             ArrayList<ArtiklSaKolicinom> myItems = new ArrayList<ArtiklSaKolicinom>();
             for (int i = 0; i < listaArtikala.size(); i++) {
-                ArtiklSaKolicinom artKol = new ArtiklSaKolicinom(listaArtikala.get(i), 0);
+                ArtiklSaKolicinom artKol = new ArtiklSaKolicinom(listaArtikala.get(i), 0,getListJMJ(listaArtikala.get(i).getId(),listaSaJMJ));
                 if (artKol.getArt().getImaRokTrajanja()==0){
                     myItems.add(artKol);
                 }
@@ -280,6 +322,22 @@ public class ArtikliActivity extends AppCompatActivity {
             artiklListView.setAdapter(myAdapterOLD);
         }
 
+    }
+
+    private List<jmjOdnos> getListJMJ(long _artID,List<ArtiklJmj> listaSaJMJ){
+        //for(Artikl glavna:listaArtikala) {
+        List<ArtiklJmj> zaBrisati=new ArrayList<ArtiklJmj>();
+        ArrayList<jmjOdnos> myArtListaJMJ=new ArrayList<jmjOdnos>();
+            for (ArtiklJmj stv : listaSaJMJ) {
+                if (stv.getArtiklID()==_artID){
+                    jmjOdnos jmjOdnos=new jmjOdnos(stv.getJmjID(),stv.getOdnos(),stv.getNazivJMJ());
+                    myArtListaJMJ.add(jmjOdnos);
+                    zaBrisati.add(stv);
+                }
+            }
+            listaSaJMJ.removeAll(zaBrisati);
+        //}
+        return myArtListaJMJ;
     }
 
 
