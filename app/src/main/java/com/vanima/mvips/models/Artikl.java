@@ -32,7 +32,15 @@ public class Artikl  implements Serializable{
     private boolean imaRokTrajanja;
     private int podgrupaID;
 
+    private boolean asortimanKupca;
 
+    public void setAsortimanKupca(boolean asortimanKupca) {
+        this.asortimanKupca = asortimanKupca;
+    }
+
+    public boolean isAsortimanKupca() {
+        return asortimanKupca;
+    }
 
     public Artikl(long id, String sifra, String naziv, String kataloskiBroj, long jmjId, String jmjNaziv, String kratkiOpis,
                   String proizvodjac, String dugiOpis, String vrstaAmbalaze, double brojKoleta, double brojKoletaNaPaleti,
@@ -56,7 +64,7 @@ public class Artikl  implements Serializable{
         this.brutto = brutto;
         this.imaRokTrajanja = imaRokTrajanja;
         this.podgrupaID = podgrupaID;
-
+        this.asortimanKupca=false;
     }
 
     public long getId() {
