@@ -73,7 +73,7 @@ public class App1StavkeActivity extends AppCompatActivity {
                 Intent intent = new Intent(App1StavkeActivity.this, ArtikliActivity.class);
                 intent.putExtra("dokumentID",IdDokumenta);
                 intent.putExtra("varijanta", 0);
-                intent.putExtra("unosKolicine", true);
+                intent.putExtra("unosKolicine", false);
                 intent.putExtra("pjKmtID", pjKmtID);
                 startActivityForResult(intent,2);
 
