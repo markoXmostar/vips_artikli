@@ -40,6 +40,7 @@ public class ListaArtikalaAdapter2 extends BaseAdapter implements Filterable {
         fullList.addAll(_myItems);
         this.inflater = LayoutInflater.from(context);
         this.dokumentID = _dokID;
+        asortiman=false;
     }
 
     @Override
@@ -99,6 +100,9 @@ public class ListaArtikalaAdapter2 extends BaseAdapter implements Filterable {
                     jmjOdnos izabranaJMJ = (jmjOdnos) holder.spinJMJ.getSelectedItem();
                     String unesenaKolicina = ((EditText) view).getText().toString();
                     double novaKolicina=Double.valueOf(unesenaKolicina)*izabranaJMJ.getOdnos();
+                    if (myItems.size()==0){
+                        return;
+                    }
                     double staraKolicina=myItems.get(i).getKolicina();
                     if (novaKolicina!=staraKolicina){
                         App1Stavke newStavka;
@@ -146,6 +150,9 @@ public class ListaArtikalaAdapter2 extends BaseAdapter implements Filterable {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (holder.radi) {
                     int i = parent.getId();
+                    if (myItems.size()==0){
+                        return;
+                    }
                     jmjOdnos izabranaJMJ = (jmjOdnos) parent.getItemAtPosition(position);
                     String unesenaKolicina = ((EditText) holder.etKolicinaJMJ).getText().toString();
                     double novaKolicina = Double.valueOf(unesenaKolicina)*izabranaJMJ.getOdnos();
@@ -241,9 +248,12 @@ public class ListaArtikalaAdapter2 extends BaseAdapter implements Filterable {
         return view;
     }
 
-    private void snimiStavku(int i){
+    private boolean asortiman;
 
+    public void setAsortiman(boolean asortiman) {
+        this.asortiman = asortiman;
     }
+
     @Override
     public Filter getFilter() {
         Filter filter = new Filter() {
@@ -252,8 +262,18 @@ public class ListaArtikalaAdapter2 extends BaseAdapter implements Filterable {
                 FilterResults results = new FilterResults();
 
                 if (constraint == null || constraint.length() == 0) { // if your editText field is empty, return full list of FriendItem
-                    results.count = fullList.size();
-                    results.values = fullList;
+                    List<ArtiklSaKolicinom> filteredList = new ArrayList<>();
+                    for (ArtiklSaKolicinom item : fullList) {
+                        if (asortiman){
+                            if(item.getArt().isAsortimanKupca()){
+                                filteredList.add(item);
+                            }
+                        }else{
+                            filteredList.add(item);
+                        }
+                    }
+                    results.count = filteredList.size();
+                    results.values = filteredList;
                 } else {
                     List<ArtiklSaKolicinom> filteredList = new ArrayList<>();
 
@@ -264,7 +284,14 @@ public class ListaArtikalaAdapter2 extends BaseAdapter implements Filterable {
                         String kataloskiArt =item.getArt().getKataloskiBroj().toLowerCase();
 
                         if (nazivArt.contains(constraint.toString()) || sifraArt.contains(constraint.toString()) || kataloskiArt.contains(constraint.toString())) {
-                            filteredList.add(item);
+                            if (asortiman){
+                                if(item.getArt().isAsortimanKupca()){
+                                    filteredList.add(item);
+                                }
+                            }else{
+                                filteredList.add(item);
+                            }
+
                         }
                     }
 

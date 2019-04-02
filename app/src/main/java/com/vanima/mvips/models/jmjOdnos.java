@@ -37,6 +37,11 @@ public class jmjOdnos {
 
     @Override
     public String toString() {
-        return  jmjNaziv;
+        if (odnos==1){
+            return  jmjNaziv;
+        }else{
+            return  jmjNaziv +  " ( 1 × " + String.valueOf(getOdnos()) + ")";
+        }
+
     }
 }
