@@ -602,9 +602,9 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
                             AsortimanKupca _asort = new AsortimanKupca(myStv2.optLong("pjKmtId", 0),
                                     myStv2.optLong("artiklId", 0));
                             asortimanLista.add(_asort);
-                            Log.d(TAG, "onPostExecute: " + _asort.toString());
+                            //Log.d(TAG, "onPostExecute: " + _asort.toString());
                         }
-                        Log.d(TAG, "onPostExecute: BROJ Dokumenata2 =" + asortimanLista.size());
+                        Log.d(TAG, "onPostExecute: BROJ zapisa u asortimankupca je: " + asortimanLista.size());
                         UpisiAsortimanUBazu(asortimanLista);
                         vrijeme2 = new Date(System.currentTimeMillis());
                         long different = vrijeme2.getTime() - vrijeme1.getTime();
@@ -801,7 +801,7 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
 
         myDB.close();
     }
-
+    // TODO viditi gdje puca, ukloniti log u loopu
     private void UpisiAsortimanUBazu(ArrayList<AsortimanKupca> Lista) {
         boolean greska = false;
         String greskaStr = "";
@@ -818,8 +818,11 @@ public abstract class JSON_recive extends AsyncTask<String, String, String> impl
             Log.d(TAG, "Brišem sve iz tabele");
             myDB.execSQL("DELETE FROM " + myTabela + ";");
             myDB.beginTransaction();
+            AsortimanKupca myAsortiman;
+            Log.d(TAG,String.format("%o", Lista.size()));
             for (int i = 0; i < Lista.size(); i++) {
-                AsortimanKupca myAsortiman = Lista.get(i);
+                myAsortiman = Lista.get(i);
+                //Log.d(TAG,String.format("%o,%o", myAsortiman.getPjID(), myAsortiman.getArtiklID()));
                 myDB.execSQL("INSERT INTO " + myTabela + " (pjKmtId, artiklId ) VALUES (" +
                         myAsortiman.getPjID() + "," +
                         myAsortiman.getArtiklID() + ");");

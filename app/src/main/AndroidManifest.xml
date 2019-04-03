@@ -31,7 +31,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.vanima.mvips.activities.ArtikliActivity" />
+        <activity android:name="com.vanima.mvips.activities.ArtikliActivity" android:windowSoftInputMode="adjustPan" />
         <activity android:name="com.vanima.mvips.activities.RegistriActivity" />
         <activity android:name="com.vanima.mvips.activities.KomitentiActivity" />
         <activity

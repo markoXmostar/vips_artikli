@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,6 +12,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:textStyle="bold"
+        android:focusable="false"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="0123456789"
@@ -26,6 +26,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:textStyle="bold"
+        android:focusable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/sifraArtikla_artikli"
         app:layout_constraintTop_toTopOf="parent"
@@ -39,6 +40,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
+        android:focusable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nazivArtikla_artikli"
@@ -52,6 +54,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
+        android:focusable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/kataloskiBroj_artikli"
@@ -65,9 +68,55 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
+        android:focusable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/proizvodac_artikli"
         tools:text="broj koleta / broj komada" />
+
+    <TextView
+        android:id="@+id/tvJMJnaziv_artikli"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:focusable="false"
+        android:text="KOLIČINA:"
+        app:layout_constraintBottom_toBottomOf="@+id/etJMJkolicina_artikli"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etJMJkolicina_artikli" />
+
+    <EditText
+        android:id="@+id/etJMJkolicina_artikli"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:ems="10"
+        android:inputType="numberDecimal"
+        android:selectAllOnFocus="true"
+        android:gravity="right"
+        app:layout_constraintEnd_toStartOf="@+id/spinnJMJ_artikli"
+        app:layout_constraintStart_toEndOf="@+id/tvJMJnaziv_artikli"
+        app:layout_constraintTop_toBottomOf="@+id/ostaliPodaci_artikli" />
+
+    <Spinner
+        android:id="@+id/spinnJMJ_artikli"
+        android:layout_width="103dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:focusable="false"
+        android:spinnerMode="dialog"
+        android:gravity="bottom"
+        app:layout_constraintBottom_toBottomOf="@+id/etJMJkolicina_artikli"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etJMJkolicina_artikli" />
 
 </android.support.constraint.ConstraintLayout>

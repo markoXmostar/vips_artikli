@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity
     public static String DatumFormat="dd.MM.yyyy";
     public static String BorisovFormatDatuma = "yyyy-MM-dd'T'HH:mm:ss";
 
-    public static int DJELATNIK = 2;
     public static String url = "http://vanima.net:8099/api/";
 
 
@@ -105,11 +104,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //fabUpdatePodataka = (FloatingActionButton) findViewById(R.id.fabUpdatePodataka);
-        //fabApp1 = (FloatingActionButton) findViewById(R.id.fabApp1);
-        //fabApp2 = (FloatingActionButton) findViewById(R.id.fabApp2);
-        //fabApp3 = (FloatingActionButton) findViewById(R.id.fabApp3);
-
         btnViewLog = findViewById(R.id.btnViewLog);
         btnApp1 = findViewById(R.id.btnApp1);
         btnApp2 = findViewById(R.id.btnApp2);
@@ -119,8 +113,11 @@ public class MainActivity extends AppCompatActivity
 
         spisakSyncTabela = new ArrayList<>();
 
+        myPostavke = new postavkeAplikacije(MainActivity.this);
         procitajPostavke();
         zadanaVrstaAplikacija = myPostavke.getVrstaAplikacije();
+
+        Log.d(TAG, String.format("%o, %o", myPostavke.getDlt_id(), myPostavke.getVrstaAplikacije()));
 
         // TODO ovo treba prije radit kako bi brže otvaralo aktivnost koju treba, za sad ću ostavit ovdje
         // može i ovo nova postavka bit, kad prvi put otvori aplikaciju da pita da li da uvijek otvara tu aplikaciju
@@ -158,7 +155,6 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }
-
         postaviTabeleZaSync();
         getLOG();
 
@@ -225,16 +221,16 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        procitajPostavke();
+
         //new JSON_task(this).execute("http://vanima.net:8099/api/artikli?d=2");
         //provjeriti da li je upisan DLT_ID ako nije upaliti login screen i preuzeti sa servera podatke
         if (myPostavke.getDlt_id() == 0) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivityForResult(intent, 999);
-        } else {
-            DJELATNIK = myPostavke.getDlt_id();
+        }else {
+            postaviDugmiceOvisnoOdOvlasti();
         }
-
-        postaviDugmiceOvisnoOdOvlasti();
 
     }
 
@@ -402,39 +398,12 @@ public class MainActivity extends AppCompatActivity
                 rbr = getZadnjiID_log(myTabela, this);
                 int brojac = 0;
 
-                /*
-                Cursor c;
-                c = myDB.rawQuery("SELECT MAX(redniBroj) AS rbr FROM " + myTabela, null);
-                int IdMax = c.getColumnIndex("rbr");
-                c.moveToFirst();
-                int brojac = 0;
-                for (int j = 0; j < c.getCount(); j++) {
 
-                    rbr = c.getInt(IdMax);
-                    brojac++;
-                    if (j != c.getCount()) {
-                        c.moveToNext();
-                    }
-                }
-                c.close();
-                */
-                //txtLastSyncID.setText(Integer.toString(rbr));
-                //zadnjaSinkronizacijaID=rbr;
                 Log.d(TAG, "getLOG: ZADNJI RBR =" + Integer.toString(rbr));
                 Cursor z;
                 z = myDB.rawQuery("SELECT * FROM " + myTabela + " WHERE redniBroj =" + rbr + ";", null);
                 brojac = 0;
 
-                /*
-                    myDB.execSQL("CREATE TABLE IF NOT EXISTS log (" +
-                        "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        "vrijeme datetime default current_timestamp, " +
-                        "greska INTEGER, " +
-                        "poruka VARCHAR," +
-                        "redniBroj INTEGER," +
-                        "smjer INTEGER," +
-                        "tabela VARCHAR); " );
-                     */
 
                 int idIndex=z.getColumnIndex("_id");
                 int vrijemeIndex=z.getColumnIndex("vrijeme");
@@ -505,12 +474,20 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "getLOG: BROJ POTREBNIH SYNC TABELA JE " + spisakSyncTabela.size());
 
         if(brojZadnjihSyncTabela!=spisakSyncTabela.size()){
-            //zadnja sinkronizacija je bila nepotpuna
-
-            sastaviTabelePotrebnieZaSinkronizaciju(myListaLog);
-            Log.d(TAG, "getLOG: Zadnja sinkronizacija nepotpuna potrebno je uraditi opet!");
-            //postaviVidljivostFabKontrola(true,false);
             potrebnaSinkronizacija = true;
+            /*
+            if(provjeriSinkZaJedanApp()){
+                Log.d(TAG, String.format("getLOG: Zadnja sinkronizacija uspješna za aplikaciju %o!", myPostavke.getVrstaAplikacije()));
+                potrebnaSinkronizacija = false;
+            }
+            else {
+
+                sastaviTabelePotrebnieZaSinkronizaciju(myListaLog);
+                Log.d(TAG, "getLOG: Zadnja sinkronizacija nepotpuna potrebno je uraditi opet!");
+
+                potrebnaSinkronizacija = true;
+            }
+            */
         }
         else {
             Log.d(TAG, "getLOG: Zadnja sinkronizacija uspješna!");
@@ -518,6 +495,24 @@ public class MainActivity extends AppCompatActivity
         }
         postaviDugmiceOvisnoOdOvlasti();
         myDB.close();
+    }
+
+    private boolean provjeriSinkZaJedanApp(){
+        switch (myPostavke.getVrstaAplikacije()){
+            case 1:
+                return false;
+            case 2:
+                return false;
+            case 3:
+                if(spisakSyncTabela.size() >= 13){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            default:
+                return false;
+        }
     }
 
     private void sastaviTabelePotrebnieZaSinkronizaciju(List<dbLog> novaListaLog){
@@ -599,16 +594,18 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 Log.d(TAG, "onActivityResult: ZATVARAM LOGIN---OK");
                 int result = data.getIntExtra("dlt_id", 0);
-                this.DJELATNIK = result;
+                myPostavke.snimiDLT_ID(result);
+                procitajPostavke();
+                spisakSyncTabela.clear();
+                postaviDugmiceOvisnoOdOvlasti();
+                postaviTabeleZaSync();
 
             } else {
                 Log.d(TAG, "onActivityResult: ZATVARAM LOGIN---CANCEL");
-                this.DJELATNIK = 0;
-
             }
         }
         if (requestCode == 998) {
-            //LOGIN
+            //PIN
             if (resultCode == RESULT_OK) {
                 Log.d(TAG, "onActivityResult: ZATVARAM PIN ACTIVITY---OK");
 
@@ -758,57 +755,62 @@ public class MainActivity extends AppCompatActivity
         String akcija = "";
         String urlString = "";
         akcija = "jmj";
-        urlString = url + "idnaziv" + "?d=" + DJELATNIK + "&t=" + akcija;
+        int djelatnik = getDjelatnik();
+        urlString = url + "idnaziv" + "?d=" + djelatnik + "&t=" + akcija;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "jmj"));
 
         akcija = "tipdokumenta";
-        urlString = url + "idnaziv" + "?d=" + DJELATNIK + "&t=" + akcija;
+        urlString = url + "idnaziv" + "?d=" + djelatnik + "&t=" + akcija;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "tip_dokumenta"));
 
         akcija = "podtipdokumenta";
-        urlString = url + "idnazivrid" + "?d=" + DJELATNIK + "&t=" + akcija;
+        urlString = url + "idnazivrid" + "?d=" + djelatnik + "&t=" + akcija;
         Log.d(TAG, "onNavigationItemSelected: " + urlString);
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "podtip_dokumenta"));
 
         akcija = "nacinplacanja";
-        urlString = url + "idnaziv" + "?d=" + DJELATNIK + "&t=" + akcija;
+        urlString = url + "idnaziv" + "?d=" + djelatnik + "&t=" + akcija;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "nacin_placanja"));
 
         akcija = "grupaartikala";
-        urlString = url + "idnazivrid" + "?d=" + DJELATNIK + "&t=" + akcija;
+        urlString = url + "idnazivrid" + "?d=" + djelatnik + "&t=" + akcija;
         Log.d(TAG, "onNavigationItemSelected: " + urlString);
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "grupa_artikala"));
 
         akcija = "podgrupaartikala";
-        urlString = url + "idnazivrid" + "?d=" + DJELATNIK + "&t=" + akcija;
+        urlString = url + "idnazivrid" + "?d=" + djelatnik + "&t=" + akcija;
         Log.d(TAG, "onNavigationItemSelected: " + urlString);
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "podgrupa_artikala"));
 
         akcija = "artikli";
-        urlString = url + akcija + "?d=" + DJELATNIK;
+        urlString = url + akcija + "?d=" + djelatnik;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "artikli"));
 
         akcija = "artiklbarcode";
-        urlString = url + akcija + "?d=" + DJELATNIK;
+        urlString = url + akcija + "?d=" + djelatnik;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "artiklbarcode"));
 
         akcija = "artikljmj";
-        urlString = url + akcija + "?d=" + DJELATNIK;
+        urlString = url + akcija + "?d=" + djelatnik;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "artikljmj"));
 
         akcija = "artiklatribut";
-        urlString = url + akcija + "?d=" + DJELATNIK;
+        urlString = url + akcija + "?d=" + djelatnik;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "artiklatribut"));
 
         akcija = "komitenti";
-        urlString = url + akcija + "?d=" + DJELATNIK + "&sk=" + myPostavke.getSaldakonti();
+        urlString = url + akcija + "?d=" + djelatnik + "&sk=" + myPostavke.getSaldakonti();
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "komitenti"));
 
         akcija = "komitentpj";
-        urlString = url + "idnazivrid" + "?d=" + DJELATNIK + "&t=" + akcija;
+        urlString = url + "idnazivrid" + "?d=" + djelatnik + "&t=" + akcija;
         spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "PjKomitenta"));
 
-        //if (myPostavke.getVrstaAplikacije() == 0) {
+        akcija = "asortimankupca";
+        urlString = url + akcija + "?d=" + djelatnik;
+        spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "asortimankupca"));
+
+        if (myPostavke.getVrstaAplikacije() == 2 || myPostavke.getVrstaAplikacije() == 0) {
             long podtipDokumenta = 0;
             if (myPostavke.getPodtipDokumenta() == 0) {
                 podtipDokumenta = 51;
@@ -817,16 +819,15 @@ public class MainActivity extends AppCompatActivity
             }
             Log.d(TAG, "postaviTabeleZaSync: POSTAVLJEN PODTIP ZA APP 2/ podtipID = " + podtipDokumenta);
             akcija = "dokumentizaglavlja";
-            urlString = url + akcija + "?d=" + DJELATNIK + "&u=" + UREDJAJ + "&p=" + String.valueOf(podtipDokumenta);
+            urlString = url + akcija + "?d=" + djelatnik + "&u=" + UREDJAJ + "&p=" + String.valueOf(podtipDokumenta);
             spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "dokumenti2"));
 
             akcija = "dokumentistavke";
-            urlString = url + akcija + "?d=" + DJELATNIK + "&u=" + UREDJAJ + "&p=" + String.valueOf(podtipDokumenta);
+            urlString = url + akcija + "?d=" + djelatnik + "&u=" + UREDJAJ + "&p=" + String.valueOf(podtipDokumenta);
             spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "stavke2"));
+        }
 
-            akcija = "asortimankupca";
-            urlString = url + akcija + "?d=" + DJELATNIK;
-            spisakSyncTabela.add(new UrlTabele(akcija, urlString, true, "asortimankupca"));
+
 
         //}
 /*        if (myPostavke.getVrstaAplikacije() == 2) {
@@ -929,7 +930,7 @@ public class MainActivity extends AppCompatActivity
         myDB.execSQL("DROP TABLE IF EXISTS  log;");
         myDB.execSQL("CREATE TABLE IF NOT EXISTS log (" +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "vrijeme datetime default current_timestamp, " +
+                "vrijeme datetime default (datetime('now','localtime')), " +
                 "greska INTEGER, " +
                 "poruka VARCHAR," +
                 "redniBroj INTEGER," +
@@ -1033,29 +1034,25 @@ public class MainActivity extends AppCompatActivity
         return date;
     }
     public static String parseDateFromSQLLiteDBFormatToMyFormat_DateTime(Date date){
-
-        SimpleDateFormat mojDateFormat=new SimpleDateFormat(DatumVrijemeFormat);
         if (date==null){
             return "";
         }
-        String myDateString=mojDateFormat.format(date);
-        return myDateString;
+        SimpleDateFormat mojDateFormat=new SimpleDateFormat(DatumVrijemeFormat);
+        return mojDateFormat.format(date);
 
     }
 
     public static String parseDateFromSQLLiteDBFormatToMyOnlyDateFormat(Date date){
 
         SimpleDateFormat mojDateFormat=new SimpleDateFormat(DatumFormat);
-        String myDateString=mojDateFormat.format(date);
-        return myDateString;
+        return mojDateFormat.format(date);
 
     }
 
     public static String parseDateFromSQLLiteDBFormatToJSONFormat(Date date) {
 
         SimpleDateFormat mojDateFormat = new SimpleDateFormat(BorisovFormatDatuma);
-        String myDateString = mojDateFormat.format(date);
-        return myDateString;
+        return mojDateFormat.format(date);
 
     }
 
@@ -1315,6 +1312,54 @@ public class MainActivity extends AppCompatActivity
         myDB.close();
         return  listaAtributa;
     }
+    public static List<ArtiklJmj> getListaSvihArtiklSaSvojimJMJ(Activity a){
+        List<ArtiklJmj> lista = new ArrayList<ArtiklJmj>();
+        String myView = "vwArtikliJmj";
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
+        Log.d(TAG, "getListaArtiklJMJ: create view START");
+        //myDB.execSQL("DROP VIEW IF EXISTS " + myView + ";");
+        myDB.execSQL("CREATE VIEW IF NOT EXISTS vwArtikliJmj " +
+                "AS SELECT " +
+                "artikljmj.artiklId, " +
+                "artikli.naziv AS nazivArtikla, " +
+                "artikljmj.jmjId, " +
+                "jmj.naziv AS nazivJmj, " +
+                "artikljmj.odnos AS odnosJmj " +
+                " FROM " +
+                "artikljmj INNER JOIN artikli ON artikljmj.artiklId = artikli._id INNER JOIN jmj on artikljmj.jmjId = jmj._id;");
+
+        Log.d(TAG, "getListaArtiklJMJ: create view END");
+        Cursor c;
+        c = myDB.rawQuery("SELECT * FROM " + myView + " ORDER BY artiklId ASC;", null);
+        int ArtiklIdIndex = c.getColumnIndex("artiklId");
+        int jmjIdIndex = c.getColumnIndex("jmjId");
+        int nazivArtiklaIndex = c.getColumnIndex("nazivArtikla");
+        int nazivJmjIndex = c.getColumnIndex("nazivJmj");
+        int odnosJmjIndex = c.getColumnIndex("odnosJmj");
+        c.moveToFirst();
+        for (int j = 0; j < c.getCount(); j++) {
+            long artId;
+            long jmjId;
+            String nazivartikla;
+            String nazivjmj;
+            double odnos;
+
+            artId = c.getLong(ArtiklIdIndex);
+            jmjId = c.getLong(jmjIdIndex);
+            nazivartikla = c.getString(nazivArtiklaIndex);
+            nazivjmj = c.getString(nazivJmjIndex);
+            odnos=c.getDouble(odnosJmjIndex);
+
+            ArtiklJmj ArtJmjProvider = new ArtiklJmj(artId, jmjId, nazivartikla, nazivjmj,odnos);
+            lista.add(ArtJmjProvider);
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        myDB.close();
+        return lista;
+    }
 
     public static List<ArtiklJmj> getListaArtiklJMJ(Activity a, long artiklID, String filter) {
         List<ArtiklJmj> lista = new ArrayList<ArtiklJmj>();
@@ -1337,7 +1382,7 @@ public class MainActivity extends AppCompatActivity
         String myView = "vwArtikliJmj";
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
         Log.d(TAG, "getListaArtiklJMJ: create view START");
-        myDB.execSQL("DROP VIEW IF EXISTS " + myView + ";");
+        //myDB.execSQL("DROP VIEW IF EXISTS " + myView + ";");
         myDB.execSQL("CREATE VIEW IF NOT EXISTS vwArtikliJmj " +
                 "AS SELECT " +
                 "artikljmj.artiklId, " +
@@ -1394,7 +1439,56 @@ public class MainActivity extends AppCompatActivity
         return lista;
     }
 
+    public static List<ArtiklJmj> getListaArtiklJMJ2(Activity a, long artiklID, String filter) {
+        List<ArtiklJmj> lista = new ArrayList<ArtiklJmj>();
 
+        String myView = "vwArtikliJmj";
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
+
+        Cursor c;
+        if (artiklID == -1) {
+            if (filter.equals("")) {
+                c = myDB.rawQuery("SELECT * FROM " + myView + " ORDER BY artiklId ASC;", null);
+            } else {
+                c = myDB.rawQuery("SELECT * FROM " + myView + " where artiklId like '%" + filter + "%'  ORDER BY artiklId ASC;", null);
+            }
+        } else {
+            c = myDB.rawQuery("SELECT * FROM " + myView + " WHERE artiklId=" + artiklID + ";", null);
+        }
+        Log.d(TAG, "getListaArtiklJMJ: broj zapisa je ->" + c.getCount());
+
+        int ArtiklIdIndex = c.getColumnIndex("artiklId");
+        int jmjIdIndex = c.getColumnIndex("jmjId");
+        int nazivArtiklaIndex = c.getColumnIndex("nazivArtikla");
+        int nazivJmjIndex = c.getColumnIndex("nazivJmj");
+        int odnosJmjIndex = c.getColumnIndex("odnosJmj");
+
+        Log.d(TAG, "getListaArtiklJMJ: " + ArtiklIdIndex + "/" + jmjIdIndex + "/" + nazivArtiklaIndex + "/" + nazivJmjIndex);
+        c.moveToFirst();
+        Log.d(TAG, "ListaArtiklJmjAdapter: Broj podataka u bazi je:" + Integer.toString(c.getCount() + 1));
+        for (int j = 0; j < c.getCount(); j++) {
+            long artId;
+            long jmjId;
+            String nazivartikla;
+            String nazivjmj;
+            double odnos;
+
+            artId = c.getLong(ArtiklIdIndex);
+            jmjId = c.getLong(jmjIdIndex);
+            nazivartikla = c.getString(nazivArtiklaIndex);
+            nazivjmj = c.getString(nazivJmjIndex);
+            odnos=c.getDouble(odnosJmjIndex);
+
+            ArtiklJmj ArtJmjProvider = new ArtiklJmj(artId, jmjId, nazivartikla, nazivjmj,odnos);
+            lista.add(ArtJmjProvider);
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        myDB.close();
+        return lista;
+    }
     public static List<jmj> getListaJMJ(Activity a, long id, String filter) {
         List<jmj> lista = new ArrayList<jmj>();
         String myTabela = "jmj";
@@ -2251,11 +2345,15 @@ public class MainActivity extends AppCompatActivity
         return spisak;
     }
 
+    public static int getDjelatnik(){
+        return myStaticPostavke.getDlt_id();
+    }
+
     public static void updateZaglavljaPoslijeSinkronizacije(Activity a, List<App1Dokumenti> spisakSyncDokumenta) {
 
         SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
         for (App1Dokumenti dok : spisakSyncDokumenta) {
-            myDB.execSQL("UPDATE dokumenti1 SET datumSinkronizacije=datetime('now') WHERE _id=" + dok.getId() + ";");
+            myDB.execSQL("UPDATE dokumenti1 SET datumSinkronizacije=datetime('now','localtime') WHERE _id=" + dok.getId() + ";");
             Log.d(TAG, "updateZaglavljaPoslijeSinkronizacije: UPDATE ODRAĐEN!");
         }
         myDB.close();
@@ -2335,7 +2433,7 @@ public class MainActivity extends AppCompatActivity
                 "idJmj long," +
                 "nazivJmj VARCHAR," +
                 "napomena VARCHAR," +
-                "datumUpisa datetime default current_timestamp);");
+                "datumUpisa datetime default (datetime('now','localtime')));");
         myDB.close();
     }
 
@@ -2360,7 +2458,7 @@ public class MainActivity extends AppCompatActivity
                 "VrstaPlacanjaNaziv VARCHAR, " +
                 "datumDokumenta datetime, " +
                 "datumSinkronizacije datetime," +
-                "datumUpisa datetime default current_timestamp," +
+                "datumUpisa datetime default (datetime('now','localtime'))," +
                 "vrstaAplikacije INTEGER, " +
                 "zakljucen INTEGER DEFAULT 0," +
                 "napomena VARCHAR);");
@@ -2386,6 +2484,37 @@ public class MainActivity extends AppCompatActivity
                     IdDokumenta + "," + rezultat.getArtiklId() + ",'" + rezultat.getArtiklNaziv() + "'," + rezultat.getKolicina() + ", '" + rezultat.isImaAtribut() + "',null,null" +
                     ",null," + rezultat.getJmjId() + ",'" + rezultat.getJmjNaziv() + "','" + rezultat.getNapomena() + "');");
         }
+        myDB.close();
+    }
+
+    public static void izmjeniStavkuSaArtiklom(Activity a, long IdDokumenta, App1Stavke stavka) {
+        App1Stavke rezultat = stavka;
+        List<App1Stavke> spisakStavkiUDokumentu=getListaStavki(IdDokumenta,a);
+        long idStavkeZaIzmjenu=0;
+        for(App1Stavke stv: spisakStavkiUDokumentu){
+            if(stv.getArtiklId()==rezultat.getArtiklId()){
+                idStavkeZaIzmjenu=stv.getId();
+            }
+        }
+        String tabelaApp1 = "stavke1";
+        SQLiteDatabase myDB = null;
+        myDB = a.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+        myDB.execSQL("UPDATE " + tabelaApp1 + " SET kolicina = " + rezultat.getKolicina() + " WHERE _id = " + idStavkeZaIzmjenu + ";");
+        myDB.close();
+    }
+    public static void izbrisiStavkuSaArtiklom(Activity a, long IdDokumenta, App1Stavke stavka) {
+        App1Stavke rezultat = stavka;
+        List<App1Stavke> spisakStavkiUDokumentu=getListaStavki(IdDokumenta,a);
+        long idStavkeZaBrisanje=0;
+        for(App1Stavke stv: spisakStavkiUDokumentu){
+            if(stv.getArtiklId()==rezultat.getArtiklId()){
+                idStavkeZaBrisanje=stv.getId();
+            }
+        }
+        String tabelaApp1 = "stavke1";
+        SQLiteDatabase myDB = null;
+        myDB = a.openOrCreateDatabase(myDATABASE, MODE_PRIVATE, null);
+        myDB.execSQL("DELETE FROM " + tabelaApp1 + " WHERE _id = " + idStavkeZaBrisanje + ";");
         myDB.close();
     }
 

@@ -86,6 +86,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             txtArtikl.setText(izabraniArtikl.getNaziv());
             Log.d(TAG, "setIzabraniArtikl: greška1" + izabraniArtikl.getNaziv() + "/ ima atribut =" + izabraniArtikl.isImaRokTrajanja());
             txtKolicina.setEnabled(true);
+            txtKolicina.setSelectAllOnFocus(true);
             String formatString=MainActivity.formatDecimalbyPostavke();
             String opisArtikla="Proizvođač="+izabraniArtikl.getProizvodjac() + ", Kat.broj=" +izabraniArtikl.getKataloskiBroj() + ", Stanje=" + izabraniArtikl.getStanje() +
                     ", VPC=" + String.format( formatString,izabraniArtikl.getVpc()) + ", MPC=" + String.format(formatString,izabraniArtikl.getMpc());
@@ -122,7 +123,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
             }
 
             txtKolicina.requestFocus();
-            txtKolicina.selectAll();
+            txtKolicina.setSelectAllOnFocus(true);
+            //txtKolicina.selectAll();
 
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
@@ -276,7 +278,7 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                         setIzabraniArtikl(myArt);
                         txtKolicina.setText("1.00");
                         txtKolicina.requestFocus();
-
+                        txtKolicina.selectAll();
 
                     } else {
                         Log.d(TAG, "onKey: ARTIKL NIJE NAĐEN!!");
@@ -312,6 +314,8 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
 
                         Intent intent = new Intent(App1UnosStavkeActivity.this, ArtikliActivity.class);
                         intent.putExtra("varijanta", 0);
+                        intent.putExtra("unosKolicine", false);
+                        intent.putExtra("dokumentID", idDokumenta);
                         //intent.putExtra("asortimanKupca", tbtnAsortimanKupca.isChecked());
                         intent.putExtra("pjKmtID", pjKmtID);
                         startActivityForResult(intent,1);
@@ -484,7 +488,12 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
                     .setAction("Action", null).show();
             return;
         }
-
+        if (myKolicina > 1000000) {
+            String poruka = getResources().getString(R.string.MaksimalnoDozvoljenaKolicina);
+            Snackbar.make(view, poruka, Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+            return;
+        }
         //prepravak jmj na defoltnu
         List<ArtiklJmj> myArtList =MainActivity.getListaArtiklJMJ(this,izabraniArtikl.getId(),"");
 
@@ -573,10 +582,11 @@ public class App1UnosStavkeActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
                 Artikl myArtikl = (Artikl) data.getSerializableExtra("artikl");
+                if (izabraniArtikl==null){
+                    MenuInflater inflater = getMenuInflater();
+                    inflater.inflate(R.menu.unos_stavke, getMenu());
+                }
                 setIzabraniArtikl(myArtikl);
-
-                MenuInflater inflater = getMenuInflater();
-                inflater.inflate(R.menu.unos_stavke, getMenu());
             }
             if (resultCode == Activity.RESULT_CANCELED) {
 

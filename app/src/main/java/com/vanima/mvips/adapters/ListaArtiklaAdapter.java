@@ -7,11 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.vanima.mvips.R;
 import com.vanima.mvips.models.Artikl;
 import com.vanima.mvips.activities.MainActivity;
+import com.vanima.mvips.models.ArtiklSaKolicinom;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +23,15 @@ import java.util.List;
  * Created by marko on 4.11.2017.
  */
 
-public class ListaArtiklaAdapter extends ArrayAdapter {
+public class ListaArtiklaAdapter extends ArrayAdapter implements Filterable {
 
-    List list = new ArrayList();
+    List myList = new ArrayList();
+
+    private final List<Artikl> fullList = new ArrayList<>();
 
     public ListaArtiklaAdapter(@NonNull Context context, int resource) {
         super(context, resource);
+
     }
 
 
@@ -35,21 +41,28 @@ public class ListaArtiklaAdapter extends ArrayAdapter {
 
     }
 
+    private boolean asortiman=false;
+
+    public void setAsortiman(boolean asortiman) {
+        this.asortiman = asortiman;
+    }
+
     @Override
     public void add(@Nullable Object object) {
         super.add(object);
-        list.add(object);
+        myList.add(object);
+        fullList.add((Artikl) object);
     }
 
     @Override
     public int getCount() {
-        return list.size();
+        return myList.size();
     }
 
     @Nullable
     @Override
     public Object getItem(int position) {
-        return list.get(position);
+        return myList.get(position);
     }
 
     @NonNull
@@ -63,11 +76,11 @@ public class ListaArtiklaAdapter extends ArrayAdapter {
 
             row = layoutInflater.inflate(R.layout.row_artikl, parent, false);
             layoutHandler = new LayoutHandler();
-            layoutHandler.SIFRA = (TextView) row.findViewById(R.id.sifraArtikla);
-            layoutHandler.NAZIV = (TextView) row.findViewById(R.id.nazivArtikla);
-            layoutHandler.KATALOSKIBROJ = (TextView) row.findViewById(R.id.kataloskiBroj);
-            layoutHandler.PROIZVODJAC = (TextView) row.findViewById(R.id.proizvodac);
-            layoutHandler.OSTALO=(TextView) row.findViewById(R.id.ostaliPodaci);
+            layoutHandler.SIFRA = (TextView) row.findViewById(R.id.sifraArtikla_artikli);
+            layoutHandler.NAZIV = (TextView) row.findViewById(R.id.nazivArtikla_artikli);
+            layoutHandler.KATALOSKIBROJ = (TextView) row.findViewById(R.id.kataloskiBroj_artikli);
+            layoutHandler.PROIZVODJAC = (TextView) row.findViewById(R.id.proizvodac_artikli);
+            layoutHandler.OSTALO = (TextView) row.findViewById(R.id.ostaliPodaci_artikli);
 
 
             row.setTag(layoutHandler);
@@ -106,5 +119,64 @@ public class ListaArtiklaAdapter extends ArrayAdapter {
         layoutHandler.OSTALO.setText(brojKoleta + " / " + brojKomadaNaPaleti);
         return row;
 
+    }
+
+
+
+    @Override
+    public Filter getFilter() {
+        Filter filter = new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults results = new FilterResults();
+
+                if (constraint == null || constraint.length() == 0) { // if your editText field is empty, return full list of FriendItem
+                    List<Artikl> filteredList = new ArrayList<>();
+                    for (Artikl item : fullList) {
+                        if (asortiman){
+                            if(item.isAsortimanKupca()){
+                                filteredList.add(item);
+                            }
+                        }else{
+                            filteredList.add(item);
+                        }
+                    }
+                    results.count = filteredList.size();
+                    results.values = filteredList;
+                } else {
+                    List<Artikl> filteredList = new ArrayList<>();
+
+                    constraint = constraint.toString().toLowerCase();
+                    for (Artikl item : fullList) {
+                        String nazivArt = item.getNaziv().toLowerCase();
+                        String sifraArt = item.getSifra().toLowerCase();
+                        String kataloskiArt =item.getKataloskiBroj().toLowerCase();
+
+                        if (nazivArt.contains(constraint.toString()) || sifraArt.contains(constraint.toString()) || kataloskiArt.contains(constraint.toString())) {
+                            if (asortiman){
+                                if(item.isAsortimanKupca()){
+                                    filteredList.add(item);
+                                }
+                            }else{
+                                filteredList.add(item);
+                            }
+
+                        }
+                    }
+
+                    results.count = filteredList.size();
+                    results.values = filteredList;
+                }
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+
+                myList = (List<Artikl>) results.values; // replace list to filtered list
+                notifyDataSetChanged(); // refresh adapter
+            }
+        };
+        return filter;
     }
 }
