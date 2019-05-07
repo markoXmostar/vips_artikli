@@ -104,7 +104,7 @@
         app:layout_constraintStart_toEndOf="@+id/tvJMJnaziv_artikli"
         app:layout_constraintTop_toBottomOf="@+id/ostaliPodaci_artikli" />
 
-    <TextView
+    <Spinner
         android:id="@+id/spinnJMJ_artikli"
         android:layout_width="103dp"
         android:layout_height="28dp"

@@ -1312,6 +1312,54 @@ public class MainActivity extends AppCompatActivity
         myDB.close();
         return  listaAtributa;
     }
+    public static List<ArtiklJmj> getListaSvihArtiklSaSvojimJMJ(Activity a){
+        List<ArtiklJmj> lista = new ArrayList<ArtiklJmj>();
+        String myView = "vwArtikliJmj";
+        SQLiteDatabase myDB = a.openOrCreateDatabase(MainActivity.myDATABASE, a.MODE_PRIVATE, null);
+        Log.d(TAG, "getListaArtiklJMJ: create view START");
+        //myDB.execSQL("DROP VIEW IF EXISTS " + myView + ";");
+        myDB.execSQL("CREATE VIEW IF NOT EXISTS vwArtikliJmj " +
+                "AS SELECT " +
+                "artikljmj.artiklId, " +
+                "artikli.naziv AS nazivArtikla, " +
+                "artikljmj.jmjId, " +
+                "jmj.naziv AS nazivJmj, " +
+                "artikljmj.odnos AS odnosJmj " +
+                " FROM " +
+                "artikljmj INNER JOIN artikli ON artikljmj.artiklId = artikli._id INNER JOIN jmj on artikljmj.jmjId = jmj._id;");
+
+        Log.d(TAG, "getListaArtiklJMJ: create view END");
+        Cursor c;
+        c = myDB.rawQuery("SELECT * FROM " + myView + " ORDER BY artiklId ASC;", null);
+        int ArtiklIdIndex = c.getColumnIndex("artiklId");
+        int jmjIdIndex = c.getColumnIndex("jmjId");
+        int nazivArtiklaIndex = c.getColumnIndex("nazivArtikla");
+        int nazivJmjIndex = c.getColumnIndex("nazivJmj");
+        int odnosJmjIndex = c.getColumnIndex("odnosJmj");
+        c.moveToFirst();
+        for (int j = 0; j < c.getCount(); j++) {
+            long artId;
+            long jmjId;
+            String nazivartikla;
+            String nazivjmj;
+            double odnos;
+
+            artId = c.getLong(ArtiklIdIndex);
+            jmjId = c.getLong(jmjIdIndex);
+            nazivartikla = c.getString(nazivArtiklaIndex);
+            nazivjmj = c.getString(nazivJmjIndex);
+            odnos=c.getDouble(odnosJmjIndex);
+
+            ArtiklJmj ArtJmjProvider = new ArtiklJmj(artId, jmjId, nazivartikla, nazivjmj,odnos);
+            lista.add(ArtJmjProvider);
+            if (j != c.getCount()) {
+                c.moveToNext();
+            }
+        }
+        c.close();
+        myDB.close();
+        return lista;
+    }
 
     public static List<ArtiklJmj> getListaArtiklJMJ(Activity a, long artiklID, String filter) {
         List<ArtiklJmj> lista = new ArrayList<ArtiklJmj>();

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
@@ -21,6 +22,7 @@ import com.vanima.mvips.models.Artikl;
 import com.vanima.mvips.models.ArtiklJmj;
 import com.vanima.mvips.models.ArtiklSaKolicinom;
 import com.vanima.mvips.models.jmj;
+import com.vanima.mvips.models.jmjOdnos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,7 @@ public class ListaArtikalaAdapter2 extends BaseAdapter implements Filterable {
         fullList.addAll(_myItems);
         this.inflater = LayoutInflater.from(context);
         this.dokumentID = _dokID;
+        asortiman=false;
     }
 
     @Override
@@ -58,7 +61,8 @@ public class ListaArtikalaAdapter2 extends BaseAdapter implements Filterable {
     private class ViewHolder {
         TextView SIFRA, NAZIV, KATALOSKIBROJ, PROIZVODJAC, OSTALO, jmjNaziv;
         EditText etKolicinaJMJ;
-        TextView spinJMJ;
+        Spinner spinJMJ;
+        boolean radi=false;
     }
 
     @Override
@@ -74,7 +78,7 @@ public class ListaArtikalaAdapter2 extends BaseAdapter implements Filterable {
             holder.OSTALO = (TextView) view.findViewById(R.id.ostaliPodaci_artikli);
             holder.jmjNaziv = (TextView) view.findViewById(R.id.tvJMJnaziv_artikli);
             holder.etKolicinaJMJ = (EditText) view.findViewById(R.id.etJMJkolicina_artikli);
-            holder.spinJMJ=(TextView) view.findViewById(R.id.spinnJMJ_artikli) ;
+            holder.spinJMJ=(Spinner) view.findViewById(R.id.spinnJMJ_artikli) ;
 
             view.setTag(holder);
             view.setTag(R.id.etJMJkolicina_artikli, holder.etKolicinaJMJ);
@@ -87,31 +91,71 @@ public class ListaArtikalaAdapter2 extends BaseAdapter implements Filterable {
         holder.spinJMJ.setTag(i);
         holder.spinJMJ.setId(i);
 
- /*       holder.etKolicinaJMJ.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });*/
         holder.etKolicinaJMJ.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         holder.etKolicinaJMJ.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (!b) {
                     int i = view.getId();
+                    jmjOdnos izabranaJMJ = (jmjOdnos) holder.spinJMJ.getSelectedItem();
                     String unesenaKolicina = ((EditText) view).getText().toString();
-                    double novaKolicina=Double.valueOf(unesenaKolicina);
+                    double novaKolicina=Double.valueOf(unesenaKolicina)*izabranaJMJ.getOdnos();
+                    if (myItems.size()==0){
+                        return;
+                    }
+                    double staraKolicina=myItems.get(i).getKolicina();
+                    if (novaKolicina!=staraKolicina){
+                        App1Stavke newStavka;
+                        Artikl izabraniArtikl = myItems.get(i).getArt();
+                        newStavka = new App1Stavke(-1, dokumentID,
+                                izabraniArtikl.getId(),
+                                izabraniArtikl.getNaziv(),
+                                myItems.get(i).getArt().getJmjId(),
+                                myItems.get(i).getArt().getJmjNaziv(),
+                                izabraniArtikl.isImaRokTrajanja(),
+                                -1,
+                                null,
+                                null,
+                                novaKolicina,
+                                izabraniArtikl.getVpc(),
+                                izabraniArtikl.getMpc(),
+                                "");
+                        //ako je stara količina 0 onda je stavka nova a ako je starakoličina>0 onda ide izmjena stavke
+                        //ako je nova količina 0 onda ide brisanje stavke
+                        myItems.get(i).setKolicina(novaKolicina);
+                        for(ArtiklSaKolicinom item : fullList){
+                            if (item.getArt().getId()==myItems.get(i).getArt().getId()){
+                                item.setKolicina(novaKolicina);
+                            }
+                        }
+                        if (staraKolicina==0){
+                            MainActivity.snimiStavku((Activity) context, dokumentID, newStavka);
+                        }
+                        if (staraKolicina>0){
+                            if (novaKolicina==0){
+                                MainActivity.izbrisiStavkuSaArtiklom((Activity) context,dokumentID,newStavka);
+                            }else{
+                                MainActivity.izmjeniStavkuSaArtiklom((Activity) context,dokumentID,newStavka);
+                            }
+                        }
+
+                    }
+
+                }
+            }
+        });
+
+        holder.spinJMJ.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (holder.radi) {
+                    int i = parent.getId();
+                    if (myItems.size()==0){
+                        return;
+                    }
+                    jmjOdnos izabranaJMJ = (jmjOdnos) parent.getItemAtPosition(position);
+                    String unesenaKolicina = ((EditText) holder.etKolicinaJMJ).getText().toString();
+                    double novaKolicina = Double.valueOf(unesenaKolicina)*izabranaJMJ.getOdnos();
                     double staraKolicina=myItems.get(i).getKolicina();
                     if (novaKolicina!=staraKolicina){
                         App1Stavke newStavka;
@@ -153,18 +197,15 @@ public class ListaArtikalaAdapter2 extends BaseAdapter implements Filterable {
                         }
 
                     }
-
-                } else{
-                    /*
-                    int i = view.getId();
-                    Spinner mySpinner=holder.spinJMJ;
-                    List<ArtiklJmj> myListaJMJ=MainActivity.getListaArtiklJMJ( (Activity) context, myItems.get(i).getArt().getId(),"");
-                    ArrayAdapter<ArtiklJmj> adp = new ArrayAdapter<ArtiklJmj> (context,android.R.layout.simple_spinner_dropdown_item,myListaJMJ);
-                    holder.spinJMJ.setAdapter(adp);
-                    */
                 }
             }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
         });
+
         String prozvodac = "";
         String katbroj = "";
         if (myItems.get(i).getArt().getProizvodjac().isEmpty()) {
@@ -196,9 +237,21 @@ public class ListaArtikalaAdapter2 extends BaseAdapter implements Filterable {
         listaJMJ.add(myJMJ);
         ArrayAdapter<jmj> adp = new ArrayAdapter<jmj> (context,android.R.layout.simple_spinner_dropdown_item,listaJMJ);
         holder.spinJMJ.setAdapter(adp);*/
-        holder.spinJMJ.setText(myItems.get(i).getArt().getJmjNaziv());
+
+        //holder.spinJMJ.setText(myItems.get(i).getArt().getJmjNaziv());
+        List<jmjOdnos>  myJMJ=  myItems.get(i).getListaJMJ();
+        ArrayAdapter<jmjOdnos> jmjOdnosAdapter = new ArrayAdapter<jmjOdnos> (context, android.R.layout.simple_spinner_dropdown_item,  myJMJ);
+        holder.spinJMJ.setAdapter(jmjOdnosAdapter);
+
         holder.etKolicinaJMJ.setText(String.valueOf(myItems.get(i).getKolicina()));
+        holder.radi=true;
         return view;
+    }
+
+    private boolean asortiman;
+
+    public void setAsortiman(boolean asortiman) {
+        this.asortiman = asortiman;
     }
 
     @Override
@@ -209,8 +262,18 @@ public class ListaArtikalaAdapter2 extends BaseAdapter implements Filterable {
                 FilterResults results = new FilterResults();
 
                 if (constraint == null || constraint.length() == 0) { // if your editText field is empty, return full list of FriendItem
-                    results.count = fullList.size();
-                    results.values = fullList;
+                    List<ArtiklSaKolicinom> filteredList = new ArrayList<>();
+                    for (ArtiklSaKolicinom item : fullList) {
+                        if (asortiman){
+                            if(item.getArt().isAsortimanKupca()){
+                                filteredList.add(item);
+                            }
+                        }else{
+                            filteredList.add(item);
+                        }
+                    }
+                    results.count = filteredList.size();
+                    results.values = filteredList;
                 } else {
                     List<ArtiklSaKolicinom> filteredList = new ArrayList<>();
 
@@ -221,7 +284,14 @@ public class ListaArtikalaAdapter2 extends BaseAdapter implements Filterable {
                         String kataloskiArt =item.getArt().getKataloskiBroj().toLowerCase();
 
                         if (nazivArt.contains(constraint.toString()) || sifraArt.contains(constraint.toString()) || kataloskiArt.contains(constraint.toString())) {
-                            filteredList.add(item);
+                            if (asortiman){
+                                if(item.getArt().isAsortimanKupca()){
+                                    filteredList.add(item);
+                                }
+                            }else{
+                                filteredList.add(item);
+                            }
+
                         }
                     }
 
