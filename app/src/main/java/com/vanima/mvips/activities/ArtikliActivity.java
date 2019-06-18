@@ -284,8 +284,13 @@ public class ArtikliActivity extends AppCompatActivity {
         listaSvihArtikala = UcitajSveArtikleIzBaze();
         listaAsortimanaArtikala=getAsortimanKupca();
         for(Artikl art:listaSvihArtikala){
-            if (listaAsortimanaArtikala.contains(art)){
-                art.setAsortimanKupca(true);
+            //if (listaAsortimanaArtikala.contains(art)){
+            //    art.setAsortimanKupca(true);
+            //}
+            for (Artikl art1 : listaAsortimanaArtikala) {
+                if (art.getId() == art1.getId()) {
+                    art.setAsortimanKupca(true);
+                }
             }
         }
         Date currentTimeB = Calendar.getInstance().getTime();
